@@ -47,8 +47,9 @@ class TestElasticLines(unittest.TestCase):
         self.el.add_lines(['bar', 'bazzzz'])
         self.el.add_separator()
 
-        self.assertEqual(self.el.to_str(),
-                         '------\nfoo\n------\nbar\nbazzzz\n------')
+        self.assertEqual(
+            self.el.to_str(), '------\nfoo\n------\nbar\nbazzzz\n------'
+        )
 
 
 if __name__ == '__main__':

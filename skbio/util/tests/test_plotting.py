@@ -14,7 +14,6 @@ from skbio.util._plotting import PlottableMixin
 
 class TestPlottableMixin(unittest.TestCase):
     def setUp(self):
-
         def _plot(self):
             fig, ax = self.plt.subplots()
             ax.plot(1, 1, color='k', marker='o')

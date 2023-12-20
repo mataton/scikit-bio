@@ -7,8 +7,15 @@
 # ----------------------------------------------------------------------------
 
 from collections import defaultdict
-from skbio.workflow import (Exists, NotExecuted, NotNone, Workflow, not_none,
-                            requires, method)
+from skbio.workflow import (
+    Exists,
+    NotExecuted,
+    NotNone,
+    Workflow,
+    not_none,
+    requires,
+    method,
+)
 from unittest import TestCase, main
 
 
@@ -99,13 +106,18 @@ class MockWorkflow(Workflow):
 class WorkflowTests(TestCase):
     def setUp(self):
         opts = {'A': True, 'C': True}
-        self.obj_short = MockWorkflow([None, None], options=opts,
-                                      stats=defaultdict(int))
-        self.obj_debug = MockWorkflow([None, None], debug=True, options=opts,
-                                      stats=defaultdict(int))
-        self.obj_noshort = MockWorkflow([None, None], short_circuit=False,
-                                        options=opts,
-                                        stats=defaultdict(int))
+        self.obj_short = MockWorkflow(
+            [None, None], options=opts, stats=defaultdict(int)
+        )
+        self.obj_debug = MockWorkflow(
+            [None, None], debug=True, options=opts, stats=defaultdict(int)
+        )
+        self.obj_noshort = MockWorkflow(
+            [None, None],
+            short_circuit=False,
+            options=opts,
+            stats=defaultdict(int),
+        )
 
     def test_debug_trace(self):
         gen = construct_iterator(**{'iter_x': [1, 2, 3, 4, 5]})
@@ -115,23 +127,31 @@ class WorkflowTests(TestCase):
         obs = next(obj)
         self.assertEqual(obs, exp)
 
-        exp_trace = set([('wf_groupA', 0),
-                         ('methodA1', 1),
-                         ('methodA2', 2),
-                         ('wf_groupC', 3),
-                         ('methodC1', 4)])
+        exp_trace = set(
+            [
+                ('wf_groupA', 0),
+                ('methodA1', 1),
+                ('methodA2', 2),
+                ('wf_groupC', 3),
+                ('methodC1', 4),
+            ]
+        )
 
-        exp_pre_state = {('wf_groupA', 0): [None, 1],
-                         ('methodA1', 1): [None, 1],
-                         ('methodA2', 2): ['A1', 1],
-                         ('wf_groupC', 3): ['A2', 1],
-                         ('methodC1', 4): ['A2', 1]}
+        exp_pre_state = {
+            ('wf_groupA', 0): [None, 1],
+            ('methodA1', 1): [None, 1],
+            ('methodA2', 2): ['A1', 1],
+            ('wf_groupC', 3): ['A2', 1],
+            ('methodC1', 4): ['A2', 1],
+        }
 
-        exp_post_state = {('wf_groupA', 0): ['A2', 1],
-                          ('methodA1', 1): ['A1', 1],
-                          ('methodA2', 2): ['A2', 1],
-                          ('wf_groupC', 3): ['C1', 1],
-                          ('methodC1', 4): ['C1', 1]}
+        exp_post_state = {
+            ('wf_groupA', 0): ['A2', 1],
+            ('methodA1', 1): ['A1', 1],
+            ('methodA2', 2): ['A2', 1],
+            ('wf_groupC', 3): ['C1', 1],
+            ('methodC1', 4): ['C1', 1],
+        }
 
         obs_trace = self.obj_debug.debug_trace
         obs_pre_state = self.obj_debug.debug_pre_state
@@ -155,8 +175,11 @@ class WorkflowTests(TestCase):
 
     def test_all_wf_methods(self):
         # note on priority: groupA:90, groupC:10, groupB:0 (default)
-        exp = [self.obj_short.wf_groupA, self.obj_short.wf_groupC,
-               self.obj_short.wf_groupB]
+        exp = [
+            self.obj_short.wf_groupA,
+            self.obj_short.wf_groupC,
+            self.obj_short.wf_groupB,
+        ]
         obs = self.obj_short._all_wf_methods()
         self.assertEqual(obs, exp)
 
@@ -291,21 +314,32 @@ class RequiresTests(TestCase):
         single_iter = construct_iterator(**{'iter_x': [1, 2, 3, 4, 5]})
 
         exp_stats = {'needs_data': 2, 'always_run': 5}
-        exp_result = [['needs_data', 1], ['needs_data', 2], ['always_run', 3],
-                      ['always_run', 4], ['always_run', 5]]
+        exp_result = [
+            ['needs_data', 1],
+            ['needs_data', 2],
+            ['always_run', 3],
+            ['always_run', 4],
+            ['always_run', 5],
+        ]
 
         obs_result = list(obj(single_iter))
         self.assertEqual(obs_result, exp_result)
         self.assertEqual(obj.stats, exp_stats)
 
     def test_not_none_avoid(self):
-        obj = MockWorkflowReqTest([None, None], {'cannot_be_none': None},
-                                  stats=defaultdict(int))
+        obj = MockWorkflowReqTest(
+            [None, None], {'cannot_be_none': None}, stats=defaultdict(int)
+        )
         single_iter = construct_iterator(**{'iter_x': [1, 2, 3, 4, 5]})
 
         exp_stats = {'needs_data': 2, 'always_run': 5}
-        exp_result = [['needs_data', 1], ['needs_data', 2], ['always_run', 3],
-                      ['always_run', 4], ['always_run', 5]]
+        exp_result = [
+            ['needs_data', 1],
+            ['needs_data', 2],
+            ['always_run', 3],
+            ['always_run', 4],
+            ['always_run', 5],
+        ]
 
         obs_result = list(obj(single_iter))
 
@@ -313,14 +347,22 @@ class RequiresTests(TestCase):
         self.assertEqual(obj.stats, exp_stats)
 
     def test_not_none_execute(self):
-        obj = MockWorkflowReqTest([None, None],
-                                  options={'cannot_be_none': True}, debug=True,
-                                  stats=defaultdict(int))
+        obj = MockWorkflowReqTest(
+            [None, None],
+            options={'cannot_be_none': True},
+            debug=True,
+            stats=defaultdict(int),
+        )
         single_iter = construct_iterator(**{'iter_x': [1, 2, 3, 4, 5]})
 
         exp_stats = {'needs_data': 2, 'always_run': 5, 'run_if_not_none': 5}
-        exp_result = [['needs_data', 1], ['needs_data', 2], ['always_run', 3],
-                      ['always_run', 4], ['always_run', 5]]
+        exp_result = [
+            ['needs_data', 1],
+            ['needs_data', 2],
+            ['always_run', 3],
+            ['always_run', 4],
+            ['always_run', 5],
+        ]
 
         obs_result = list(obj(single_iter))
         self.assertEqual(obs_result, exp_result)
@@ -349,8 +391,9 @@ class RequiresTests(TestCase):
     def test_methodb2_accept(self):
         # methodb2 is setup to be valid when foo is in [1,2,3], make sure we
         # can execute
-        obj = MockWorkflow([None, None], options={'foo': 1},
-                           stats=defaultdict(int))
+        obj = MockWorkflow(
+            [None, None], options={'foo': 1}, stats=defaultdict(int)
+        )
         obj.initialize_state('test')
         obj.methodB2()
         self.assertEqual(obj.state, ['B2', 'test'])
@@ -359,8 +402,9 @@ class RequiresTests(TestCase):
     def test_methodb2_ignore(self):
         # methodb2 is setup to be valid when foo is in [1, 2, 3], make sure
         # we do not execute
-        obj = MockWorkflow([None, None], options={'foo': 'bar'},
-                           stats=defaultdict(int))
+        obj = MockWorkflow(
+            [None, None], options={'foo': 'bar'}, stats=defaultdict(int)
+        )
         obj.methodB2()
         self.assertEqual(obj.state, [None, None])
         self.assertEqual(obj.stats, {})

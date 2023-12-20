@@ -19,3 +19,9 @@ ignore = [
     # created by conda-incubator/setup-miniconda@v2 action
     "ci/setup-miniconda-patched-conda_host_env.yml",
 ]
+
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.format]
+quote-style = "single"

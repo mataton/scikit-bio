@@ -28,8 +28,9 @@ class AceTests(unittest.TestCase):
         npt.assert_almost_equal(ace(np.array([12, 12, 13, 14])), 4.0)
 
         # Border case: only singletons and 10-tons, no abundant OTUs.
-        npt.assert_almost_equal(ace([0, 1, 1, 0, 0, 10, 10, 1, 0, 0]),
-                                9.35681818182)
+        npt.assert_almost_equal(
+            ace([0, 1, 1, 0, 0, 10, 10, 1, 0, 0]), 9.35681818182
+        )
 
     def test_ace_only_rare_singletons(self):
         with self.assertRaises(ValueError):

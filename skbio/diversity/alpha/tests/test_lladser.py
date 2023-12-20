@@ -14,8 +14,12 @@ import numpy.testing as npt
 from skbio.stats import subsample_counts
 from skbio.diversity.alpha import lladser_pe, lladser_ci
 from skbio.diversity.alpha._lladser import (
-    _expand_counts, _lladser_point_estimates,
-    _get_interval_for_r_new_otus, _lladser_ci_series, _lladser_ci_from_r)
+    _expand_counts,
+    _lladser_point_estimates,
+    _get_interval_for_r_new_otus,
+    _lladser_ci_series,
+    _lladser_ci_from_r,
+)
 
 
 def create_fake_observation():
@@ -29,7 +33,7 @@ def create_fake_observation():
     total = counts.sum()
 
     fake_obs = subsample_counts(counts, 1000)
-    exp_p = 1 - sum([x/total for (x, y) in zip(counts, fake_obs) if y > 0])
+    exp_p = 1 - sum([x / total for (x, y) in zip(counts, fake_obs) if y > 0])
 
     return fake_obs, exp_p
 
@@ -56,9 +60,9 @@ class LladserTests(unittest.TestCase):
     def test_lladser_ci_nan(self):
         """lladser_ci returns nan if sample is too short to make an estimate"""
         obs = lladser_ci([3], r=4)
-        self.assertTrue(len(obs) == 2 and
-                        np.isnan(obs[0]) and
-                        np.isnan(obs[1]))
+        self.assertTrue(
+            len(obs) == 2 and np.isnan(obs[0]) and np.isnan(obs[1])
+        )
 
     def test_lladser_ci(self):
         """lladser_ci estimate using defaults contains p with 95% prob"""
@@ -68,10 +72,10 @@ class LladserTests(unittest.TestCase):
         for i in range(reps):
             fake_obs, exp_p = create_fake_observation()
             (low, high) = lladser_ci(fake_obs, r=10)
-            if (low <= exp_p <= high):
+            if low <= exp_p <= high:
                 sum += 1
 
-        self.assertTrue(sum/reps >= 0.95)
+        self.assertTrue(sum / reps >= 0.95)
 
     def test_lladser_ci_f3(self):
         """lladser_ci estimate using f=3 contains p with 95% prob"""
@@ -89,10 +93,10 @@ class LladserTests(unittest.TestCase):
             # independent events
             fake_obs, exp_p = create_fake_observation()
             (low, high) = lladser_ci(fake_obs, r=14, f=3)
-            if (low <= exp_p <= high):
+            if low <= exp_p <= high:
                 sum += 1
 
-        self.assertTrue(sum/reps >= 0.95)
+        self.assertTrue(sum / reps >= 0.95)
 
     def test_expand_counts(self):
         arr = np.array([2, 0, 1, 2])
@@ -111,7 +115,7 @@ class LladserTests(unittest.TestCase):
 
         # Estimator has variance of (1-p)^2/(r-2),
         # which for r=7 and p=0.5 is 0.05
-        seq = "WBWBWBWBWBWBWBWBWBWBWBWBWBWBWBWBWBW"
+        seq = 'WBWBWBWBWBWBWBWBWBWBWBWBWBWBWBWBWBW'
         reps = 1000
         sum = 0
         for i in range(reps):
@@ -121,14 +125,19 @@ class LladserTests(unittest.TestCase):
 
     def test_lladser_point_estimates_invalid_r(self):
         with self.assertRaises(ValueError):
-            list(_lladser_point_estimates([5, 1, 5, 1, 2, 3, 1, 5, 3, 2, 5, 3],
-                                          2))
+            list(
+                _lladser_point_estimates(
+                    [5, 1, 5, 1, 2, 3, 1, 5, 3, 2, 5, 3], 2
+                )
+            )
 
     def test_get_interval_for_r_new_otus(self):
         s = [5, 1, 5, 1, 2, 3, 1, 5, 3, 2, 5]
-        expected = [(3, set([5]), 4, 0),
-                    (4, set([5, 1]), 6, 1),
-                    (4, set([5, 1, 2]), 9, 4)]
+        expected = [
+            (3, set([5]), 4, 0),
+            (4, set([5, 1]), 6, 1),
+            (4, set([5, 1, 2]), 9, 4),
+        ]
         for x, y in zip(_get_interval_for_r_new_otus(s, 2), expected):
             self.assertEqual(x, y)
 
@@ -143,15 +152,16 @@ class LladserTests(unittest.TestCase):
         self.assertEqual(len(results), 3)
 
     def test_lladser_ci_series_random(self):
-        seq = "WBWBWBWBWBWB"
+        seq = 'WBWBWBWBWBWB'
         observations = []
         alpha = 0.95
         reps = 1000
         for i in range(reps):
             obs = list(_lladser_ci_series(seq, r=4, alpha=alpha))[0]
             observations.append(obs)
-        tps = list(filter(lambda a_b: a_b[0] < 0.5 and 0.5 < a_b[1],
-                          observations))
+        tps = list(
+            filter(lambda a_b: a_b[0] < 0.5 and 0.5 < a_b[1], observations)
+        )
         self.assertTrue(len(tps) >= alpha * reps)  # 100%-95%
 
     def test_lladser_ci_from_r(self):
@@ -182,22 +192,25 @@ class LladserTests(unittest.TestCase):
 
         # test other ci_types
         ci_type = 'ULCU'
-        obs_low, obs_high = _lladser_ci_from_r(r=r, t=t, f=f, alpha=alpha,
-                                               ci_type=ci_type)
+        obs_low, obs_high = _lladser_ci_from_r(
+            r=r, t=t, f=f, alpha=alpha, ci_type=ci_type
+        )
         npt.assert_almost_equal(obs_low, 0.01095834700)
         npt.assert_almost_equal(obs_high, 0.1095834700)
 
         alpha = 0.95
         t = 10
         ci_type = 'U'
-        obs_low, obs_high = _lladser_ci_from_r(r=r, t=t, f=f, alpha=alpha,
-                                               ci_type=ci_type)
+        obs_low, obs_high = _lladser_ci_from_r(
+            r=r, t=t, f=f, alpha=alpha, ci_type=ci_type
+        )
         npt.assert_almost_equal(obs_low, 0)
         npt.assert_almost_equal(obs_high, 0.6295793622)
 
         ci_type = 'L'
-        obs_low, obs_high = _lladser_ci_from_r(r=r, t=t, f=f, alpha=alpha,
-                                               ci_type=ci_type)
+        obs_low, obs_high = _lladser_ci_from_r(
+            r=r, t=t, f=f, alpha=alpha, ci_type=ci_type
+        )
         npt.assert_almost_equal(obs_low, 0.0817691447)
         npt.assert_almost_equal(obs_high, 1)
 

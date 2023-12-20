@@ -10,7 +10,7 @@ import numpy as np
 
 from skbio.util._decorator import classproperty, overrides
 from skbio.util._decorator import stable
-from ._grammared_sequence import (GrammaredSequence, _motifs as parent_motifs)
+from ._grammared_sequence import GrammaredSequence, _motifs as parent_motifs
 
 
 class Protein(GrammaredSequence):
@@ -97,6 +97,7 @@ class Protein(GrammaredSequence):
     0 PAW
 
     """
+
     __stop_codes = None
 
     @classproperty
@@ -114,20 +115,20 @@ class Protein(GrammaredSequence):
     @classproperty
     @overrides(GrammaredSequence)
     def definite_chars(cls):
-        return set("ACDEFGHIKLMNOPQRSTUVWY")
+        return set('ACDEFGHIKLMNOPQRSTUVWY')
 
     @classproperty
     @overrides(GrammaredSequence)
     def degenerate_map(cls):
         return {
-            "B": set("DN"),
-            "Z": set("EQ"),
-            "J": set("IL"),
-            "X": set("ACDEFGHIKLMNOPQRSTUVWY")
+            'B': set('DN'),
+            'Z': set('EQ'),
+            'J': set('IL'),
+            'X': set('ACDEFGHIKLMNOPQRSTUVWY'),
         }
 
     @classproperty
-    @stable(as_of="0.4.0")
+    @stable(as_of='0.4.0')
     def stop_chars(cls):
         """Return characters representing translation stop codons.
 
@@ -153,7 +154,7 @@ class Protein(GrammaredSequence):
     def _motifs(self):
         return _motifs
 
-    @stable(as_of="0.4.0")
+    @stable(as_of='0.4.0')
     def stops(self):
         """Find positions containing stop characters in the protein sequence.
 
@@ -180,7 +181,7 @@ class Protein(GrammaredSequence):
         """
         return np.in1d(self._bytes, self._stop_codes)
 
-    @stable(as_of="0.4.0")
+    @stable(as_of='0.4.0')
     def has_stops(self):
         """Determine if the sequence contains one or more stop characters.
 
@@ -214,11 +215,11 @@ class Protein(GrammaredSequence):
 _motifs = parent_motifs.copy()
 
 
-@_motifs("N-glycosylation")
+@_motifs('N-glycosylation')
 def _motif_nitro_glycosylation(sequence, min_length, ignore):
     """Identifies N-glycosylation runs"""
-    return sequence.find_with_regex("(N[^PX][ST][^PX])", ignore=ignore)
+    return sequence.find_with_regex('(N[^PX][ST][^PX])', ignore=ignore)
 
 
 # Leave this at the bottom
-_motifs.interpolate(Protein, "find_motifs")
+_motifs.interpolate(Protein, 'find_motifs')

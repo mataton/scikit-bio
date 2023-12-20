@@ -43,7 +43,8 @@ class BIOENVTests(TestCase):
         # Reordered rows and columns (i.e., different ID order). Still
         # conceptually the same distance matrix.
         self.dm_reordered = DistanceMatrix.read(
-            get_data_path('dm_reordered.txt'))
+            get_data_path('dm_reordered.txt')
+        )
 
         self.df = pd.read_csv(get_data_path('df.txt'), sep='\t', index_col=0)
 
@@ -51,7 +52,8 @@ class BIOENVTests(TestCase):
         # non-numeric column, and some of the other rows and columns have been
         # reordered.
         self.df_extra_column = pd.read_csv(
-            get_data_path('df_extra_column.txt'), sep='\t', index_col=0)
+            get_data_path('df_extra_column.txt'), sep='\t', index_col=0
+        )
 
         # All columns in the original data frame (these are all numeric
         # columns).
@@ -67,24 +69,32 @@ class BIOENVTests(TestCase):
         # data frame only includes the numeric environmental variables we're
         # interested in for these tests: log(N), P, K, Ca, pH, Al
         self.dm_vegan = DistanceMatrix.read(
-            get_data_path('bioenv_dm_vegan.txt'))
+            get_data_path('bioenv_dm_vegan.txt')
+        )
         self.df_vegan = pd.read_csv(
-            get_data_path('bioenv_df_vegan.txt'), sep='\t',
-            converters={0: str})
+            get_data_path('bioenv_df_vegan.txt'), sep='\t', converters={0: str}
+        )
         self.df_vegan.set_index('#SampleID', inplace=True)
 
         # Load expected results.
-        self.exp_results = pd.read_csv(get_data_path('exp_results.txt'),
-                                       sep='\t', index_col=0)
+        self.exp_results = pd.read_csv(
+            get_data_path('exp_results.txt'), sep='\t', index_col=0
+        )
         self.exp_results_single_column = pd.read_csv(
-            get_data_path('exp_results_single_column.txt'), sep='\t',
-            index_col=0)
+            get_data_path('exp_results_single_column.txt'),
+            sep='\t',
+            index_col=0,
+        )
         self.exp_results_different_column_order = pd.read_csv(
-            get_data_path('exp_results_different_column_order.txt'), sep='\t',
-            index_col=0)
+            get_data_path('exp_results_different_column_order.txt'),
+            sep='\t',
+            index_col=0,
+        )
         self.exp_results_vegan = pd.read_csv(
-            get_data_path('bioenv_exp_results_vegan.txt'), sep='\t',
-            index_col=0)
+            get_data_path('bioenv_exp_results_vegan.txt'),
+            sep='\t',
+            index_col=0,
+        )
 
     def test_bioenv_all_columns_implicit(self):
         # Test with all columns in data frame (implicitly).
@@ -117,8 +127,8 @@ class BIOENVTests(TestCase):
         # the actual results (e.g., correlation coefficients) shouldn't change.
         obs = bioenv(self.dm, self.df, columns=self.cols[::-1])
         assert_data_frame_almost_equal(
-            obs,
-            self.exp_results_different_column_order)
+            obs, self.exp_results_different_column_order
+        )
 
     def test_bioenv_no_side_effects(self):
         # Deep copies of both primary inputs.
@@ -187,33 +197,41 @@ class BIOENVTests(TestCase):
             bioenv(self.dm, self.df_extra_column)
 
     def test_scale_single_column(self):
-        df = pd.DataFrame([[1], [0], [2]], index=['A', 'B', 'C'],
-                          columns=['foo'])
-        exp = pd.DataFrame([[0.0], [-1.0], [1.0]], index=['A', 'B', 'C'],
-                           columns=['foo'])
+        df = pd.DataFrame(
+            [[1], [0], [2]], index=['A', 'B', 'C'], columns=['foo']
+        )
+        exp = pd.DataFrame(
+            [[0.0], [-1.0], [1.0]], index=['A', 'B', 'C'], columns=['foo']
+        )
         obs = _scale(df)
         assert_data_frame_almost_equal(obs, exp)
 
     def test_scale_multiple_columns(self):
         # Floats and ints, including positives and negatives.
-        df = pd.DataFrame([[7.0, 400, -1],
-                           [8.0, 530, -5],
-                           [7.5, 450, 1],
-                           [8.5, 810, -4]],
-                          index=['A', 'B', 'C', 'D'],
-                          columns=['pH', 'Elevation', 'negatives'])
-        exp = pd.DataFrame([[-1.161895, -0.805979, 0.453921],
-                            [0.387298, -0.095625, -0.998625],
-                            [-0.387298, -0.532766, 1.180194],
-                            [1.161895, 1.434369, -0.635489]],
-                           index=['A', 'B', 'C', 'D'],
-                           columns=['pH', 'Elevation', 'negatives'])
+        df = pd.DataFrame(
+            [[7.0, 400, -1], [8.0, 530, -5], [7.5, 450, 1], [8.5, 810, -4]],
+            index=['A', 'B', 'C', 'D'],
+            columns=['pH', 'Elevation', 'negatives'],
+        )
+        exp = pd.DataFrame(
+            [
+                [-1.161895, -0.805979, 0.453921],
+                [0.387298, -0.095625, -0.998625],
+                [-0.387298, -0.532766, 1.180194],
+                [1.161895, 1.434369, -0.635489],
+            ],
+            index=['A', 'B', 'C', 'D'],
+            columns=['pH', 'Elevation', 'negatives'],
+        )
         obs = _scale(df)
         assert_data_frame_almost_equal(obs, exp)
 
     def test_scale_no_variance(self):
-        df = pd.DataFrame([[-7.0, -1.2], [6.2, -1.2], [2.9, -1.2]],
-                          index=['A', 'B', 'C'], columns=['foo', 'bar'])
+        df = pd.DataFrame(
+            [[-7.0, -1.2], [6.2, -1.2], [2.9, -1.2]],
+            index=['A', 'B', 'C'],
+            columns=['foo', 'bar'],
+        )
         with self.assertRaises(ValueError):
             _scale(df)
 
