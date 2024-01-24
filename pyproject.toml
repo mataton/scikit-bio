@@ -19,3 +19,7 @@ ignore = [
     # created by conda-incubator/setup-miniconda@v2 action
     "ci/setup-miniconda-patched-conda_host_env.yml",
 ]
+
+[tool.ruff.lint]
+# Enables pycodestyle warnings and McCabe complexity to match Flake8 defaults.
+select = ["W", "C901"]
