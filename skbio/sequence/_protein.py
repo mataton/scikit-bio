@@ -169,7 +169,7 @@ class Protein(GrammaredSequence):
 
     @classproperty
     def _stop_codes(cls):
-        if cls.__stop_codes is None:
+        if cls.__stop_codes is None: 
             stops = cls.stop_chars
             cls.__stop_codes = np.asarray([ord(s) for s in stops])
         return cls.__stop_codes
