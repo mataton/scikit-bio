@@ -45,9 +45,9 @@ jobs:
         run: |
           pip install -r ci/requirements.lint.txt
           conda list
-      - name: Run linter
-        shell: bash -l {0}
-        run: USE_CYTHON=False make lint
+      # - name: Run linter
+      #   shell: bash -l {0}
+      #   run: USE_CYTHON=False make lint
       - name: Run ruff
         shell: bash -l {0}
         run: ruff check --output-format=github .
