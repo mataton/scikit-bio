@@ -49,6 +49,7 @@ jobs:
         shell: bash -l {0}
         run: USE_CYTHON=False make lint
       - name: Run ruff
+        shell: bash -l {0}
         run: ruff check --output-format=github .
 
   doc:
