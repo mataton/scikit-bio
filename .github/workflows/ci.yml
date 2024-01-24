@@ -48,6 +48,8 @@ jobs:
       - name: Run linter
         shell: bash -l {0}
         run: USE_CYTHON=False make lint
+      - name: Run ruff
+        run: ruff check --output-format=github .
 
   doc:
     name: Build Documentation  (${{ needs.conf.outputs.latest_python }}, ubuntu-latest)
