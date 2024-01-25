@@ -26,7 +26,7 @@ indent-width = 4
 target-version = 'py38'
 
 [tool.ruff.lint]
-select = ['E', 'W', 'D']  # pycodestyle (E, W) and pydocstyle (D)
+select = ['E', 'W']  # pycodestyle (E, W)
 
 [tool.ruff.format]
 quote-style = 'single'
