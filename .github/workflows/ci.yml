@@ -50,7 +50,7 @@ jobs:
       #   run: USE_CYTHON=False make lint
       - name: Run ruff
         shell: bash -l {0}
-        run: ruff check --output-format=github .
+        run: ruff check --fix --output-format=github .
 
   doc:
     name: Build Documentation  (${{ needs.conf.outputs.latest_python }}, ubuntu-latest)
