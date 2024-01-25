@@ -20,6 +20,14 @@ ignore = [
     "ci/setup-miniconda-patched-conda_host_env.yml",
 ]
 
+[tool.ruff]
+line-length = 79  # conforms to PEP8
+indent-width = 4
+target-version = 'py38'
+
 [tool.ruff.lint]
-# Enables pycodestyle warnings to match Flake8 defaults.
-select = ["W"]
+select = ['E', 'W', 'D']  # pycodestyle (E, W) and pydocstyle (D)
+
+[tool.ruff.format]
+quote-style = 'single'
+indent-style = 'space'
