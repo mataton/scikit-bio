@@ -50,7 +50,11 @@ jobs:
       #   run: USE_CYTHON=False make lint
       - name: Run ruff
         shell: bash -l {0}
-        run: ruff check --fix --output-format=github .
+        run: |
+        ruff check --fix --output-format=github .
+        ruff format .
+      # adds and commits changes
+      - uses: stefanzweifel/git-auto-commit-action@v5
 
   doc:
     name: Build Documentation  (${{ needs.conf.outputs.latest_python }}, ubuntu-latest)
