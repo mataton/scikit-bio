@@ -1414,7 +1414,7 @@ fuzzy=[(True, False)], metadata={'gene': 'foo'})
         True
 
         """
-        if type(character) is not bytes:
+        if isinstance(character, bytes) is not True:
             character = character.encode('ascii')
         character = ord(character)
         index = self._munge_to_index_array(where)
@@ -2179,7 +2179,7 @@ fuzzy=[(True, False)], metadata={'gene': 'foo'})
         return Sequence(other)
 
     def _munge_to_bytestring(self, other, method):
-        if type(other) is bytes:
+        if isinstance(other, bytes):
             return other
         elif isinstance(other, str):
             return other.encode('ascii')
