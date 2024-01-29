@@ -17,12 +17,15 @@ from skbio import SubstitutionMatrix
 class TestSubstitutionMatrix(TestCase):
     def setUp(self):
         self.alphabet = 'ACGTN'
-        self.scores = np.array([
-            [1, -2, -2, -2, 0],
-            [-2, 1, -2, -2, 0],
-            [-2, -2, 1, -2, 0],
-            [-2, -2, -2, 1, 0],
-            [0, 0, 0, 0, 0]])
+        self.scores = np.array(
+            [
+                [1, -2, -2, -2, 0],
+                [-2, 1, -2, -2, 0],
+                [-2, -2, 1, -2, 0],
+                [-2, -2, -2, 1, 0],
+                [0, 0, 0, 0, 0],
+            ]
+        )
 
     def test_init(self):
         # typical usage
@@ -49,9 +52,7 @@ class TestSubstitutionMatrix(TestCase):
         # alternative formats of alphabet: list, dictionary (only keys matter),
         # and iterator
         alphabet = tuple(self.alphabet)
-        for alp in (list(alphabet),
-                    dict.fromkeys(alphabet),
-                    iter(alphabet)):
+        for alp in (list(alphabet), dict.fromkeys(alphabet), iter(alphabet)):
             obs = SubstitutionMatrix(alp, self.scores)
             self.assertTupleEqual(obs.alphabet, alphabet)
 
@@ -67,28 +68,32 @@ class TestSubstitutionMatrix(TestCase):
     def test_to_dict(self):
         mat = SubstitutionMatrix(self.alphabet, self.scores)
         obs = mat.to_dict()
-        exp = {'A': {'A': 1., 'C': -2., 'G': -2., 'T': -2., 'N': 0.},
-               'C': {'A': -2., 'C': 1., 'G': -2., 'T': -2., 'N': 0.},
-               'G': {'A': -2., 'C': -2., 'G': 1., 'T': -2., 'N': 0.},
-               'T': {'A': -2., 'C': -2., 'G': -2., 'T': 1., 'N': 0.},
-               'N': {'A': 0., 'C': 0., 'G': 0., 'T': 0., 'N': 0.}}
+        exp = {
+            'A': {'A': 1.0, 'C': -2.0, 'G': -2.0, 'T': -2.0, 'N': 0.0},
+            'C': {'A': -2.0, 'C': 1.0, 'G': -2.0, 'T': -2.0, 'N': 0.0},
+            'G': {'A': -2.0, 'C': -2.0, 'G': 1.0, 'T': -2.0, 'N': 0.0},
+            'T': {'A': -2.0, 'C': -2.0, 'G': -2.0, 'T': 1.0, 'N': 0.0},
+            'N': {'A': 0.0, 'C': 0.0, 'G': 0.0, 'T': 0.0, 'N': 0.0},
+        }
         self.assertDictEqual(obs, exp)
 
     def test_from_dict(self):
-        d = {'a': {'a': 1, 'b': 0, 'c': 0},
-             'b': {'a': 0, 'b': 1, 'c': 0},
-             'c': {'a': 0, 'b': 0, 'c': 1}}
+        d = {
+            'a': {'a': 1, 'b': 0, 'c': 0},
+            'b': {'a': 0, 'b': 1, 'c': 0},
+            'c': {'a': 0, 'b': 0, 'c': 1},
+        }
         obs = SubstitutionMatrix.from_dict(d)
         self.assertTrue(isinstance(obs, SubstitutionMatrix))
         self.assertTupleEqual(obs.alphabet, tuple('abc'))
-        exp = np.array([[1., 0., 0.],
-                        [0., 1., 0.],
-                        [0., 0., 1.]])
+        exp = np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]])
         assert_array_equal(obs.data, exp)
 
         # alphabet is inconsistent
-        msg = ('The outer and inner layers of the dictionary must have the '
-               'same set of keys.')
+        msg = (
+            'The outer and inner layers of the dictionary must have the '
+            'same set of keys.'
+        )
         d['d'] = {'a': 0, 'b': 0, 'c': 0}
         with self.assertRaisesRegex(ValueError, msg):
             SubstitutionMatrix.from_dict(d)
@@ -110,10 +115,14 @@ class TestSubstitutionMatrix(TestCase):
         obs = SubstitutionMatrix.identity('ACGT', 1, -2)
         self.assertTrue(isinstance(obs, SubstitutionMatrix))
         self.assertTupleEqual(obs.alphabet, tuple('ACGT'))
-        exp = np.array([[1., -2., -2., -2.],
-                        [-2., 1., -2., -2.],
-                        [-2., -2., 1., -2.],
-                        [-2., -2., -2., 1.]])
+        exp = np.array(
+            [
+                [1.0, -2.0, -2.0, -2.0],
+                [-2.0, 1.0, -2.0, -2.0],
+                [-2.0, -2.0, 1.0, -2.0],
+                [-2.0, -2.0, -2.0, 1.0],
+            ]
+        )
         assert_array_equal(obs.scores, exp)
 
     def test_by_name(self):
@@ -137,5 +146,5 @@ class TestSubstitutionMatrix(TestCase):
         self.assertTrue('BLOSUM62' in obs)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

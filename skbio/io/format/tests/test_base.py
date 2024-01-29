@@ -12,10 +12,13 @@ import numpy.testing as npt
 import numpy as np
 
 from skbio import Sequence, DNA, RNA
-from skbio.io.format._base import (_decode_qual_to_phred,
-                                   _encode_phred_to_qual, _get_nth_sequence,
-                                   _parse_fasta_like_header,
-                                   _format_fasta_like_records)
+from skbio.io.format._base import (
+    _decode_qual_to_phred,
+    _encode_phred_to_qual,
+    _get_nth_sequence,
+    _parse_fasta_like_header,
+    _format_fasta_like_records,
+)
 
 
 class PhredDecoderTests(unittest.TestCase):
@@ -45,13 +48,17 @@ class PhredDecoderTests(unittest.TestCase):
         self.assertIn("'illumina'", str(cm.exception))
 
     def test_empty_qual_str(self):
-        npt.assert_equal(_decode_qual_to_phred('', variant='sanger'),
-                         np.array([], dtype=np.uint8))
+        npt.assert_equal(
+            _decode_qual_to_phred('', variant='sanger'),
+            np.array([], dtype=np.uint8),
+        )
 
     def test_sanger_variant(self):
         # test entire range of possible ascii chars for sanger
-        all_sanger_ascii = ('!"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOP'
-                            'QRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~')
+        all_sanger_ascii = (
+            '!"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOP'
+            'QRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~'
+        )
         obs = _decode_qual_to_phred(all_sanger_ascii, variant='sanger')
         npt.assert_equal(obs, np.arange(94))
 
@@ -61,10 +68,13 @@ class PhredDecoderTests(unittest.TestCase):
 
     def test_illumina13_variant(self):
         # test entire range of possible ascii chars for illumina1.3
-        all_illumina13_ascii = ('@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijk'
-                                'lmnopqrstuvwxyz{|}~')
-        obs = _decode_qual_to_phred(all_illumina13_ascii,
-                                    variant='illumina1.3')
+        all_illumina13_ascii = (
+            '@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijk'
+            'lmnopqrstuvwxyz{|}~'
+        )
+        obs = _decode_qual_to_phred(
+            all_illumina13_ascii, variant='illumina1.3'
+        )
         npt.assert_equal(obs, np.arange(63))
 
         with self.assertRaises(ValueError) as cm:
@@ -73,10 +83,13 @@ class PhredDecoderTests(unittest.TestCase):
 
     def test_illumina18_variant(self):
         # test entire range of possible ascii chars for illumina1.8
-        all_illumina18_ascii = ('!"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKL'
-                                'MNOPQRSTUVWXYZ[\\]^_')
-        obs = _decode_qual_to_phred(all_illumina18_ascii,
-                                    variant='illumina1.8')
+        all_illumina18_ascii = (
+            '!"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKL'
+            'MNOPQRSTUVWXYZ[\\]^_'
+        )
+        obs = _decode_qual_to_phred(
+            all_illumina18_ascii, variant='illumina1.8'
+        )
         npt.assert_equal(obs, np.arange(63))
 
         with self.assertRaises(ValueError) as cm:
@@ -134,8 +147,10 @@ class PhredEncoderTests(unittest.TestCase):
 
     def test_sanger_variant(self):
         # test entire range of possible ascii chars for sanger
-        all_sanger_ascii = ('!"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOP'
-                            'QRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~')
+        all_sanger_ascii = (
+            '!"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOP'
+            'QRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~'
+        )
         obs = _encode_phred_to_qual(list(range(94)), variant='sanger')
         self.assertEqual(obs, all_sanger_ascii)
 
@@ -144,14 +159,17 @@ class PhredEncoderTests(unittest.TestCase):
         self.assertIn('-1', str(cm.exception))
         self.assertIn('[0, 93]', str(cm.exception))
 
-        obs = npt.assert_warns(UserWarning, _encode_phred_to_qual,
-                               [42, 94, 33], variant='sanger')
+        obs = npt.assert_warns(
+            UserWarning, _encode_phred_to_qual, [42, 94, 33], variant='sanger'
+        )
         self.assertEqual(obs, 'K~B')
 
     def test_illumina13_variant(self):
         # test entire range of possible ascii chars for illumina1.3
-        all_illumina13_ascii = ('@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijk'
-                                'lmnopqrstuvwxyz{|}~')
+        all_illumina13_ascii = (
+            '@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijk'
+            'lmnopqrstuvwxyz{|}~'
+        )
         obs = _encode_phred_to_qual(list(range(63)), variant='illumina1.3')
         self.assertEqual(obs, all_illumina13_ascii)
 
@@ -160,14 +178,20 @@ class PhredEncoderTests(unittest.TestCase):
         self.assertIn('-1', str(cm.exception))
         self.assertIn('[0, 62]', str(cm.exception))
 
-        obs = npt.assert_warns(UserWarning, _encode_phred_to_qual,
-                               [42, 63, 33], variant='illumina1.3')
+        obs = npt.assert_warns(
+            UserWarning,
+            _encode_phred_to_qual,
+            [42, 63, 33],
+            variant='illumina1.3',
+        )
         self.assertEqual(obs, 'j~a')
 
     def test_illumina18_variant(self):
         # test entire range of possible ascii chars for illumina1.8
-        all_illumina18_ascii = ('!"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKL'
-                                'MNOPQRSTUVWXYZ[\\]^_')
+        all_illumina18_ascii = (
+            '!"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKL'
+            'MNOPQRSTUVWXYZ[\\]^_'
+        )
         obs = _encode_phred_to_qual(list(range(63)), variant='illumina1.8')
         self.assertEqual(obs, all_illumina18_ascii)
 
@@ -176,8 +200,12 @@ class PhredEncoderTests(unittest.TestCase):
         self.assertIn('-1', str(cm.exception))
         self.assertIn('[0, 62]', str(cm.exception))
 
-        obs = npt.assert_warns(UserWarning, _encode_phred_to_qual,
-                               [42, 63, 33], variant='illumina1.8')
+        obs = npt.assert_warns(
+            UserWarning,
+            _encode_phred_to_qual,
+            [42, 63, 33],
+            variant='illumina1.8',
+        )
         self.assertEqual(obs, 'K_B')
 
     def test_custom_phred_offset(self):
@@ -190,8 +218,9 @@ class PhredEncoderTests(unittest.TestCase):
         self.assertIn('-1', str(cm.exception))
         self.assertIn('[0, 84]', str(cm.exception))
 
-        obs = npt.assert_warns(UserWarning, _encode_phred_to_qual,
-                               [42, 255, 33], phred_offset=42)
+        obs = npt.assert_warns(
+            UserWarning, _encode_phred_to_qual, [42, 255, 33], phred_offset=42
+        )
         self.assertEqual(obs, 'T~K')
 
 
@@ -243,15 +272,23 @@ class TestParseFASTALikeHeader(unittest.TestCase):
 class TestFormatFASTALikeRecords(unittest.TestCase):
     def setUp(self):
         def generator():
-            yield Sequence('ACGT', metadata={'id': '', 'description': ''},
-                           positional_metadata={'quality': range(4)})
-            yield RNA('GAU', metadata={'id': '  foo \t\t bar ',
-                                       'description': ''})
-            yield DNA('TAG',
-                      metadata={'id': '', 'description': 'foo\n\n bar\n'})
-            yield Sequence('A',
-                           metadata={'id': 'foo', 'description': 'bar baz'},
-                           positional_metadata={'quality': [42]})
+            yield Sequence(
+                'ACGT',
+                metadata={'id': '', 'description': ''},
+                positional_metadata={'quality': range(4)},
+            )
+            yield RNA(
+                'GAU', metadata={'id': '  foo \t\t bar ', 'description': ''}
+            )
+            yield DNA(
+                'TAG', metadata={'id': '', 'description': 'foo\n\n bar\n'}
+            )
+            yield Sequence(
+                'A',
+                metadata={'id': 'foo', 'description': 'bar baz'},
+                positional_metadata={'quality': [42]},
+            )
+
         self.gen = generator()
 
     def test_no_replacement(self):
@@ -259,7 +296,7 @@ class TestFormatFASTALikeRecords(unittest.TestCase):
             ('', 'ACGT', range(4)),
             ('  foo \t\t bar ', 'GAU', None),
             (' foo\n\n bar\n', 'TAG', None),
-            ('foo bar baz', 'A', [42])
+            ('foo bar baz', 'A', [42]),
         ]
         obs = list(_format_fasta_like_records(self.gen, None, None, False))
 
@@ -272,7 +309,7 @@ class TestFormatFASTALikeRecords(unittest.TestCase):
             ('', 'ACGT', range(4)),
             ('foobar', 'GAU', None),
             (' foo bar', 'TAG', None),
-            ('foo bar baz', 'A', [42])
+            ('foo bar baz', 'A', [42]),
         ]
         obs = list(_format_fasta_like_records(self.gen, '', '', False))
 
@@ -285,7 +322,7 @@ class TestFormatFASTALikeRecords(unittest.TestCase):
             ('', 'ACGT', range(4)),
             ('-.--.-foo-.--.--.--.-bar-.-', 'GAU', None),
             (' foo_-__-_ bar_-_', 'TAG', None),
-            ('foo bar baz', 'A', [42])
+            ('foo bar baz', 'A', [42]),
         ]
         obs = list(_format_fasta_like_records(self.gen, '-.-', '_-_', False))
 
@@ -306,19 +343,24 @@ class TestFormatFASTALikeRecords(unittest.TestCase):
             yield from (DNA('A'), Sequence(''), RNA('GG'))
 
         with self.assertRaisesRegex(ValueError, r'2nd.*empty'):
-            list(_format_fasta_like_records(blank_seq_gen(), None, None,
-                                            False))
+            list(
+                _format_fasta_like_records(blank_seq_gen(), None, None, False)
+            )
 
     def test_missing_quality_scores(self):
         def missing_qual_gen():
-            yield from (RNA('A', positional_metadata={'quality': [42]}),
-                        Sequence('AG'),
-                        DNA('GG', positional_metadata={'quality': [41, 40]}))
+            yield from (
+                RNA('A', positional_metadata={'quality': [42]}),
+                Sequence('AG'),
+                DNA('GG', positional_metadata={'quality': [41, 40]}),
+            )
 
-        with self.assertRaisesRegex(ValueError,
-                                    r'2nd sequence.*quality scores'):
-            list(_format_fasta_like_records(missing_qual_gen(), '-', '-',
-                                            True))
+        with self.assertRaisesRegex(
+            ValueError, r'2nd sequence.*quality scores'
+        ):
+            list(
+                _format_fasta_like_records(missing_qual_gen(), '-', '-', True)
+            )
 
 
 if __name__ == '__main__':

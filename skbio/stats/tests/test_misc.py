@@ -29,7 +29,7 @@ class PPrintStrsTests(TestCase):
         self.assertEqual(obs, exp)
 
         # truncation (no items)
-        exp = "..."
+        exp = '...'
         obs = _pprint_strs(['a', 'b', 'c'], max_chars=2)
         self.assertEqual(obs, exp)
 
@@ -48,8 +48,12 @@ class PPrintStrsTests(TestCase):
 
     def test_non_default_delimiter_and_suffix(self):
         exp = "'abc','defg',...."
-        obs = _pprint_strs(['abc', 'defg', 'hi', 'jklmno'], max_chars=14,
-                           delimiter=',', suffix='....')
+        obs = _pprint_strs(
+            ['abc', 'defg', 'hi', 'jklmno'],
+            max_chars=14,
+            delimiter=',',
+            suffix='....',
+        )
         self.assertEqual(obs, exp)
 
 

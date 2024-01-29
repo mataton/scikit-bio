@@ -20,46 +20,46 @@ class TestMiniRegistry(unittest.TestCase):
         self.registry = MiniRegistry()
 
     def test_decoration(self):
-        self.assertNotIn("name1", self.registry)
-        self.assertNotIn("name2", self.registry)
+        self.assertNotIn('name1', self.registry)
+        self.assertNotIn('name2', self.registry)
         self.n1_called = False
         self.n2_called = False
 
-        @self.registry("name1")
+        @self.registry('name1')
         def some_registration1():
             self.n1_called = True
 
-        @self.registry("name2")
+        @self.registry('name2')
         def some_registration2():
             self.n2_called = True
 
-        self.assertIn("name1", self.registry)
-        self.assertEqual(some_registration1, self.registry["name1"])
-        self.assertIn("name2", self.registry)
-        self.assertEqual(some_registration2, self.registry["name2"])
+        self.assertIn('name1', self.registry)
+        self.assertEqual(some_registration1, self.registry['name1'])
+        self.assertIn('name2', self.registry)
+        self.assertEqual(some_registration2, self.registry['name2'])
 
-        self.registry["name1"]()
+        self.registry['name1']()
         self.assertTrue(self.n1_called)
-        self.registry["name2"]()
+        self.registry['name2']()
         self.assertTrue(self.n2_called)
 
     def test_copy(self):
-        @self.registry("name")
+        @self.registry('name')
         def some_registration():
             pass
 
         new = self.registry.copy()
         self.assertIsNot(new, self.registry)
 
-        @new("other")
+        @new('other')
         def other_registration():
             pass
 
-        self.assertIn("name", self.registry)
-        self.assertNotIn("other", self.registry)
+        self.assertIn('name', self.registry)
+        self.assertNotIn('other', self.registry)
 
-        self.assertIn("other", new)
-        self.assertIn("name", new)
+        self.assertIn('other', new)
+        self.assertIn('name', new)
 
     def test_everything(self):
         class SomethingToInterpolate:
@@ -82,45 +82,53 @@ class TestMiniRegistry(unittest.TestCase):
         class Subclass(SomethingToInterpolate):
             pass
 
-        @self.registry("a")
+        @self.registry('a')
         def a():
             """x"""
 
-        @self.registry("b")
+        @self.registry('b')
         def b():
             """y"""
 
-        @self.registry("c")
+        @self.registry('c')
         def c():
             """z"""
 
         subclass_registry = self.registry.copy()
 
-        @subclass_registry("o")
+        @subclass_registry('o')
         def o():
             """p"""
 
-        self.registry.interpolate(SomethingToInterpolate, "interpolate_me")
-        subclass_registry.interpolate(Subclass, "interpolate_me")
+        self.registry.interpolate(SomethingToInterpolate, 'interpolate_me')
+        subclass_registry.interpolate(Subclass, 'interpolate_me')
 
-        self.assertEqual(SomethingToInterpolate.interpolate_me.__doc__,
-                         "First line\n\n                Some description of th"
-                         "ings, also this:\n\n\t'a'\n\t  x\n\t'b'\n\t  y\n\t'c"
-                         "'\n\t  z\n\n                Other things are happeni"
-                         "ng now.\n                ")
-        self.assertEqual(SomethingToInterpolate.dont_interpolate_me.__doc__,
-                         "First line\n\n                Some description of th"
-                         "ings, also this:\n\n                Other things are"
-                         " happening now.\n                ")
-        self.assertEqual(Subclass.interpolate_me.__doc__,
-                         "First line\n\n                Some description of th"
-                         "ings, also this:\n\n\t'a'\n\t  x\n\t'b'\n\t  y\n\t'c"
-                         "'\n\t  z\n\t'o'\n\t  p\n\n                Other thin"
-                         "gs are happening now.\n                ")
-        self.assertEqual(Subclass.dont_interpolate_me.__doc__,
-                         "First line\n\n                Some description of th"
-                         "ings, also this:\n\n                Other things are"
-                         " happening now.\n                ")
+        self.assertEqual(
+            SomethingToInterpolate.interpolate_me.__doc__,
+            'First line\n\n                Some description of th'
+            "ings, also this:\n\n\t'a'\n\t  x\n\t'b'\n\t  y\n\t'c"
+            "'\n\t  z\n\n                Other things are happeni"
+            'ng now.\n                ',
+        )
+        self.assertEqual(
+            SomethingToInterpolate.dont_interpolate_me.__doc__,
+            'First line\n\n                Some description of th'
+            'ings, also this:\n\n                Other things are'
+            ' happening now.\n                ',
+        )
+        self.assertEqual(
+            Subclass.interpolate_me.__doc__,
+            'First line\n\n                Some description of th'
+            "ings, also this:\n\n\t'a'\n\t  x\n\t'b'\n\t  y\n\t'c"
+            "'\n\t  z\n\t'o'\n\t  p\n\n                Other thin"
+            'gs are happening now.\n                ',
+        )
+        self.assertEqual(
+            Subclass.dont_interpolate_me.__doc__,
+            'First line\n\n                Some description of th'
+            'ings, also this:\n\n                Other things are'
+            ' happening now.\n                ',
+        )
 
 
 class ResolveKeyTests(unittest.TestCase):
@@ -128,8 +136,8 @@ class ResolveKeyTests(unittest.TestCase):
         def func(x):
             return str(x)
 
-        self.assertEqual(resolve_key(1, func), "1")
-        self.assertEqual(resolve_key(4, func), "4")
+        self.assertEqual(resolve_key(1, func), '1')
+        self.assertEqual(resolve_key(4, func), '4')
 
     def test_index(self):
         class MetadataHaver(dict):
@@ -189,13 +197,48 @@ class SafeMD5Tests(unittest.TestCase):
 class CardinalToOrdinalTests(unittest.TestCase):
     def test_valid_range(self):
         # taken and modified from http://stackoverflow.com/a/20007730/3776794
-        exp = ['0th', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th',
-               '9th', '10th', '11th', '12th', '13th', '14th', '15th', '16th',
-               '17th', '18th', '19th', '20th', '21st', '22nd', '23rd', '24th',
-               '25th', '26th', '27th', '28th', '29th', '30th', '31st', '32nd',
-               '100th', '101st', '42042nd']
-        obs = [cardinal_to_ordinal(n) for n in
-               list(range(0, 33)) + [100, 101, 42042]]
+        exp = [
+            '0th',
+            '1st',
+            '2nd',
+            '3rd',
+            '4th',
+            '5th',
+            '6th',
+            '7th',
+            '8th',
+            '9th',
+            '10th',
+            '11th',
+            '12th',
+            '13th',
+            '14th',
+            '15th',
+            '16th',
+            '17th',
+            '18th',
+            '19th',
+            '20th',
+            '21st',
+            '22nd',
+            '23rd',
+            '24th',
+            '25th',
+            '26th',
+            '27th',
+            '28th',
+            '29th',
+            '30th',
+            '31st',
+            '32nd',
+            '100th',
+            '101st',
+            '42042nd',
+        ]
+        obs = [
+            cardinal_to_ordinal(n)
+            for n in list(range(0, 33)) + [100, 101, 42042]
+        ]
         self.assertEqual(obs, exp)
 
     def test_invalid_n(self):
@@ -218,13 +261,15 @@ class TestFindDuplicates(unittest.TestCase):
         self.assertEqual(find_duplicates(['a', 'bc', 'def', 'a']), set(['a']))
 
     def test_many_duplicates(self):
-        self.assertEqual(find_duplicates(['a', 'bc', 'bc', 'def', 'a']),
-                         set(['a', 'bc']))
+        self.assertEqual(
+            find_duplicates(['a', 'bc', 'bc', 'def', 'a']), set(['a', 'bc'])
+        )
 
     def test_all_duplicates(self):
         self.assertEqual(
             find_duplicates(('a', 'bc', 'bc', 'def', 'a', 'def', 'def')),
-            set(['a', 'bc', 'def']))
+            set(['a', 'bc', 'def']),
+        )
 
     def test_mixed_types(self):
         def gen():
@@ -234,9 +279,7 @@ class TestFindDuplicates(unittest.TestCase):
 
 
 class TestGetRng(unittest.TestCase):
-
     def test_get_rng(self):
-
         # no seed
         obs0 = get_rng()
         self.assertTrue(isinstance(obs0, np.random.Generator))
@@ -250,23 +293,37 @@ class TestGetRng(unittest.TestCase):
         self.assertTrue(isinstance(obs2, np.random.Generator))
 
         # invalide seed
-        msg = ('Invalid seed. It must be an integer or an instance of '
-               'np.random.Generator.')
+        msg = (
+            'Invalid seed. It must be an integer or an instance of '
+            'np.random.Generator.'
+        )
         with self.assertRaises(ValueError) as cm:
             get_rng('hello')
         self.assertEqual(str(cm.exception), msg)
 
         # test if seeds are disjoint and results are reproducible
         obs = [get_rng(i).integers(1e6) for i in range(10)]
-        exp = [850624, 473188, 837575, 811504, 726442,
-               670790, 445045, 944904, 719549, 421547]
+        exp = [
+            850624,
+            473188,
+            837575,
+            811504,
+            726442,
+            670790,
+            445045,
+            944904,
+            719549,
+            421547,
+        ]
         self.assertListEqual(obs, exp)
 
         # mimic legacy numpy
         delattr(np.random, 'default_rng')
         delattr(np.random, 'Generator')
-        msg = ('The installed NumPy version does not support '
-               'random.Generator. Please use NumPy >= 1.17.')
+        msg = (
+            'The installed NumPy version does not support '
+            'random.Generator. Please use NumPy >= 1.17.'
+        )
         with self.assertRaises(ValueError) as cm:
             get_rng()
         self.assertEqual(str(cm.exception), msg)

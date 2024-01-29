@@ -22,12 +22,16 @@ from skbio.metadata import IntervalMetadata
 # similar that the testing logic can be shared and parameterized across
 # different test data.
 
+
 class TestNucleotideSequence(unittest.TestCase):
     def setUp(self):
-        self.sequence_kinds = frozenset([
-            str,
-            lambda s: np.frombuffer(s.encode('ascii'), dtype='|S1'),
-            lambda s: np.frombuffer(s.encode('ascii'), dtype=np.uint8)])
+        self.sequence_kinds = frozenset(
+            [
+                str,
+                lambda s: np.frombuffer(s.encode('ascii'), dtype='|S1'),
+                lambda s: np.frombuffer(s.encode('ascii'), dtype=np.uint8),
+            ]
+        )
 
         dna_str = 'ACGTMRWSYKVHDBN.-'
         dna_comp_str = 'TGCAKYWSRMBDHVN.-'
@@ -53,8 +57,7 @@ class TestNucleotideSequence(unittest.TestCase):
 
         dna_rev_comp_qual = dna_rev_comp + (qual,)
         rna_rev_comp_qual = rna_rev_comp + (qual,)
-        self.all_combos_rev_comp_qual = \
-            (dna_rev_comp_qual, rna_rev_comp_qual)
+        self.all_combos_rev_comp_qual = (dna_rev_comp_qual, rna_rev_comp_qual)
 
     def test_instantiation_with_no_implementation(self):
         class NucleotideSequenceSubclassNoImplementation(NucleotideMixin):
@@ -63,59 +66,111 @@ class TestNucleotideSequence(unittest.TestCase):
         with self.assertRaises(TypeError) as cm:
             NucleotideSequenceSubclassNoImplementation()
 
-        self.assertIn("abstract class", str(cm.exception))
-        self.assertIn("complement_map", str(cm.exception))
+        self.assertIn('abstract class', str(cm.exception))
+        self.assertIn('complement_map', str(cm.exception))
 
     # TODO: remove when nondegenerate_chars is removed
     def test_nondegenerate_chars(self):
-        dna = (DNA, "ACGT")
-        rna = (RNA, "ACGU")
+        dna = (DNA, 'ACGT')
+        rna = (RNA, 'ACGU')
         for constructor, nondegenerate in (dna, rna):
             exp = set(nondegenerate)
             self.assertEqual(constructor('').nondegenerate_chars, exp)
             self.assertEqual(constructor.nondegenerate_chars, exp)
 
     def test_definite_chars(self):
-        dna = (DNA, "ACGT")
-        rna = (RNA, "ACGU")
+        dna = (DNA, 'ACGT')
+        rna = (RNA, 'ACGU')
         for constructor, definite_char in (dna, rna):
             exp = set(definite_char)
             self.assertEqual(constructor('').definite_chars, exp)
             self.assertEqual(constructor.definite_chars, exp)
 
     def test_degenerate_map(self):
-        dna_exp = (DNA, {
-            'B': set(['C', 'T', 'G']), 'D': set(['A', 'T', 'G']),
-            'H': set(['A', 'C', 'T']), 'K': set(['T', 'G']),
-            'M': set(['A', 'C']), 'N': set(['A', 'C', 'T', 'G']),
-            'S': set(['C', 'G']), 'R': set(['A', 'G']), 'W': set(['A', 'T']),
-            'V': set(['A', 'C', 'G']), 'Y': set(['C', 'T'])
-        })
+        dna_exp = (
+            DNA,
+            {
+                'B': set(['C', 'T', 'G']),
+                'D': set(['A', 'T', 'G']),
+                'H': set(['A', 'C', 'T']),
+                'K': set(['T', 'G']),
+                'M': set(['A', 'C']),
+                'N': set(['A', 'C', 'T', 'G']),
+                'S': set(['C', 'G']),
+                'R': set(['A', 'G']),
+                'W': set(['A', 'T']),
+                'V': set(['A', 'C', 'G']),
+                'Y': set(['C', 'T']),
+            },
+        )
 
-        rna_exp = (RNA, {
-            'B': set(['C', 'U', 'G']), 'D': set(['A', 'U', 'G']),
-            'H': set(['A', 'C', 'U']), 'K': set(['U', 'G']),
-            'M': set(['A', 'C']), 'N': set(['A', 'C', 'U', 'G']),
-            'S': set(['C', 'G']), 'R': set(['A', 'G']), 'W': set(['A', 'U']),
-            'V': set(['A', 'C', 'G']), 'Y': set(['C', 'U'])
-        })
+        rna_exp = (
+            RNA,
+            {
+                'B': set(['C', 'U', 'G']),
+                'D': set(['A', 'U', 'G']),
+                'H': set(['A', 'C', 'U']),
+                'K': set(['U', 'G']),
+                'M': set(['A', 'C']),
+                'N': set(['A', 'C', 'U', 'G']),
+                'S': set(['C', 'G']),
+                'R': set(['A', 'G']),
+                'W': set(['A', 'U']),
+                'V': set(['A', 'C', 'G']),
+                'Y': set(['C', 'U']),
+            },
+        )
 
         for constructor, degenerate in (dna_exp, rna_exp):
             self.assertEqual(constructor('').degenerate_map, degenerate)
             self.assertEqual(constructor.degenerate_map, degenerate)
 
     def test_complement_map(self):
-        dna_exp = (DNA, {
-            '-': '-', '.': '.', 'A': 'T', 'C': 'G', 'B': 'V', 'D': 'H',
-            'G': 'C', 'H': 'D', 'K': 'M', 'M': 'K', 'N': 'N', 'S': 'S',
-            'R': 'Y', 'T': 'A', 'W': 'W', 'V': 'B', 'Y': 'R'
-        })
+        dna_exp = (
+            DNA,
+            {
+                '-': '-',
+                '.': '.',
+                'A': 'T',
+                'C': 'G',
+                'B': 'V',
+                'D': 'H',
+                'G': 'C',
+                'H': 'D',
+                'K': 'M',
+                'M': 'K',
+                'N': 'N',
+                'S': 'S',
+                'R': 'Y',
+                'T': 'A',
+                'W': 'W',
+                'V': 'B',
+                'Y': 'R',
+            },
+        )
 
-        rna_exp = (RNA, {
-            '-': '-', '.': '.', 'A': 'U', 'C': 'G', 'B': 'V', 'D': 'H',
-            'G': 'C', 'H': 'D', 'K': 'M', 'M': 'K', 'N': 'N', 'S': 'S',
-            'R': 'Y', 'U': 'A', 'W': 'W', 'V': 'B', 'Y': 'R'
-        })
+        rna_exp = (
+            RNA,
+            {
+                '-': '-',
+                '.': '.',
+                'A': 'U',
+                'C': 'G',
+                'B': 'V',
+                'D': 'H',
+                'G': 'C',
+                'H': 'D',
+                'K': 'M',
+                'M': 'K',
+                'N': 'N',
+                'S': 'S',
+                'R': 'Y',
+                'U': 'A',
+                'W': 'W',
+                'V': 'B',
+                'Y': 'R',
+            },
+        )
 
         for constructor, comp_map in (dna_exp, rna_exp):
             self.assertEqual(constructor('').complement_map, comp_map)
@@ -147,13 +202,18 @@ class TestNucleotideSequence(unittest.TestCase):
         exp = Protein('MW')
         for seq in RNA('UAAAUUGUGGUAA'), DNA('TAAATTGTGGTAA'):
             # mix of args and kwargs
-            obs = seq.translate(13, reading_frame=2, start='require',
-                                stop='require')
+            obs = seq.translate(
+                13, reading_frame=2, start='require', stop='require'
+            )
             self.assertEqual(obs, exp)
 
             # kwargs only
-            obs = seq.translate(genetic_code=13, reading_frame=2,
-                                start='require', stop='require')
+            obs = seq.translate(
+                genetic_code=13,
+                reading_frame=2,
+                start='require',
+                stop='require',
+            )
             self.assertEqual(obs, exp)
 
             # args only
@@ -163,14 +223,23 @@ class TestNucleotideSequence(unittest.TestCase):
     def test_translate_preserves_metadata(self):
         metadata = {'foo': 'bar', 'baz': 42}
         positional_metadata = {'foo': range(3)}
-        for seq in (RNA('AUG', metadata=metadata,
-                        positional_metadata=positional_metadata),
-                    DNA('ATG', metadata=metadata,
-                        positional_metadata=positional_metadata)):
+        for seq in (
+            RNA(
+                'AUG',
+                metadata=metadata,
+                positional_metadata=positional_metadata,
+            ),
+            DNA(
+                'ATG',
+                metadata=metadata,
+                positional_metadata=positional_metadata,
+            ),
+        ):
             obs = seq.translate()
             # metadata retained, positional metadata dropped
-            self.assertEqual(obs,
-                             Protein('M', metadata={'foo': 'bar', 'baz': 42}))
+            self.assertEqual(
+                obs, Protein('M', metadata={'foo': 'bar', 'baz': 42})
+            )
 
     def test_translate_invalid_id(self):
         for seq in RNA('AUG'), DNA('ATG'):
@@ -182,31 +251,61 @@ class TestNucleotideSequence(unittest.TestCase):
         for seq in RNA('AAAUUG'), DNA('AAATTG'):
             # default
             obs = list(seq.translate_six_frames())
-            self.assertEqual(obs, [Protein('KL'), Protein('N'), Protein('I'),
-                                   Protein('QF'), Protein('N'), Protein('I')])
+            self.assertEqual(
+                obs,
+                [
+                    Protein('KL'),
+                    Protein('N'),
+                    Protein('I'),
+                    Protein('QF'),
+                    Protein('N'),
+                    Protein('I'),
+                ],
+            )
 
             obs = list(seq.translate_six_frames(9))
-            self.assertEqual(obs, [Protein('NL'), Protein('N'), Protein('I'),
-                                   Protein('QF'), Protein('N'), Protein('I')])
+            self.assertEqual(
+                obs,
+                [
+                    Protein('NL'),
+                    Protein('N'),
+                    Protein('I'),
+                    Protein('QF'),
+                    Protein('N'),
+                    Protein('I'),
+                ],
+            )
 
     def test_translate_six_frames_genetic_code_object(self):
         gc = GeneticCode('M' * 64, '-' * 64)
         for seq in RNA('AAAUUG'), DNA('AAATTG'):
             obs = list(seq.translate_six_frames(gc))
-            self.assertEqual(obs, [Protein('MM'), Protein('M'), Protein('M'),
-                                   Protein('MM'), Protein('M'), Protein('M')])
+            self.assertEqual(
+                obs,
+                [
+                    Protein('MM'),
+                    Protein('M'),
+                    Protein('M'),
+                    Protein('MM'),
+                    Protein('M'),
+                    Protein('M'),
+                ],
+            )
 
     def test_translate_six_frames_passes_parameters_through(self):
         for seq in RNA('UUUAUGUGGUGA'), DNA('TTTATGTGGTGA'):
             # mix of args and kwargs
-            obs = next(seq.translate_six_frames(11, start='require',
-                                                stop='require'))
+            obs = next(
+                seq.translate_six_frames(11, start='require', stop='require')
+            )
             self.assertEqual(obs, Protein('MW'))
 
             # kwargs only
-            obs = next(seq.translate_six_frames(genetic_code=11,
-                                                start='require',
-                                                stop='require'))
+            obs = next(
+                seq.translate_six_frames(
+                    genetic_code=11, start='require', stop='require'
+                )
+            )
             self.assertEqual(obs, Protein('MW'))
 
             # args only
@@ -216,16 +315,27 @@ class TestNucleotideSequence(unittest.TestCase):
     def test_translate_six_frames_preserves_metadata(self):
         metadata = {'foo': 'bar', 'baz': 42}
         positional_metadata = {'foo': range(3)}
-        for seq in (RNA('AUG', metadata=metadata,
-                        positional_metadata=positional_metadata),
-                    DNA('ATG', metadata=metadata,
-                        positional_metadata=positional_metadata)):
+        for seq in (
+            RNA(
+                'AUG',
+                metadata=metadata,
+                positional_metadata=positional_metadata,
+            ),
+            DNA(
+                'ATG',
+                metadata=metadata,
+                positional_metadata=positional_metadata,
+            ),
+        ):
             obs = list(seq.translate_six_frames())[:2]
             # metadata retained, positional metadata dropped
             self.assertEqual(
                 obs,
-                [Protein('M', metadata={'foo': 'bar', 'baz': 42}),
-                 Protein('', metadata={'foo': 'bar', 'baz': 42})])
+                [
+                    Protein('M', metadata={'foo': 'bar', 'baz': 42}),
+                    Protein('', metadata={'foo': 'bar', 'baz': 42}),
+                ],
+            )
 
     def test_translate_six_frames_invalid_id(self):
         for seq in RNA('AUG'), DNA('ATG'):
@@ -274,17 +384,19 @@ class TestNucleotideSequence(unittest.TestCase):
                 '',
                 metadata={'id': 'foo', 'description': 'bar'},
                 positional_metadata={'quality': []},
-                interval_metadata=IntervalMetadata(0)).complement()
+                interval_metadata=IntervalMetadata(0),
+            ).complement()
             self.assertEqual(
                 comp,
                 constructor(
                     '',
                     metadata={'id': 'foo', 'description': 'bar'},
-                    positional_metadata={'quality': []}))
+                    positional_metadata={'quality': []},
+                ),
+            )
 
     def test_complement_without_reverse_non_empty(self):
-        for (constructor, seq_str, comp_str,
-             qual) in self.all_combos_comp_qual:
+        for constructor, seq_str, comp_str, qual in self.all_combos_comp_qual:
             comp = constructor(seq_str).complement()
             self.assertEqual(comp, constructor(comp_str))
 
@@ -294,14 +406,17 @@ class TestNucleotideSequence(unittest.TestCase):
                 seq_str,
                 metadata={'id': 'foo', 'description': 'bar'},
                 positional_metadata={'quality': qual},
-                interval_metadata=im).complement()
+                interval_metadata=im,
+            ).complement()
             self.assertEqual(
                 comp,
                 constructor(
                     comp_str,
                     metadata={'id': 'foo', 'description': 'bar'},
                     positional_metadata={'quality': qual},
-                    interval_metadata=im))
+                    interval_metadata=im,
+                ),
+            )
 
     def test_complement_with_reverse_empty(self):
         for constructor in (DNA, RNA):
@@ -312,17 +427,24 @@ class TestNucleotideSequence(unittest.TestCase):
                 '',
                 metadata={'id': 'foo', 'description': 'bar'},
                 positional_metadata={'quality': []},
-                interval_metadata=IntervalMetadata(0)).complement(reverse=True)
+                interval_metadata=IntervalMetadata(0),
+            ).complement(reverse=True)
             self.assertEqual(
                 rc,
                 constructor(
                     '',
                     metadata={'id': 'foo', 'description': 'bar'},
-                    positional_metadata={'quality': []}))
+                    positional_metadata={'quality': []},
+                ),
+            )
 
     def test_complement_with_reverse_non_empty(self):
-        for (constructor, seq_str, rev_comp_str,
-             qual) in self.all_combos_rev_comp_qual:
+        for (
+            constructor,
+            seq_str,
+            rev_comp_str,
+            qual,
+        ) in self.all_combos_rev_comp_qual:
             rc = constructor(seq_str).complement(reverse=True)
             self.assertEqual(rc, constructor(rev_comp_str))
 
@@ -330,13 +452,13 @@ class TestNucleotideSequence(unittest.TestCase):
             im = IntervalMetadata(length)
             im.add([(0, 1)], metadata={'gene': 'p53'})
             im_rc = IntervalMetadata(length)
-            im_rc.add([(length-1, length)], metadata={'gene': 'p53'})
+            im_rc.add([(length - 1, length)], metadata={'gene': 'p53'})
             original = constructor(
                 seq_str,
                 metadata={'id': 'foo', 'description': 'bar'},
-                positional_metadata={
-                    'quality': qual},
-                interval_metadata=im)
+                positional_metadata={'quality': qual},
+                interval_metadata=im,
+            )
             rc = original.complement(reverse=True)
 
             self.assertEqual(
@@ -344,9 +466,10 @@ class TestNucleotideSequence(unittest.TestCase):
                 constructor(
                     rev_comp_str,
                     metadata={'id': 'foo', 'description': 'bar'},
-                    positional_metadata={'quality':
-                                         list(qual)[::-1]},
-                    interval_metadata=im_rc))
+                    positional_metadata={'quality': list(qual)[::-1]},
+                    interval_metadata=im_rc,
+                ),
+            )
             # assert the original object is not changed
             self.assertIsNot(original.interval_metadata, im)
             self.assertEqual(original.interval_metadata, im)
@@ -355,18 +478,25 @@ class TestNucleotideSequence(unittest.TestCase):
         # light tests because this just calls
         # NucleotideSequence.complement(reverse=True), which is tested more
         # extensively
-        for (constructor, seq_str, rev_comp_str,
-             qual) in self.all_combos_rev_comp_qual:
+        for (
+            constructor,
+            seq_str,
+            rev_comp_str,
+            qual,
+        ) in self.all_combos_rev_comp_qual:
             rc = constructor(
                 seq_str,
                 metadata={'id': 'foo', 'description': 'bar'},
-                positional_metadata={'quality': qual}).reverse_complement()
+                positional_metadata={'quality': qual},
+            ).reverse_complement()
             self.assertEqual(
                 rc,
                 constructor(
                     rev_comp_str,
                     metadata={'id': 'foo', 'description': 'bar'},
-                    positional_metadata={'quality': list(qual)[::-1]}))
+                    positional_metadata={'quality': list(qual)[::-1]},
+                ),
+            )
 
     def test_is_reverse_complement_varied_types(self):
         tested = 0
@@ -390,20 +520,25 @@ class TestNucleotideSequence(unittest.TestCase):
             seq2 = constructor(
                 '',
                 metadata={'id': 'foo', 'description': 'bar'},
-                positional_metadata={'quality':
-                                     np.array([], dtype=np.int64)})
+                positional_metadata={'quality': np.array([], dtype=np.int64)},
+            )
             self.assertTrue(seq2.is_reverse_complement(seq2))
             self.assertTrue(seq1.is_reverse_complement(seq2))
             self.assertTrue(seq2.is_reverse_complement(seq1))
 
     def test_is_reverse_complement_metadata_ignored(self):
-        for (constructor, seq_str, rev_comp_str,
-             qual) in self.all_combos_rev_comp_qual:
+        for (
+            constructor,
+            seq_str,
+            rev_comp_str,
+            qual,
+        ) in self.all_combos_rev_comp_qual:
             seq1 = constructor(seq_str)
             seq2 = constructor(
                 rev_comp_str,
                 metadata={'id': 'foo', 'description': 'bar'},
-                positional_metadata={'quality': qual})
+                positional_metadata={'quality': qual},
+            )
 
             self.assertFalse(seq1.is_reverse_complement(seq1))
             self.assertFalse(seq2.is_reverse_complement(seq2))
@@ -435,14 +570,15 @@ class TestNucleotideSequence(unittest.TestCase):
 
     def test_is_reverse_complement_type_mismatch(self):
         for Class in (DNA, RNA):
+
             class DifferentSequenceClass(GrammaredSequence):
                 @classproperty
                 def degenerate_map(cls):
-                    return {"X": set("AB")}
+                    return {'X': set('AB')}
 
                 @classproperty
                 def definite_chars(cls):
-                    return set("ABC")
+                    return set('ABC')
 
                 @classproperty
                 def default_gap_char(cls):
@@ -455,54 +591,77 @@ class TestNucleotideSequence(unittest.TestCase):
             seq1 = Class('ABC')
             seq2 = DifferentSequenceClass('ABC')
 
-            with self.assertRaisesRegex(TypeError,
-                                        r"Cannot use.*and "
-                                        "DifferentSequenceClass together"):
+            with self.assertRaisesRegex(
+                TypeError,
+                r'Cannot use.*and ' 'DifferentSequenceClass together',
+            ):
                 seq1.is_reverse_complement(seq2)
 
     def test_motif_purine_run(self):
-        dna = (DNA, "AARC--TCRG", "AA-RC--TCR-G")
-        rna = (RNA, "AARC--UCRG", "AA-RC--UCR-G")
+        dna = (DNA, 'AARC--TCRG', 'AA-RC--TCR-G')
+        rna = (RNA, 'AARC--UCRG', 'AA-RC--UCR-G')
         all_sets = (dna, rna)
 
         for constructor, run1, run2 in all_sets:
-            seq = constructor("")
-            self.assertEqual(list(seq.find_motifs("purine-run")), [])
+            seq = constructor('')
+            self.assertEqual(list(seq.find_motifs('purine-run')), [])
 
             seq = constructor(run1)
-            self.assertEqual(list(seq.find_motifs("purine-run")),
-                             [slice(0, 3), slice(8, 10)])
+            self.assertEqual(
+                list(seq.find_motifs('purine-run')),
+                [slice(0, 3), slice(8, 10)],
+            )
 
             seq = constructor(run2)
-            self.assertEqual(list(seq.find_motifs("purine-run", min_length=3,
-                                                  ignore=seq.gaps())),
-                             [slice(0, 4)])
+            self.assertEqual(
+                list(
+                    seq.find_motifs(
+                        'purine-run', min_length=3, ignore=seq.gaps()
+                    )
+                ),
+                [slice(0, 4)],
+            )
 
     def test_motif_pyrimidine_run(self):
-        dna = (DNA, "AARC--TCRA", "AA-RC--TCR-A")
-        rna = (RNA, "AARC--UCRG", "AA-RC--UCR-G")
+        dna = (DNA, 'AARC--TCRA', 'AA-RC--TCR-A')
+        rna = (RNA, 'AARC--UCRG', 'AA-RC--UCR-G')
         all_sets = (dna, rna)
 
         for constructor, run1, run2 in all_sets:
-            seq = constructor("")
-            self.assertEqual(list(seq.find_motifs("pyrimidine-run")), [])
+            seq = constructor('')
+            self.assertEqual(list(seq.find_motifs('pyrimidine-run')), [])
 
             seq = constructor(run1)
-            self.assertEqual(list(seq.find_motifs("pyrimidine-run")),
-                             [slice(3, 4), slice(6, 8)])
+            self.assertEqual(
+                list(seq.find_motifs('pyrimidine-run')),
+                [slice(3, 4), slice(6, 8)],
+            )
 
             seq = constructor(run2)
-            self.assertEqual(list(seq.find_motifs("pyrimidine-run",
-                                                  min_length=3,
-                                                  ignore=seq.gaps())),
-                             [slice(4, 9)])
+            self.assertEqual(
+                list(
+                    seq.find_motifs(
+                        'pyrimidine-run', min_length=3, ignore=seq.gaps()
+                    )
+                ),
+                [slice(4, 9)],
+            )
 
     def test_gc_frequency_and_gc_content(self):
-        universal_sets = (('', 0, 0.0), ('ADDDH', 0, 0.0), ('ACGA', 2, 0.5),
-                          ('ACGS', 3, 0.75), ('AAAAAAAG', 1, 0.125),
-                          ('CCC', 3, 1.0), ('GGG', 3, 1.0), ('SSS', 3, 1.0),
-                          ('CGS', 3, 1.0), ('----....', 0, 0.0),
-                          ('G--..', 1, 1.0), ('ACGA', 2, 0.5))
+        universal_sets = (
+            ('', 0, 0.0),
+            ('ADDDH', 0, 0.0),
+            ('ACGA', 2, 0.5),
+            ('ACGS', 3, 0.75),
+            ('AAAAAAAG', 1, 0.125),
+            ('CCC', 3, 1.0),
+            ('GGG', 3, 1.0),
+            ('SSS', 3, 1.0),
+            ('CGS', 3, 1.0),
+            ('----....', 0, 0.0),
+            ('G--..', 1, 1.0),
+            ('ACGA', 2, 0.5),
+        )
         dna = (DNA, universal_sets + (('ATMRWYKVHDBN.-', 0, 0.0),))
         rna = (RNA, universal_sets + (('AUMRWYKVHDBN.-', 0, 0.0),))
         for constructor, current_set in (dna, rna):
@@ -514,5 +673,5 @@ class TestNucleotideSequence(unittest.TestCase):
                 self.assertEqual(ratio, seq.gc_content())
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

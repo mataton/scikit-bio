@@ -22,14 +22,17 @@ class TestGeneticCode(unittest.TestCase):
 
     def test_from_ncbi_valid_table_ids(self):
         # spot check a few tables
-        self.assertEqual(GeneticCode.from_ncbi().name,
-                         'Standard')
-        self.assertEqual(GeneticCode.from_ncbi(2).name,
-                         'Vertebrate Mitochondrial')
-        self.assertEqual(GeneticCode.from_ncbi(12).name,
-                         'Alternative Yeast Nuclear')
-        self.assertEqual(GeneticCode.from_ncbi(25).name,
-                         'Candidate Division SR1 and Gracilibacteria')
+        self.assertEqual(GeneticCode.from_ncbi().name, 'Standard')
+        self.assertEqual(
+            GeneticCode.from_ncbi(2).name, 'Vertebrate Mitochondrial'
+        )
+        self.assertEqual(
+            GeneticCode.from_ncbi(12).name, 'Alternative Yeast Nuclear'
+        )
+        self.assertEqual(
+            GeneticCode.from_ncbi(25).name,
+            'Candidate Division SR1 and Gracilibacteria',
+        )
 
     def test_from_ncbi_invalid_input(self):
         with self.assertRaisesRegex(ValueError, r'table_id.*7'):
@@ -59,15 +62,18 @@ class TestGeneticCode(unittest.TestCase):
             self.sgc.name = 'foo'
 
     def test_init_varied_equivalent_input(self):
-        for args in (('M' * 64, '-' * 64),
-                     (Protein('M' * 64), Protein('-' * 64)),
-                     (Sequence('M' * 64), Sequence('-' * 64))):
+        for args in (
+            ('M' * 64, '-' * 64),
+            (Protein('M' * 64), Protein('-' * 64)),
+            (Sequence('M' * 64), Sequence('-' * 64)),
+        ):
             gc = GeneticCode(*args)
             self.assertEqual(gc.name, '')
             self.assertEqual(gc._amino_acids, Protein('M' * 64))
             self.assertEqual(gc._starts, Protein('-' * 64))
-            npt.assert_array_equal(gc._m_character_codon,
-                                   np.asarray([0, 0, 0], dtype=np.uint8))
+            npt.assert_array_equal(
+                gc._m_character_codon, np.asarray([0, 0, 0], dtype=np.uint8)
+            )
             self.assertEqual(len(gc._start_codons), 0)
 
     def test_init_invalid_input(self):
@@ -153,7 +159,8 @@ class TestGeneticCode(unittest.TestCase):
             # subclass is provided
             GeneticCode(
                 Protein(amino_acids, metadata={'foo': 'bar'}),
-                Protein(starts, positional_metadata={'foo': range(64)}))
+                Protein(starts, positional_metadata={'foo': range(64)}),
+            ),
         ]
 
         # every gc should be equal to itself
@@ -180,7 +187,7 @@ class TestGeneticCode(unittest.TestCase):
             # type must match
             GeneticCodeSubclass(amino_acids, starts),
             # completely different type
-            'foo'
+            'foo',
         ]
         # none of the NCBI genetic codes should be equal to each other
         unequal_gcs.extend(_ncbi_genetic_codes.values())
@@ -195,11 +202,14 @@ class TestGeneticCode(unittest.TestCase):
 
     def test_translate_preserves_metadata(self):
         obs = self.sgc.translate(
-            RNA('AUG', metadata={'foo': 'bar', 'baz': 42},
-                positional_metadata={'foo': range(3)}))
+            RNA(
+                'AUG',
+                metadata={'foo': 'bar', 'baz': 42},
+                positional_metadata={'foo': range(3)},
+            )
+        )
         # metadata retained, positional metadata dropped
-        self.assertEqual(obs, Protein('M',
-                                      metadata={'foo': 'bar', 'baz': 42}))
+        self.assertEqual(obs, Protein('M', metadata={'foo': 'bar', 'baz': 42}))
 
     def test_translate_default_behavior(self):
         # empty translation
@@ -235,8 +245,14 @@ class TestGeneticCode(unittest.TestCase):
 
     def test_translate_reading_frame_non_empty_translation(self):
         seq = RNA('AUGGUGGAA')  # rc = UUCCACCAU
-        for reading_frame, exp_str in ((1, 'MVE'), (2, 'WW'), (3, 'GG'),
-                                       (-1, 'FHH'), (-2, 'ST'), (-3, 'PP')):
+        for reading_frame, exp_str in (
+            (1, 'MVE'),
+            (2, 'WW'),
+            (3, 'GG'),
+            (-1, 'FHH'),
+            (-2, 'ST'),
+            (-3, 'PP'),
+        ):
             exp = Protein(exp_str)
             obs = self.sgc.translate(seq, reading_frame=reading_frame)
             self.assertEqual(obs, exp)
@@ -248,8 +264,9 @@ class TestGeneticCode(unittest.TestCase):
                 obs = self.sgc.translate(seq, start=start)
                 self.assertEqual(obs, exp)
 
-            with self.assertRaisesRegex(ValueError,
-                                        r'reading_frame=1.*start=\'require\''):
+            with self.assertRaisesRegex(
+                ValueError, r'reading_frame=1.*start=\'require\''
+            ):
                 self.sgc.translate(seq, start='require')
 
     def test_translate_start_with_start_codon(self):
@@ -292,8 +309,9 @@ class TestGeneticCode(unittest.TestCase):
             obs = self.sgc.translate(seq, start=start)
             self.assertEqual(obs, exp)
 
-        with self.assertRaisesRegex(ValueError,
-                                    r'reading_frame=1.*start=\'require\''):
+        with self.assertRaisesRegex(
+            ValueError, r'reading_frame=1.*start=\'require\''
+        ):
             self.sgc.translate(seq, start='require')
 
         # non-start codon that translates to an AA that start codons also map
@@ -305,8 +323,9 @@ class TestGeneticCode(unittest.TestCase):
             obs = self.sgc.translate(seq, start=start)
             self.assertEqual(obs, exp)
 
-        with self.assertRaisesRegex(ValueError,
-                                    r'reading_frame=1.*start=\'require\''):
+        with self.assertRaisesRegex(
+            ValueError, r'reading_frame=1.*start=\'require\''
+        ):
             self.sgc.translate(seq, start='require')
 
     def test_translate_start_no_accidental_mutation(self):
@@ -330,8 +349,9 @@ class TestGeneticCode(unittest.TestCase):
                 obs = self.sgc.translate(seq, stop=stop)
                 self.assertEqual(obs, exp)
 
-            with self.assertRaisesRegex(ValueError,
-                                        r'reading_frame=1.*stop=\'require\''):
+            with self.assertRaisesRegex(
+                ValueError, r'reading_frame=1.*stop=\'require\''
+            ):
                 self.sgc.translate(seq, stop='require')
 
     def test_translate_stop_with_stop_codon(self):
@@ -376,8 +396,9 @@ class TestGeneticCode(unittest.TestCase):
             obs = self.sgc.translate(seq, stop=stop)
             self.assertEqual(obs, exp)
 
-        with self.assertRaisesRegex(ValueError,
-                                    r'reading_frame=1.*stop=\'require\''):
+        with self.assertRaisesRegex(
+            ValueError, r'reading_frame=1.*stop=\'require\''
+        ):
             self.sgc.translate(seq, stop='require')
 
     def test_translate_trim_to_cds(self):
@@ -398,17 +419,20 @@ class TestGeneticCode(unittest.TestCase):
         # alternative reading frame disrupts cds:
         #     AAUUGCCUCAUUAAUAACAAUGA
         #     NCLINNN
-        with self.assertRaisesRegex(ValueError,
-                                    r'reading_frame=2.*start=\'require\''):
+        with self.assertRaisesRegex(
+            ValueError, r'reading_frame=2.*start=\'require\''
+        ):
             self.sgc.translate(seq, reading_frame=2, start='require')
-        with self.assertRaisesRegex(ValueError,
-                                    r'reading_frame=2.*stop=\'require\''):
+        with self.assertRaisesRegex(
+            ValueError, r'reading_frame=2.*stop=\'require\''
+        ):
             self.sgc.translate(seq, reading_frame=2, stop='require')
 
         exp = Protein('NCLINNN')
         for param in {'ignore', 'optional'}:
-            obs = self.sgc.translate(seq, reading_frame=2, start=param,
-                                     stop=param)
+            obs = self.sgc.translate(
+                seq, reading_frame=2, start=param, stop=param
+            )
             self.assertEqual(obs, exp)
 
     def test_translate_invalid_input(self):
@@ -448,8 +472,9 @@ class TestGeneticCode(unittest.TestCase):
         self.assertEqual(obs, exp)
 
         exp = Protein('MTI')
-        obs = GeneticCode.from_ncbi(2).translate(seq, start='require',
-                                                 stop='require')
+        obs = GeneticCode.from_ncbi(2).translate(
+            seq, start='require', stop='require'
+        )
         self.assertEqual(obs, exp)
 
         # table_id=22
@@ -457,10 +482,12 @@ class TestGeneticCode(unittest.TestCase):
         obs = GeneticCode.from_ncbi(22).translate(seq)
         self.assertEqual(obs, exp)
 
-        with self.assertRaisesRegex(ValueError,
-                                    r'reading_frame=1.*start=\'require\''):
-            GeneticCode.from_ncbi(22).translate(seq, start='require',
-                                                stop='require')
+        with self.assertRaisesRegex(
+            ValueError, r'reading_frame=1.*start=\'require\''
+        ):
+            GeneticCode.from_ncbi(22).translate(
+                seq, start='require', stop='require'
+            )
 
         # custom, no start codons
         gc = GeneticCode('MWN*' * 16, '-' * 64)
@@ -468,35 +495,57 @@ class TestGeneticCode(unittest.TestCase):
         obs = gc.translate(seq)
         self.assertEqual(obs, exp)
 
-        with self.assertRaisesRegex(ValueError,
-                                    r'reading_frame=1.*start=\'require\''):
+        with self.assertRaisesRegex(
+            ValueError, r'reading_frame=1.*start=\'require\''
+        ):
             gc.translate(seq, start='require', stop='require')
 
     def test_translate_six_frames(self):
         seq = RNA('AUGCUAACAUAAA')  # rc = UUUAUGUUAGCAU
 
         # test default behavior
-        exp = [Protein('MLT*'), Protein('C*HK'), Protein('ANI'),
-               Protein('FMLA'), Protein('LC*H'), Protein('YVS')]
+        exp = [
+            Protein('MLT*'),
+            Protein('C*HK'),
+            Protein('ANI'),
+            Protein('FMLA'),
+            Protein('LC*H'),
+            Protein('YVS'),
+        ]
         obs = list(self.sgc.translate_six_frames(seq))
         self.assertEqual(obs, exp)
 
         # test that start/stop are respected
-        exp = [Protein('MLT'), Protein('C'), Protein('ANI'),
-               Protein('MLA'), Protein('LC'), Protein('YVS')]
-        obs = list(self.sgc.translate_six_frames(seq, start='optional',
-                                                 stop='optional'))
+        exp = [
+            Protein('MLT'),
+            Protein('C'),
+            Protein('ANI'),
+            Protein('MLA'),
+            Protein('LC'),
+            Protein('YVS'),
+        ]
+        obs = list(
+            self.sgc.translate_six_frames(
+                seq, start='optional', stop='optional'
+            )
+        )
         self.assertEqual(obs, exp)
 
     def test_translate_six_frames_preserves_metadata(self):
-        seq = RNA('AUG', metadata={'foo': 'bar', 'baz': 42},
-                  positional_metadata={'foo': range(3)})
+        seq = RNA(
+            'AUG',
+            metadata={'foo': 'bar', 'baz': 42},
+            positional_metadata={'foo': range(3)},
+        )
         obs = list(self.sgc.translate_six_frames(seq))[:2]
         # metadata retained, positional metadata dropped
         self.assertEqual(
             obs,
-            [Protein('M', metadata={'foo': 'bar', 'baz': 42}),
-             Protein('', metadata={'foo': 'bar', 'baz': 42})])
+            [
+                Protein('M', metadata={'foo': 'bar', 'baz': 42}),
+                Protein('', metadata={'foo': 'bar', 'baz': 42}),
+            ],
+        )
 
 
 if __name__ == '__main__':

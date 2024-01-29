@@ -12,7 +12,6 @@ from skbio.io._iosources import IOSource, Compressor
 
 
 class TestIOSource(unittest.TestCase):
-
     def setUp(self):
         self.file = 'somepath'
         self.options = {'a': 1, 'b': 2}
@@ -47,5 +46,5 @@ class TestCompressor(TestIOSource):
         self.assertEqual(self.compressor.can_write(), True)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

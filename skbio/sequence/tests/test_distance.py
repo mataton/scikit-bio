@@ -31,8 +31,9 @@ class TestHamming(unittest.TestCase):
         seq1 = Sequence('ABC')
         seq2 = DNA('ACG')
 
-        with self.assertRaisesRegex(TypeError,
-                                    r'Sequence.*does not match.*DNA'):
+        with self.assertRaisesRegex(
+            TypeError, r'Sequence.*does not match.*DNA'
+        ):
             hamming(seq1, seq2)
 
     def test_length_mismatch(self):
@@ -60,12 +61,12 @@ class TestHamming(unittest.TestCase):
         self.assertEqual(distance, 0.0)
 
     def test_mid_range_distance(self):
-        seq1 = Sequence("abcdefgh")
-        seq2 = Sequence("1b23ef45")
+        seq1 = Sequence('abcdefgh')
+        seq2 = Sequence('1b23ef45')
 
         distance = hamming(seq1, seq2)
 
-        self.assertEqual(distance, 5.0/8.0)
+        self.assertEqual(distance, 5.0 / 8.0)
 
     def test_maximum_distance(self):
         seq1 = Sequence('ABC')
@@ -96,19 +97,19 @@ class TestHamming(unittest.TestCase):
 
         distance = hamming(seq1, seq2)
 
-        self.assertEqual(distance, 2.0/5.0)
+        self.assertEqual(distance, 2.0 / 5.0)
 
     def test_sequences_with_metadata(self):
         # test for #1254
         seqs1 = [
-            Sequence("ACGT"),
-            Sequence("ACGT", metadata={'id': 'abc'}),
-            Sequence("ACGT", positional_metadata={'qual': range(4)})
+            Sequence('ACGT'),
+            Sequence('ACGT', metadata={'id': 'abc'}),
+            Sequence('ACGT', positional_metadata={'qual': range(4)}),
         ]
         seqs2 = [
-            Sequence("AAAA"),
-            Sequence("AAAA", metadata={'id': 'def'}),
-            Sequence("AAAA", positional_metadata={'qual': range(4, 8)})
+            Sequence('AAAA'),
+            Sequence('AAAA', metadata={'id': 'def'}),
+            Sequence('AAAA', positional_metadata={'qual': range(4, 8)}),
         ]
 
         for seqs in seqs1, seqs2:
@@ -177,9 +178,11 @@ class TestKmerDistance(unittest.TestCase):
         self.assertAlmostEqual(obs, exp)
 
     def test_with_metadata_sanity(self):
-        seq1 = Sequence('AACCTAGCAATGGAT',
-                        metadata={'Name': 'Kestrel Gorlick'},
-                        positional_metadata={'seq': list('ACTCAAGCTACGAAG')})
+        seq1 = Sequence(
+            'AACCTAGCAATGGAT',
+            metadata={'Name': 'Kestrel Gorlick'},
+            positional_metadata={'seq': list('ACTCAAGCTACGAAG')},
+        )
         seq2 = Sequence('CAGGCAGTTCTCACC')
         obs = kmer_distance(seq1, seq2, 3)
         exp = 0.9130434782608695
@@ -230,5 +233,5 @@ class TestKmerDistance(unittest.TestCase):
             kmer_distance(seq1, seq2, 3)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()
