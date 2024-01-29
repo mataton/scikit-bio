@@ -648,7 +648,7 @@ fuzzy=[(True, False)], metadata={'gene': 'foo'})
             self._convert_to_uppercase(lowercase_mask)
 
             # If it isn't True, it must be a string_type
-            if not (lowercase is True):
+            if lowercase is not True:
                 self.positional_metadata[lowercase] = lowercase_mask
         else:
             raise TypeError("lowercase keyword argument expected a bool or "
