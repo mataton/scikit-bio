@@ -56,7 +56,7 @@ jobs:
         shell: bash -l {0}
         run: |
         ruff check --fix --output-format=github .
-        ruff format .
+      # ruff format .
       # adds and commits changes
       - uses: stefanzweifel/git-auto-commit-action@v5
 
