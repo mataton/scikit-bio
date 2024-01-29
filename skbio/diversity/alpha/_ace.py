@@ -100,7 +100,7 @@ def ace(counts, rare_threshold=10):
 
     n_rare = _number_rare(freq_counts, rare_threshold)
     c_ace = 1 - singles / n_rare
-
+   
     top = s_rare * _number_rare(freq_counts, rare_threshold, gamma=True)
     bottom = c_ace * n_rare * (n_rare - 1)
     gamma_ace = (top / bottom) - 1
