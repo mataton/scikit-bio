@@ -3519,7 +3519,11 @@ class TreeNode(SkbioObject):
         return 1 - (2 * intersection_length / float(total_subsets))
 
     def compare_tip_distances(
-        self, other, sample=None, dist_f=distance_from_r, shuffle_f=np.random.shuffle
+        self,
+        other,
+        sample=None,
+        dist_f=distance_from_r,
+        shuffle_f=np.random.default_rng().shuffle,
     ):
         """Compare self to other using tip-to-tip distance matrices.
 
@@ -3857,7 +3861,9 @@ class TreeNode(SkbioObject):
             cached.append(cache_type(func(node)))
             setattr(node, cache_attrname, reduce(reduce_f, cached))
 
-    def shuffle(self, k=None, names=None, shuffle_f=np.random.shuffle, n=1):
+    def shuffle(
+        self, k=None, names=None, shuffle_f=np.random.default_rng().shuffle, n=1
+    ):
         """Yield trees with shuffled tip names.
 
         Parameters
