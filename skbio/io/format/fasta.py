@@ -678,6 +678,7 @@ from skbio.io.format._base import (
     _line_generator,
     _too_many_blanks,
 )
+from skbio.io.util import stream_to_buffer
 from skbio.util._misc import chunk_str
 from skbio.alignment import TabularMSA
 from skbio.sequence import Sequence, DNA, RNA, Protein
@@ -698,13 +699,16 @@ def _fasta_sniffer(fh):
     #   not be validated but it probably isn't what the user wanted). Also, if
     #   we add QUAL as its own file format in the future, we wouldn't want the
     #   FASTA and QUAL sniffers to both positively identify a QUAL file.
-    if _too_many_blanks(fh, 5):
+
+    buff = stream_to_buffer(fh)
+
+    if _too_many_blanks(buff, 5):
         return False, {}
 
     num_records = 10
     empty = True
     try:
-        parser = _parse_fasta_raw(fh, _sniffer_data_parser, FASTAFormatError)
+        parser = _parse_fasta_raw(buff, _sniffer_data_parser, FASTAFormatError)
         for _ in zip(range(num_records), parser):
             empty = False
     except FASTAFormatError:

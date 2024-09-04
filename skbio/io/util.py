@@ -294,3 +294,23 @@ def open_files(files, **kwargs):
     """
     with ExitStack() as stack:
         yield [stack.enter_context(open_file(f, **kwargs)) for f in files]
+
+
+def stream_to_buffer(stream, n_bytes=1024):
+    """Read the first n bytes from a stream into a buffer.
+
+    Inspired by Daniel McDonald's mxdx package.
+    https://github.com/wasade/mxdx/blob/main/mxdx/_io.py#L285-L301
+    """
+    if hasattr(stream, "buffer"):
+        peek = stream.buffer.peek(n_bytes)
+    elif hasattr(stream, "peek"):
+        peek = stream.peek(n_bytes)
+    else:
+        peek = stream.read(n_bytes)
+        stream.seek(0)
+
+    if isinstance(peek, bytes):
+        peek = peek.decode("utf-8")
+
+    return io.StringIO(peek)

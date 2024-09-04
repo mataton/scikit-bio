@@ -297,6 +297,7 @@ from skbio.io.format._base import (
     _line_generator,
     _too_many_blanks,
 )
+from skbio.io.util import stream_to_buffer
 from skbio.alignment import TabularMSA
 from skbio.sequence import Sequence, DNA, RNA, Protein
 
@@ -313,12 +314,16 @@ def _fastq_sniffer(fh):
     #   file. Read up to 10 records. If at least one record is read (i.e. the
     #   file isn't empty) and the quality scores are in printable ASCII range,
     #   assume the file is FASTQ.
-    if _too_many_blanks(fh, 5):
+
+    buff = stream_to_buffer(fh, n_bytes=8192)
+
+    if _too_many_blanks(buff, 5):
+        print("hereherehere!")
         return False, {}
 
     try:
         not_empty = False
-        for _, seq in zip(range(10), _fastq_to_generator(fh, phred_offset=33)):
+        for _, seq in zip(range(10), _fastq_to_generator(buff, phred_offset=33)):
             split_length = len(
                 (seq.metadata["id"] + seq.metadata["description"]).split(":")
             )

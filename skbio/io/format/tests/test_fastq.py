@@ -129,6 +129,7 @@ class TestSniffer(unittest.TestCase):
 
     def test_positives(self):
         for fp in self.positives:
+            print(fp)
             self.assertEqual(_fastq_sniffer(fp), (True, {}))
 
     def test_negatives(self):

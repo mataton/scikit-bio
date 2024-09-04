@@ -529,9 +529,12 @@ class IORegistry:
         elif verify:
             sniffer = self.get_sniffer(fmt)
             if sniffer is not None:
-                backup = file.tell()
-                is_format, skwargs = sniffer(file, **io_kwargs)
-                file.seek(backup)
+                if file.seekable():
+                    backup = file.tell()
+                    is_format, skwargs = sniffer(file, **io_kwargs)
+                    file.seek(backup)
+                else:
+                    is_format, skwargs = sniffer(file, **io_kwargs)
                 if not is_format:
                     warn(
                         "%r does not look like a %s file" % (file, fmt),
@@ -914,7 +917,8 @@ class Format:
                         # Some formats may have headers which indicate their
                         # format sniffers should be able to rely on the
                         # filehandle to point at the beginning of the file.
-                        fh.seek(0)
+                        if fh.seekable():
+                            fh.seek(0)
                         return sniffer(fh)
                     except UnicodeDecodeError:
                         pass
