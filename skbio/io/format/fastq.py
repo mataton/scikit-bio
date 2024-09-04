@@ -318,7 +318,6 @@ def _fastq_sniffer(fh):
     buff = stream_to_buffer(fh, n_bytes=8192)
 
     if _too_many_blanks(buff, 5):
-        print("hereherehere!")
         return False, {}
 
     try:
