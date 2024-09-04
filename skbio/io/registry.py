@@ -917,8 +917,12 @@ class Format:
                         # Some formats may have headers which indicate their
                         # format sniffers should be able to rely on the
                         # filehandle to point at the beginning of the file.
+                        # why do we need to seek to 0 here?
+                        # is this first call of sniffer?
                         if fh.seekable():
+                            print(fh.tell())
                             fh.seek(0)
+                            print(fh.tell())
                         return sniffer(fh)
                     except UnicodeDecodeError:
                         pass

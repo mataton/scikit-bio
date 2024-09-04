@@ -296,7 +296,7 @@ def open_files(files, **kwargs):
         yield [stack.enter_context(open_file(f, **kwargs)) for f in files]
 
 
-def stream_to_buffer(stream, n_bytes=1024):
+def _stream_to_buffer(stream, n_bytes=1024):
     """Read the first n bytes from a stream into a buffer.
 
     Inspired by Daniel McDonald's mxdx package.

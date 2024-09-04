@@ -678,7 +678,7 @@ from skbio.io.format._base import (
     _line_generator,
     _too_many_blanks,
 )
-from skbio.io.util import stream_to_buffer
+from skbio.io.util import _stream_to_buffer
 from skbio.util._misc import chunk_str
 from skbio.alignment import TabularMSA
 from skbio.sequence import Sequence, DNA, RNA, Protein
@@ -700,7 +700,7 @@ def _fasta_sniffer(fh):
     #   we add QUAL as its own file format in the future, we wouldn't want the
     #   FASTA and QUAL sniffers to both positively identify a QUAL file.
 
-    buff = stream_to_buffer(fh)
+    buff = _stream_to_buffer(fh)
 
     if _too_many_blanks(buff, 5):
         return False, {}
