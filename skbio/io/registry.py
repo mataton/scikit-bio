@@ -171,6 +171,7 @@ import traceback
 import itertools
 import inspect
 from functools import wraps
+from importlib import import_module
 
 import skbio
 from ._exception import DuplicateRegistrationError, InvalidRegistrationError
@@ -182,6 +183,18 @@ from . import (
 from .util import _resolve_file, open_file, open_files, _d as _open_kwargs
 from skbio.util._misc import make_sentinel, find_sentinels
 from skbio.util._decorator import classonlymethod
+
+# for lazy loading
+# maybe can't do this because circular imports
+from pandas import DataFrame
+from skbio.stats.distance import DissimilarityMatrix, DistanceMatrix
+from skbio.stats.ordination import OrdinationResults
+from skbio.table import Table
+from skbio.alignment import TabularMSA
+from skbio.sequence import Sequence, DNA, RNA, Protein
+from skbio.embedding import ProteinEmbedding, ProteinVector
+from skbio.metadata import IntervalMetadata
+from skbio.tree import TreeNode
 
 FileSentinel = make_sentinel("FileSentinel")
 
@@ -202,9 +215,66 @@ class IORegistry:
         formats if they are irrelevant. (They are incompatible with such a
         filehandle anyways.)
         """
+        # Maybe just have these pre-loaded?
         self._binary_formats = {}
         self._text_formats = {}
         self._lookups = (self._binary_formats, self._text_formats)
+        self._supported_formats = [
+            "binary_dm",
+            "biom",
+            "blast6",
+            "blast7",
+            "clustal",
+            "embl",
+            "embed",
+            "fasta",
+            "fastq",
+            "genbank",
+            "gff3",
+            "lsmat",
+            "newick",
+            "ordination",
+            "phylip",
+            "qseq",
+            "stockholm",
+            "taxdump",
+        ]
+        self._supported_read_formats_dict = {
+            "binary_dm": [DissimilarityMatrix, DistanceMatrix],
+            "biom": [Table],
+            "blast6": [DataFrame],
+            "blast7": [DataFrame],
+            "clustal": [TabularMSA],
+            "embl": [Sequence, DNA, RNA],
+            "embed": [ProteinEmbedding, ProteinVector],
+            "fasta": [Sequence, TabularMSA, DNA, RNA, Protein],
+            "fastq": [Sequence, TabularMSA, DNA, RNA, Protein],
+            "genbank": [Sequence, DNA, RNA, Protein],
+            "gff3": [Sequence, DNA, IntervalMetadata],
+            "lsmat": [DissimilarityMatrix, DistanceMatrix],
+            "newick": [TreeNode],
+            "ordination": [OrdinationResults],
+            "phylip": [TabularMSA],
+            "qseq": [Sequence, DNA, RNA, Protein],
+            "stockholm": [TabularMSA],
+            "taxdump": [DataFrame],
+        }
+        self._into_dict = {
+            DissimilarityMatrix: ["binary_dm", "lsmat"],
+            DistanceMatrix: ["binary_dm", "lsmat"],
+            Table: ["biom"],
+            DataFrame: ["blast6", "blast7", "taxdump"],
+            TreeNode: ["newick"],
+            OrdinationResults: ["ordination"],
+            ProteinEmbedding: ["embed"],
+            ProteinVector: ["embed"],
+            TabularMSA: ["stockholm", "phylip", "fasta", "fastq", "clustal"],
+            Sequence: ["embl", "fasta", "fastq", "genbank", "gff3", "qseq"],
+            DNA: ["embl", "fasta", "fastq", "genbank", "gff3", "qseq"],
+            RNA: ["embl", "fasta", "fastq", "genbank", "qseq"],
+            Protein: ["fasta", "fastq", "genbank", "qseq"],
+            IntervalMetadata: ["gff3"],
+        }
 
     def create_format(self, *args, **kwargs):
         """Create new file formats.
@@ -511,6 +581,31 @@ class IORegistry:
         if "newline" in kwargs:
             raise TypeError("Cannot provide `newline` keyword argument when reading.")
 
+        # Here I am trying to implement lazy loading of the necessary format modules
+        # from the __init__ file.
+        # IF format is supplied
+        # load that format's module
+
+        # this check is to make sure the format is supplied and that it is an
+        # actual skbio.io format
+        if format is not None and format in self._supported_formats:
+            # this second check should ensure that the format is only imported once.
+            # on the first import, the format should be added to self._lookups,
+            # so if a format is contained in self._lookups, it has already been imported
+            if format not in self._lookups:
+                mod_name = f"skbio.io.format.{format}"
+                import_module(mod_name)
+
+        # The above works when the format paramater is passed, but that parameter
+        # is not required. If format is not passed, then into must be passed,
+        # so now we must make something able to handle the case where into
+        # is passed
+        if into is not None:
+            pos_fmts = self._into_dict[into]
+            for fmt in pos_fmts:
+                mod_name = f"skbio.io.format.{format}"
+                import_module(mod_name)
+
         # Context managers do not compose well with generators. We have to
         # duplicate the logic so that the file will stay open while yielding.
         # Otherwise the context exits as soon as the generator is returned
@@ -637,6 +732,13 @@ class IORegistry:
             Raised when a writer for writing ``obj`` as ``format`` could not be found.
 
         """
+        # see same code in read for notes, probably good just to make this a separate
+        # function.
+        if format is not None and format in self._supported_formats:
+            if format not in self._lookups:
+                mod_name = f"skbio.io.format.{format}"
+                import_module(mod_name)
+
         # The simplest functionality here.
         cls = None
         if not isinstance(obj, types.GeneratorType):
