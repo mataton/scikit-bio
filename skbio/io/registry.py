@@ -183,18 +183,19 @@ from . import (
 from .util import _resolve_file, open_file, open_files, _d as _open_kwargs
 from skbio.util._misc import make_sentinel, find_sentinels
 from skbio.util._decorator import classonlymethod
+# from .test_import import _into_dict, _supported_read_formats_dict
 
 # for lazy loading
 # maybe can't do this because circular imports
-from pandas import DataFrame
-from skbio.stats.distance import DissimilarityMatrix, DistanceMatrix
-from skbio.stats.ordination import OrdinationResults
-from skbio.table import Table
-from skbio.alignment import TabularMSA
-from skbio.sequence import Sequence, DNA, RNA, Protein
-from skbio.embedding import ProteinEmbedding, ProteinVector
-from skbio.metadata import IntervalMetadata
-from skbio.tree import TreeNode
+# from pandas import DataFrame
+# from skbio.stats.distance import DissimilarityMatrix, DistanceMatrix
+# from skbio.stats.ordination import OrdinationResults
+# from skbio.table import Table
+# from skbio.alignment import TabularMSA
+# from skbio.sequence import Sequence, DNA, RNA, Protein
+# from skbio.embedding import ProteinEmbedding, ProteinVector
+# from skbio.metadata import IntervalMetadata
+# from skbio.tree import TreeNode
 
 FileSentinel = make_sentinel("FileSentinel")
 
@@ -239,41 +240,43 @@ class IORegistry:
             "stockholm",
             "taxdump",
         ]
-        self._supported_read_formats_dict = {
-            "binary_dm": [DissimilarityMatrix, DistanceMatrix],
-            "biom": [Table],
-            "blast6": [DataFrame],
-            "blast7": [DataFrame],
-            "clustal": [TabularMSA],
-            "embl": [Sequence, DNA, RNA],
-            "embed": [ProteinEmbedding, ProteinVector],
-            "fasta": [Sequence, TabularMSA, DNA, RNA, Protein],
-            "fastq": [Sequence, TabularMSA, DNA, RNA, Protein],
-            "genbank": [Sequence, DNA, RNA, Protein],
-            "gff3": [Sequence, DNA, IntervalMetadata],
-            "lsmat": [DissimilarityMatrix, DistanceMatrix],
-            "newick": [TreeNode],
-            "ordination": [OrdinationResults],
-            "phylip": [TabularMSA],
-            "qseq": [Sequence, DNA, RNA, Protein],
-            "stockholm": [TabularMSA],
-            "taxdump": [DataFrame],
-        }
+        # self._supported_read_formats_dict = {
+        #     "binary_dm": [DissimilarityMatrix, DistanceMatrix],
+        #     "biom": [Table],
+        #     "blast6": [DataFrame],
+        #     "blast7": [DataFrame],
+        #     "clustal": [TabularMSA],
+        #     "embl": [Sequence, DNA, RNA],
+        #     "embed": [ProteinEmbedding, ProteinVector],
+        #     "fasta": [Sequence, TabularMSA, DNA, RNA, Protein],
+        #     "fastq": [Sequence, TabularMSA, DNA, RNA, Protein],
+        #     "genbank": [Sequence, DNA, RNA, Protein],
+        #     "gff3": [Sequence, DNA, IntervalMetadata],
+        #     "lsmat": [DissimilarityMatrix, DistanceMatrix],
+        #     "newick": [TreeNode],
+        #     "ordination": [OrdinationResults],
+        #     "phylip": [TabularMSA],
+        #     "qseq": [Sequence, DNA, RNA, Protein],
+        #     "stockholm": [TabularMSA],
+        #     "taxdump": [DataFrame],
+        # }
+        # # self._into_dict = _into_dict
         self._into_dict = {
-            DissimilarityMatrix: ["binary_dm", "lsmat"],
-            DistanceMatrix: ["binary_dm", "lsmat"],
-            Table: ["biom"],
-            DataFrame: ["blast6", "blast7", "taxdump"],
-            TreeNode: ["newick"],
-            OrdinationResults: ["ordination"],
-            ProteinEmbedding: ["embed"],
-            ProteinVector: ["embed"],
-            TabularMSA: ["stockholm", "phylip", "fasta", "fastq", "clustal"],
-            Sequence: ["embl", "fasta", "fastq", "genbank", "gff3", "qseq"],
-            DNA: ["embl", "fasta", "fastq", "genbank", "gff3", "qseq"],
-            RNA: ["embl", "fasta", "fastq", "genbank", "qseq"],
-            Protein: ["fasta", "fastq", "genbank", "qseq"],
-            IntervalMetadata: ["gff3"],
+            "DissimilarityMatrix": ["binary_dm", "lsmat"],
+            "DistanceMatrix": ["binary_dm", "lsmat"],
+            "Table": ["biom"],
+            "DataFrame": ["blast6", "blast7", "taxdump"],
+            "TreeNode": ["newick"],
+            "OrdinationResults": ["ordination"],
+            "ProteinEmbedding": ["embed"],
+            "ProteinVector": ["embed"],
+            "TabularMSA": ["stockholm", "phylip", "fasta", "fastq", "clustal"],
+            "Sequence": ["embl", "fasta", "fastq", "genbank", "gff3", "qseq"],
+            "DNA": ["embl", "fasta", "fastq", "genbank", "gff3", "qseq"],
+            "RNA": ["embl", "fasta", "fastq", "genbank", "qseq"],
+            "Protein": ["fasta", "fastq", "genbank", "qseq"],
+            "IntervalMetadata": ["gff3"],
+            "SampleMetadata": ["sample_metadata"],
         }
 
     def create_format(self, *args, **kwargs):
@@ -578,6 +581,8 @@ class IORegistry:
             overriding the suggestion provided by the sniffer of ``format``.
 
         """
+        # print(f"file: {file}\nformat: {format}\ninto:
+        # {into}\nverify: {verify}\n, kwargs: {kwargs}\n\n\n")
         if "newline" in kwargs:
             raise TypeError("Cannot provide `newline` keyword argument when reading.")
 
@@ -588,23 +593,25 @@ class IORegistry:
 
         # this check is to make sure the format is supplied and that it is an
         # actual skbio.io format
-        if format is not None and format in self._supported_formats:
-            # this second check should ensure that the format is only imported once.
-            # on the first import, the format should be added to self._lookups,
-            # so if a format is contained in self._lookups, it has already been imported
-            if format not in self._lookups:
-                mod_name = f"skbio.io.format.{format}"
-                import_module(mod_name)
+        # if format is not None and format in self._supported_formats:
+        #     # this second check should ensure that the format is only imported once.
+        #     # on the first import, the format should be added to self._lookups,
+        #     # so if a format is contained in self._lookups, it has already been
+        #        imported
+        #     if format not in self._lookups:
+        #         mod_name = f"skbio.io.format.{format}"
+        #         import_module(mod_name)
 
         # The above works when the format paramater is passed, but that parameter
         # is not required. If format is not passed, then into must be passed,
         # so now we must make something able to handle the case where into
         # is passed
-        if into is not None:
-            pos_fmts = self._into_dict[into]
-            for fmt in pos_fmts:
-                mod_name = f"skbio.io.format.{format}"
-                import_module(mod_name)
+        # if into is not None and format is None:
+        #     into_str = into.__name__
+        #     pos_fmts = self._into_dict[into_str]
+        #     for format in pos_fmts:
+        #         mod_name = f"skbio.io.format.{format}"
+        #         import_module(mod_name)
 
         # Context managers do not compose well with generators. We have to
         # duplicate the logic so that the file will stay open while yielding.
@@ -614,6 +621,9 @@ class IORegistry:
         if into is None:
             if format is None:
                 raise ValueError("`into` and `format` cannot both be None")
+            if format not in self._lookups:
+                mod_name = f"skbio.io.format.{format}"
+                import_module(mod_name)
             gen = self._read_gen(file, format, into, verify, kwargs)
             # This is done so that any errors occur immediately instead of
             # on the first call from __iter__
@@ -627,6 +637,12 @@ class IORegistry:
                 # See #1313 for more info.
                 return (x for x in [])
         else:
+            if format is None:
+                pos_fmts = self._into_dict[into.__name__]
+                # print(pos_fmts)
+                for format in pos_fmts:
+                    mod_name = f"skbio.io.format.{format}"
+                    import_module(mod_name)
             return self._read_ret(file, format, into, verify, kwargs)
 
     def _read_ret(self, file, fmt, into, verify, kwargs):
