@@ -261,6 +261,10 @@ class IORegistry:
         #     "taxdump": [DataFrame],
         # }
         # # self._into_dict = _into_dict
+
+        # replace string with actual Format object once the format has been imported.
+        # if an item in the value list is a string, import it from skbio.io.<format>,
+        # else, do nothing
         self._into_dict = {
             "DissimilarityMatrix": ["binary_dm", "lsmat"],
             "DistanceMatrix": ["binary_dm", "lsmat"],
@@ -317,6 +321,30 @@ class IORegistry:
             self._binary_formats[name] = format_object
         else:
             self._text_formats[name] = format_object
+
+        print(f"format {name} added to registry")
+
+        # add readers to _into_dict
+        for cls in format_object.readers.keys():
+            cls_name = cls.__name__
+            if cls_name not in self._into_dict:
+                print(f"adding class {cls_name} to _into_dict")
+                self._into_dict[cls_name] = []
+            if name not in self._into_dict[cls_name]:
+                print(f"class {cls_name} associated with {name} in _into_dict\n\n\n")
+                self._into_dict[cls_name].append(name)
+        # # this gives list of names of objects for which there are readers
+        # readers_ = list(format_object._readers.keys())
+        # print(_readers)
+        # names = []
+        # for obj in readers_:
+        #     names.append(str(obj).split('.')[1][:-2])
+        # for object in names:
+        #     if object in self._into_dict.keys():
+        #         self._into_dict[object] += name
+        #     else:
+        #         self._into_dict[object] = name
+        # # print(self._into_dict, '\n\n\n')
 
     def remove_format(self, format):
         """Remove a format from the IORegistry.
@@ -621,9 +649,15 @@ class IORegistry:
         if into is None:
             if format is None:
                 raise ValueError("`into` and `format` cannot both be None")
-            if format not in self._lookups:
-                mod_name = f"skbio.io.format.{format}"
-                import_module(mod_name)
+            if not any(format in x for x in self._lookups):
+                try:
+                    mod_name = f"skbio.io.format.{format}"
+                    import_module(mod_name)
+                except ModuleNotFoundError:
+                    raise UnrecognizedFormatError(
+                        "Cannot read %r from %r, no %s reader found."
+                        % (format, file, into.__name__ if into else "generator")
+                    )
             gen = self._read_gen(file, format, into, verify, kwargs)
             # This is done so that any errors occur immediately instead of
             # on the first call from __iter__
@@ -637,12 +671,24 @@ class IORegistry:
                 # See #1313 for more info.
                 return (x for x in [])
         else:
+            if format is not None:
+                if not any(format in x for x in self._lookups):
+                    try:
+                        mod_name = f"skbio.io.format.{format}"
+                        import_module(mod_name)
+                    except ModuleNotFoundError:
+                        raise UnrecognizedFormatError(
+                            "Cannot read %r from %r, no %s reader found."
+                            % (format, file, into.__name__ if into else "generator")
+                        )
             if format is None:
                 pos_fmts = self._into_dict[into.__name__]
                 # print(pos_fmts)
-                for format in pos_fmts:
-                    mod_name = f"skbio.io.format.{format}"
-                    import_module(mod_name)
+                for i, format in enumerate(pos_fmts):
+                    if isinstance(format, str):
+                        mod_name = f"skbio.io.format.{format}"
+                        import_module(mod_name)
+
             return self._read_ret(file, format, into, verify, kwargs)
 
     def _read_ret(self, file, fmt, into, verify, kwargs):

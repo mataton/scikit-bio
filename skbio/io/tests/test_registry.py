@@ -876,6 +876,9 @@ class TestRead(RegistryTest):
         def reader(fh):
             self.assertIsInstance(fh, io.TextIOBase)
             return MockClass([int(x) for x in fh.read().split('\n')])
+        
+        print("Current _into_dict:", self.registry._into_dict)
+        print("Current _readers for 'format1':", format1._readers)
 
         instance = self.registry.read(fh, into=MockClass)
         self.assertEqual(MockClass([1, 2, 3, 4]), instance)
@@ -1759,4 +1762,4 @@ class TestModuleFunctions(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(buffer=False)
