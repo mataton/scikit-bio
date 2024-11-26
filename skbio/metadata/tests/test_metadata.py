@@ -557,6 +557,51 @@ class TestRepr(unittest.TestCase):
             "c:                  ColumnProperties(type='categorical',"
             " missing_scheme='blank')", obs)
 
+class TestStr(unittest.TestCase):
+    def test_singular(self):
+        md = SampleMetadata(pd.DataFrame({'col1': [42]},
+                                   index=pd.Index(['a'], name='id')))
+
+        obs = str(md)
+
+        self.assertIn('Metadata', obs)
+        self.assertIn('1 ID x 1 column', obs)
+        self.assertIn("col1: ColumnProperties(type='numeric',"
+                      " missing_scheme='blank')", obs)
+
+    def test_plural(self):
+        md = SampleMetadata(pd.DataFrame({'col1': [42, 42], 'col2': ['foo', 'bar']},
+                                   index=pd.Index(['a', 'b'], name='id')))
+
+        obs = str(md)
+
+        self.assertIn('Metadata', obs)
+        self.assertIn('2 IDs x 2 columns', obs)
+        self.assertIn("col1: ColumnProperties(type='numeric',"
+                      " missing_scheme='blank')", obs)
+        self.assertIn("col2: ColumnProperties(type='categorical',"
+                      " missing_scheme='blank')", obs)
+
+    def test_column_name_padding(self):
+        data = [[0, 42, 'foo']]
+        index = pd.Index(['my-id'], name='id')
+        columns = ['col1', 'longer-column-name', 'c']
+        md = SampleMetadata(pd.DataFrame(data, index=index, columns=columns))
+
+        obs = str(md)
+
+        self.assertIn('Metadata', obs)
+        self.assertIn('1 ID x 3 columns', obs)
+        self.assertIn(
+            "col1:               ColumnProperties(type='numeric',"
+            " missing_scheme='blank')", obs)
+        self.assertIn(
+            "longer-column-name: ColumnProperties(type='numeric',"
+            " missing_scheme='blank')", obs)
+        self.assertIn(
+            "c:                  ColumnProperties(type='categorical',"
+            " missing_scheme='blank')", obs)
+
 
 class TestToDataframe(unittest.TestCase):
     def test_minimal(self):
