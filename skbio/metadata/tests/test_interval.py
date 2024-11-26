@@ -134,6 +134,21 @@ class TestInterval(unittest.TestCase, ReallyEqualMixin):
         obs = repr(f)
         self.assertRegex(obs, exp)
 
+    def test_str(self):
+        f = Interval(interval_metadata=self.im,
+                     bounds=[(1, 2)],
+                     metadata={'name': 'sagA'})
+        exp = (r"Interval\(interval_metadata=<[0-9]+>, bounds=\[\(1, 2\)\],"
+               r" fuzzy=\[\(False, False\)\], metadata={'name': 'sagA'}\)")
+        obs = str(f)
+        self.assertRegex(obs, exp)
+        # test for dropped
+        f.drop()
+        exp = (r"Interval\(dropped=True, bounds=\[\(1, 2\)\],"
+               r" fuzzy=\[\(False, False\)\], metadata={'name': 'sagA'}\)")
+        obs = str(f)
+        self.assertRegex(obs, exp)
+
     def test_drop(self):
         f = Interval(interval_metadata=self.im,
                      bounds=[(1, 2)],
@@ -789,6 +804,37 @@ class TestIntervalMetadata(unittest.TestCase, ReallyEqualMixin):
                r"Interval\(interval_metadata=<[0-9]+>, bounds=\[\(3, 4\)\], "
                r"fuzzy=\[\(False, False\)\], metadata={'gene': 'sagF'}\)")
         self.assertRegex(repr(self.im_empty), exp)
+
+    def test_str(self):
+        exp = '''0 interval features
+-------------------'''
+        self.assertEqual(str(self.im_empty), exp)
+
+        self.im_empty.add([(1, 2)], metadata={'gene': 'sagA'})
+
+        exp = ("1 interval feature\n"
+               "------------------\n"
+               r"Interval\(interval_metadata=<[0-9]+>, bounds=\[\(1, 2\)\], "
+               r"fuzzy=\[\(False, False\)\], metadata={'gene': 'sagA'}\)")
+        self.assertRegex(str(self.im_empty), exp)
+
+        self.im_empty.add([(3, 4)], metadata={'gene': 'sagB'})
+        self.im_empty.add([(3, 4)], metadata={'gene': 'sagC'})
+        self.im_empty.add([(3, 4)], metadata={'gene': 'sagD'})
+        self.im_empty.add([(3, 4)], metadata={'gene': 'sagE'})
+        self.im_empty.add([(3, 4)], metadata={'gene': 'sagF'})
+        exp = ("6 interval features\n"
+               "-------------------\n"
+               r"Interval\(interval_metadata=<[0-9]+>, bounds=\[\(1, 2\)\], "
+               r"fuzzy=\[\(False, False\)\], metadata={'gene': 'sagA'}\)\n"
+               r"Interval\(interval_metadata=<[0-9]+>, bounds=\[\(3, 4\)\], "
+               r"fuzzy=\[\(False, False\)\], metadata={'gene': 'sagB'}\)\n"
+               r"...\n"
+               r"Interval\(interval_metadata=<[0-9]+>, bounds=\[\(3, 4\)\], "
+               r"fuzzy=\[\(False, False\)\], metadata={'gene': 'sagE'}\)\n"
+               r"Interval\(interval_metadata=<[0-9]+>, bounds=\[\(3, 4\)\], "
+               r"fuzzy=\[\(False, False\)\], metadata={'gene': 'sagF'}\)")
+        self.assertRegex(str(self.im_empty), exp)
 
 
 if __name__ == '__main__':
