@@ -20,6 +20,7 @@ import skbio.metadata.missing as _missing
 from skbio.util import find_duplicates
 from .base import SUPPORTED_COLUMN_TYPES, FORMATTED_ID_HEADERS, is_id_header
 from skbio.io.registry import Read, Write
+from skbio._base import SkbioObject
 
 
 DEFAULT_MISSING = _missing.DEFAULT_MISSING
@@ -238,7 +239,7 @@ ColumnProperties = collections.namedtuple(
 )
 
 
-class SampleMetadata(_MetadataBase):
+class SampleMetadata(_MetadataBase, SkbioObject):
     """Store metadata associated with identifiers in a study.
 
     Metadata is tabular in nature, mapping study identifiers (e.g. sample or
@@ -522,6 +523,10 @@ class SampleMetadata(_MetadataBase):
         lines.append("Call to_dataframe() for a tabular representation.")
 
         return "\n".join(lines)
+
+    def __str__(self):
+        # TODO: Possibly revisit this functionality. See issue #2139 on github.
+        return self.__repr__()
 
     def __eq__(self, other):
         """Determine if this metadata is equal to another.
@@ -909,7 +914,7 @@ class SampleMetadata(_MetadataBase):
         return filtered_md
 
 
-class MetadataColumn(_MetadataBase, metaclass=abc.ABCMeta):
+class MetadataColumn(_MetadataBase, SkbioObject, metaclass=abc.ABCMeta):
     """Abstract base class representing a single metadata column.
 
     Concrete subclasses represent specific metadata column types, e.g.
@@ -1022,6 +1027,10 @@ class MetadataColumn(_MetadataBase, metaclass=abc.ABCMeta):
             self.name,
             self.id_count,
         )
+
+    def __str__(self):
+        # TODO: Possibly revisit this functionality. See issue #2139 on github.
+        return self.__repr__()
 
     def __eq__(self, other):
         """Determine if this metadata column is equal to another.

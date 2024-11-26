@@ -13,9 +13,10 @@ import functools
 from ._intersection import IntervalTree
 from skbio.util._decorator import classonlymethod
 from skbio.io.registry import Read, Write
+from skbio._base import SkbioObject
 
 
-class Interval:
+class Interval(SkbioObject):
     """Stores the bounds and metadata of an interval feature.
 
     This class stores an interval feature. An interval feature
@@ -183,6 +184,10 @@ fuzzy=[(False, False), (False, False)], metadata={'name': 'genA'})
                 self.fuzzy,
                 self.metadata,
             )
+
+    def __str__(self):
+        # TODO: Possibly revisit this functionality. See issue #2139 on github.
+        return self.__repr__()
 
     def drop(self):
         """Drop this ``Interval`` object from interval metadata it links to.
@@ -389,7 +394,7 @@ fuzzy=[(False, False), (False, False)], metadata={'name': 'genA'})
         return self._interval_metadata is None
 
 
-class IntervalMetadata:
+class IntervalMetadata(SkbioObject):
     """Stores the interval features.
 
     ``IntervalMetadata`` object allows storage, modification, and
@@ -958,6 +963,10 @@ fuzzy=[(True, True)], metadata={'gene': 'sagB'})
             items[2] = "..."
 
         return "\n".join([l1, l2] + items)
+
+    def __str__(self):
+        # TODO: Possibly revisit this functionality. See issue #2139 on github.
+        return self.__repr__()
 
     def __copy__(self):
         """Return a shallow copy.
