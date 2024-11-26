@@ -29,7 +29,7 @@ Functions
 # ----------------------------------------------------------------------------
 
 import numpy as np
-import scipy.spatial.distance
+from scipy.spatial.distance import hamming as sp_hamming
 
 import skbio
 
@@ -98,7 +98,7 @@ def hamming(seq1, seq2):
     if not seq1:
         distance = np.nan
     else:
-        distance = scipy.spatial.distance.hamming(seq1.values, seq2.values)
+        distance = sp_hamming(seq1.values, seq2.values)
 
     return float(distance)
 

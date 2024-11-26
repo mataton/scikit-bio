@@ -141,12 +141,14 @@ References
 # ----------------------------------------------------------------------------
 
 from warnings import warn, catch_warnings, simplefilter
+from importlib import import_module
 
 import numpy as np
 import pandas as pd
-import scipy.stats
+
+# import scipy.stats
 from scipy.sparse import coo_matrix
-from scipy.stats import t, gmean
+from scipy.stats import gmean
 from statsmodels.stats.weightstats import CompareMeans
 
 from skbio.stats.distance import DistanceMatrix
@@ -1683,9 +1685,15 @@ def _log_compare(mat, cats, test="ttest_ind"):
 
     if isinstance(test, str):
         try:
-            test = getattr(scipy.stats, test)
+            mod = import_module("scipy.stats")
+            return getattr(mod, test)
         except AttributeError:
-            raise ValueError(f'Function "{test}" does not exist under scipy.stats.')
+            raise ValueError(f"Function '{test}' does not exist under scipy.stats.")
+
+        # try:
+        #     test = getattr(scipy.stats, test)
+        # except AttributeError:
+        #     raise ValueError(f'Function "{test}" does not exist under scipy.stats.')
 
     def func(x):
         return test(*[x[cats == k] for k in cs])

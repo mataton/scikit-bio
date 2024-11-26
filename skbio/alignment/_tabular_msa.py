@@ -11,7 +11,7 @@ import copy
 
 import numpy as np
 import pandas as pd
-import scipy.stats
+from scipy.stats import entropy
 
 from skbio._base import SkbioObject
 from skbio.metadata._mixin import MetadataMixin, PositionalMetadataMixin
@@ -1430,7 +1430,7 @@ class TabularMSA(MetadataMixin, PositionalMetadataMixin, SkbioObject):
 
         def f(p):
             freqs = list(p.frequencies().values())
-            return 1.0 - scipy.stats.entropy(freqs, base=base)
+            return 1.0 - entropy(freqs, base=base)
 
         return f
 

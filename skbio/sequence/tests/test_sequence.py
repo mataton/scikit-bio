@@ -17,7 +17,7 @@ from unittest import TestCase, main
 import numpy as np
 import numpy.testing as npt
 import pandas as pd
-import scipy.spatial.distance
+from scipy.spatial.distance import hamming as sp_hamming
 
 import skbio.sequence.distance
 from skbio import Sequence, DNA, SubstitutionMatrix
@@ -2541,12 +2541,12 @@ class TestDistance(TestSequenceBase):
         for seqs in seqs1, seqs2:
             for seq1, seq2 in itertools.product(seqs, repeat=2):
                 distance = seq1.distance(seq2,
-                                         metric=scipy.spatial.distance.hamming)
+                                         metric=sp_hamming)
                 self.assertEqual(distance, 0.0)
 
         for seq1, seq2 in itertools.product(seqs1, seqs2):
             distance = seq1.distance(seq2,
-                                     metric=scipy.spatial.distance.hamming)
+                                     metric=sp_hamming)
             self.assertEqual(distance, 0.75)
 
     def test_default_metric_with_metadata(self):
