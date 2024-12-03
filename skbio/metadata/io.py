@@ -13,7 +13,6 @@ import os.path
 import re
 
 import numpy as np
-import pandas as pd
 
 from skbio.io._fileobject import SaneTextIOWrapper
 from skbio.util import find_duplicates
@@ -113,6 +112,7 @@ class MetadataReader:
             )
         finally:
             self._reader = None
+        import pandas as pd
 
         index = pd.Index(ids, name=header[0], dtype=object)
         df = pd.DataFrame(data, columns=header[1:], index=index, dtype=object)
@@ -411,6 +411,8 @@ class MetadataReader:
         series = series.replace("", np.nan)
         is_numeric = series.apply(self._is_numeric)
         if is_numeric.all():
+            import pandas as pd
+
             return pd.to_numeric(series, errors="raise")
         else:
             non_numerics = series[~is_numeric].unique()

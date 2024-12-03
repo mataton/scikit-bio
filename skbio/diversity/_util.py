@@ -9,7 +9,6 @@
 import collections.abc
 
 import numpy as np
-import pandas as pd
 
 from skbio.tree import DuplicateNodeError, MissingNodeError
 from skbio.diversity._phylogenetic import _nodes_by_counts
@@ -99,6 +98,7 @@ def _validate_counts_matrix(counts, ids=None, cast_int=False):
 
     """
     lenerr = "Number of rows in `counts` must be equal to number of provided `ids`."
+    import pandas as pd
 
     # handle pandas data frame
     if isinstance(counts, pd.DataFrame):

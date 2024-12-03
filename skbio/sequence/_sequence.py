@@ -12,7 +12,6 @@ import numbers
 from contextlib import contextmanager
 
 import numpy as np
-import pandas as pd
 
 import skbio.sequence.distance
 from skbio._base import SkbioObject
@@ -576,6 +575,7 @@ fuzzy=[(True, False)], metadata={'gene': 'foo'})
             pm_data.append(seq.positional_metadata)
             if not seq.has_positional_metadata():
                 del seq.positional_metadata
+        import pandas as pd
 
         pm = pd.concat(pm_data, join=how, ignore_index=True, sort=True)
         bytes_ = np.concatenate(seq_data)
@@ -931,6 +931,8 @@ fuzzy=[(True, False)], metadata={'gene': 'foo'})
                         pos_md_slices = list(
                             _slices_from_iter(self.positional_metadata, index)
                         )
+                        import pandas as pd
+
                         positional_metadata = pd.concat(pos_md_slices, sort=True)
 
                     metadata = None

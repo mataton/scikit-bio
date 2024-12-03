@@ -9,7 +9,6 @@
 from itertools import combinations
 
 import numpy as np
-import pandas as pd
 from scipy.spatial.distance import pdist
 from scipy.stats import spearmanr
 
@@ -145,6 +144,8 @@ def bioenv(distance_matrix, data_frame, columns=None):
     with the community distances (:math:`\rho=0.771517`).
 
     """
+    import pandas as pd
+
     if not isinstance(distance_matrix, DistanceMatrix):
         raise TypeError("Must provide a DistanceMatrix as input.")
     if not isinstance(data_frame, pd.DataFrame):

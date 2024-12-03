@@ -11,7 +11,6 @@ import copy
 
 import numpy as np
 import pandas as pd
-from scipy.stats import entropy
 
 from skbio._base import SkbioObject
 from skbio.metadata._mixin import MetadataMixin, PositionalMetadataMixin
@@ -1422,6 +1421,8 @@ class TabularMSA(MetadataMixin, PositionalMetadataMixin, SkbioObject):
         return dtype("".join(consensus), positional_metadata=positional_metadata)
 
     def _build_inverse_shannon_uncertainty_f(self, include_gaps):
+        import scipy.stats
+
         base = len(self.dtype.definite_chars)
         if include_gaps:
             # Increment the base by one to reflect the possible inclusion of
@@ -1430,7 +1431,7 @@ class TabularMSA(MetadataMixin, PositionalMetadataMixin, SkbioObject):
 
         def f(p):
             freqs = list(p.frequencies().values())
-            return 1.0 - entropy(freqs, base=base)
+            return 1.0 - scipy.stats.entropy(freqs, base=base)
 
         return f
 

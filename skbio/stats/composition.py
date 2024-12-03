@@ -146,7 +146,6 @@ from importlib import import_module
 import numpy as np
 import pandas as pd
 
-# import scipy.stats
 from scipy.sparse import coo_matrix
 from scipy.stats import gmean
 from statsmodels.stats.weightstats import CompareMeans
@@ -1678,6 +1677,8 @@ def _log_compare(mat, cats, test="ttest_ind"):
         If specified test name is not a function under ``scipy.stats``.
 
     """
+    import scipy.stats
+
     c = mat.shape[1]
     log_ratio = np.zeros((c, c))
     log_mat = np.log(mat)
@@ -1685,15 +1686,9 @@ def _log_compare(mat, cats, test="ttest_ind"):
 
     if isinstance(test, str):
         try:
-            mod = import_module("scipy.stats")
-            return getattr(mod, test)
+            test = getattr(scipy.stats, test)
         except AttributeError:
-            raise ValueError(f"Function '{test}' does not exist under scipy.stats.")
-
-        # try:
-        #     test = getattr(scipy.stats, test)
-        # except AttributeError:
-        #     raise ValueError(f'Function "{test}" does not exist under scipy.stats.')
+            raise ValueError(f'Function "{test}" does not exist under scipy.stats.')
 
     def func(x):
         return test(*[x[cats == k] for k in cs])

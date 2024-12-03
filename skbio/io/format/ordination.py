@@ -187,7 +187,6 @@ Load the ordination results from the file:
 # ----------------------------------------------------------------------------
 
 import numpy as np
-import pandas as pd
 
 from skbio.stats.ordination import OrdinationResults
 from skbio.io import create_format, OrdinationFormatError
@@ -308,6 +307,8 @@ def _parse_vector_section(fh, header_id):
         # The ordination method didn't generate the vector, so set it to None
         vals = None
     else:
+        import pandas as pd
+
         # Parse the line with the vector values
         line = next(fh, None)
         if line is None:
@@ -344,6 +345,8 @@ def _parse_array_section(fh, header_id, has_ids=True):
             "One dimension of %s is 0: %d x %d" % (header_id, rows, cols)
         )
     else:
+        import pandas as pd
+
         # Parse the data
         data = np.empty((rows, cols), dtype=np.float64)
 

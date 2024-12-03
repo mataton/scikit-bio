@@ -7,7 +7,6 @@
 # ----------------------------------------------------------------------------
 
 import numpy as np
-import pandas as pd
 from scipy.linalg import svd
 
 from skbio.sequence import Sequence
@@ -329,6 +328,8 @@ def embed_vec_to_ordination(vectors, validate=True):
     skbio.stats.ordination.OrdinationResults
 
     """
+    import pandas as pd
+
     data = embed_vec_to_numpy(vectors, validate=validate)
     u, s, vh = svd(data, full_matrices=False)
     eigvals = s**2
@@ -372,5 +373,7 @@ def embed_vec_to_dataframe(vectors, validate=True):
     pd.DataFrame
 
     """
+    import pandas as pd
+
     data = embed_vec_to_numpy(vectors, validate=validate)
     return pd.DataFrame(data, index=[str(ev) for ev in vectors])

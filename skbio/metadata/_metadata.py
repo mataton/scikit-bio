@@ -13,7 +13,6 @@ import sqlite3
 import types
 import warnings
 
-import pandas as pd
 import numpy as np
 
 import skbio.metadata.missing as _missing
@@ -430,6 +429,8 @@ class SampleMetadata(_MetadataBase):
         column_missing_schemes=None,
         default_missing_scheme=DEFAULT_MISSING,
     ):
+        import pandas as pd
+
         if not isinstance(dataframe, pd.DataFrame):
             raise TypeError(
                 "%s constructor requires a pandas.DataFrame object, not "
@@ -765,6 +766,8 @@ class SampleMetadata(_MetadataBase):
         ``Metadata`` objects being merged.
 
         """
+        import pandas as pd
+
         if len(others) < 1:
             raise ValueError(
                 "At least one Metadata object must be provided to merge into "
@@ -990,6 +993,8 @@ class MetadataColumn(_MetadataBase, metaclass=abc.ABCMeta):
         return self._missing_scheme
 
     def __init__(self, series, missing_scheme=DEFAULT_MISSING):
+        import pandas as pd
+
         if not isinstance(series, pd.Series):
             raise TypeError(
                 "%s constructor requires a pandas.Series object, not %r"
@@ -1273,6 +1278,8 @@ class CategoricalMetadataColumn(MetadataColumn):
     @classmethod
     def _normalize_(cls, series):
         def normalize(value):
+            import pandas as pd
+
             if isinstance(value, str):
                 value = value.strip()
                 if value == "":

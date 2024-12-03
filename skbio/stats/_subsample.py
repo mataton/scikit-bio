@@ -12,7 +12,6 @@ from collections import defaultdict
 from copy import copy
 
 import numpy as np
-from scipy.sparse import csr_matrix
 from skbio.util import get_rng
 
 from biom import subsample as biom_subsample
@@ -229,6 +228,8 @@ def subsample_counts(counts, n, replace=False, seed=None):
     (8,)
 
     """
+    import scipy.sparse
+
     if n < 0:
         raise ValueError("n cannot be negative.")
 
@@ -239,7 +240,7 @@ def subsample_counts(counts, n, replace=False, seed=None):
         raise ValueError("Only 1-D vectors are supported.")
 
     # csr_matrix will report ndim of 2 if vector
-    counts = csr_matrix(counts)
+    counts = scipy.sparse.csr_matrix(counts)
 
     counts_sum = counts.sum()
     if n > counts_sum and not replace:

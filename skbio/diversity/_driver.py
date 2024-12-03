@@ -11,7 +11,6 @@ from itertools import chain
 from warnings import warn
 
 import numpy as np
-import pandas as pd
 from scipy.spatial.distance import pdist
 
 import skbio
@@ -173,6 +172,8 @@ def alpha_diversity(metric, counts, ids=None, validate=True, **kwargs):
     skbio.diversity.beta_diversity
 
     """
+    import pandas as pd
+
     if isinstance(counts, skbio.Table):
         counts, ids = _validate_table(counts, ids, kwargs)
 
@@ -425,6 +426,8 @@ def beta_diversity(
     sklearn.metrics.pairwise_distances
 
     """
+    import pandas as pd
+
     if isinstance(counts, skbio.Table):
         counts, ids = _validate_table(counts, ids, kwargs)
 

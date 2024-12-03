@@ -29,7 +29,6 @@ Functions
 # ----------------------------------------------------------------------------
 
 import numpy as np
-from scipy.spatial.distance import hamming as sp_hamming
 
 import skbio
 
@@ -84,6 +83,7 @@ def hamming(seq1, seq2):
 
     """
     _check_seqs(seq1, seq2)
+    import scipy.spatial.distance
 
     # Hamming requires equal length sequences. We are checking this here
     # because the error you would get otherwise is cryptic.
@@ -98,7 +98,7 @@ def hamming(seq1, seq2):
     if not seq1:
         distance = np.nan
     else:
-        distance = sp_hamming(seq1.values, seq2.values)
+        distance = scipy.spatial.distance.hamming(seq1.values, seq2.values)
 
     return float(distance)
 

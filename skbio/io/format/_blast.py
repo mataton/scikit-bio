@@ -9,7 +9,6 @@
 import functools
 import contextlib
 
-import pandas as pd
 
 _possible_columns = {
     "qseqid": str,
@@ -60,6 +59,8 @@ _possible_columns = {
 
 
 def _parse_blast_data(fh, columns, error, error_message, comment=None, skiprows=None):
+    import pandas as pd
+
     read_csv = functools.partial(
         pd.read_csv,
         na_values="N/A",

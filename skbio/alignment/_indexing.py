@@ -10,7 +10,6 @@ from abc import ABCMeta, abstractmethod
 import collections.abc
 
 import numpy as np
-import pandas as pd
 
 
 class _Indexing(metaclass=ABCMeta):
@@ -167,6 +166,8 @@ class TabularMSALoc(_Indexing):
         if not isinstance(indexable, collections.abc.Hashable):
             return False
         if axis == 0 and self._has_fancy_index():
+            import pandas as pd
+
             try:
                 if type(indexable) is tuple:
                     complete_key = (
@@ -192,6 +193,8 @@ class TabularMSALoc(_Indexing):
         return obj._get_sequence_loc_(indexable)
 
     def _slice_sequences(self, obj, indexable):
+        import pandas as pd
+
         self._assert_tuple_rules(indexable)
         if (
             self._has_fancy_index()

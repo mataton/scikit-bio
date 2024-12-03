@@ -16,7 +16,7 @@ import types
 import numpy as np
 import numpy.testing as npt
 import pandas as pd
-from scipy.stats import entropy
+import scipy.stats
 
 from skbio import Sequence, DNA, RNA, Protein, TabularMSA
 from skbio.alignment import AlignPath
@@ -3051,7 +3051,7 @@ class TestConservation(unittest.TestCase):
         msa = TabularMSA([DNA('A'),
                           DNA('G')])
         actual = msa.conservation(metric='inverse_shannon_uncertainty')
-        expected = np.array([1. - entropy([0.5, 0.5], base=4)])
+        expected = np.array([1. - scipy.stats.entropy([0.5, 0.5], base=4)])
         npt.assert_array_equal(actual, expected)
 
         msa = TabularMSA([DNA('A'),
@@ -3059,32 +3059,32 @@ class TestConservation(unittest.TestCase):
                           DNA('C'),
                           DNA('G')])
         actual = msa.conservation(metric='inverse_shannon_uncertainty')
-        expected = np.array([1. - entropy([0.5, 0.25, 0.25],
+        expected = np.array([1. - scipy.stats.entropy([0.5, 0.25, 0.25],
                                                       base=4)])
         npt.assert_array_equal(actual, expected)
 
         msa = TabularMSA([DNA('AAC'),
                           DNA('GAC')])
         actual = msa.conservation(metric='inverse_shannon_uncertainty')
-        expected = np.array([1. - entropy([0.5, 0.5], base=4),
-                             1. - entropy([1.0], base=4),
-                             1. - entropy([1.0], base=4)])
+        expected = np.array([1. - scipy.stats.entropy([0.5, 0.5], base=4),
+                             1. - scipy.stats.entropy([1.0], base=4),
+                             1. - scipy.stats.entropy([1.0], base=4)])
         npt.assert_array_equal(actual, expected)
 
         msa = TabularMSA([DNA('AACT'),
                           DNA('GACA')])
         actual = msa.conservation(metric='inverse_shannon_uncertainty')
-        expected = np.array([1. - entropy([0.5, 0.5], base=4),
-                             1. - entropy([1.0], base=4),
-                             1. - entropy([1.0], base=4),
-                             1. - entropy([0.5, 0.5], base=4)])
+        expected = np.array([1. - scipy.stats.entropy([0.5, 0.5], base=4),
+                             1. - scipy.stats.entropy([1.0], base=4),
+                             1. - scipy.stats.entropy([1.0], base=4),
+                             1. - scipy.stats.entropy([0.5, 0.5], base=4)])
         npt.assert_array_equal(actual, expected)
 
     def test_shannon_entropy_rna(self):
         msa = TabularMSA([RNA('A'),
                           RNA('G')])
         actual = msa.conservation(metric='inverse_shannon_uncertainty')
-        expected = np.array([1. - entropy([0.5, 0.5], base=4)])
+        expected = np.array([1. - scipy.stats.entropy([0.5, 0.5], base=4)])
         npt.assert_array_equal(actual, expected)
 
         msa = TabularMSA([RNA('A'),
@@ -3092,32 +3092,32 @@ class TestConservation(unittest.TestCase):
                           RNA('C'),
                           RNA('G')])
         actual = msa.conservation(metric='inverse_shannon_uncertainty')
-        expected = np.array([1. - entropy([0.5, 0.25, 0.25],
+        expected = np.array([1. - scipy.stats.entropy([0.5, 0.25, 0.25],
                                                       base=4)])
         npt.assert_array_equal(actual, expected)
 
         msa = TabularMSA([RNA('AAC'),
                           RNA('GAC')])
         actual = msa.conservation(metric='inverse_shannon_uncertainty')
-        expected = np.array([1. - entropy([0.5, 0.5], base=4),
-                             1. - entropy([1.0], base=4),
-                             1. - entropy([1.0], base=4)])
+        expected = np.array([1. - scipy.stats.entropy([0.5, 0.5], base=4),
+                             1. - scipy.stats.entropy([1.0], base=4),
+                             1. - scipy.stats.entropy([1.0], base=4)])
         npt.assert_array_equal(actual, expected)
 
         msa = TabularMSA([RNA('AACU'),
                           RNA('GACA')])
         actual = msa.conservation(metric='inverse_shannon_uncertainty')
-        expected = np.array([1. - entropy([0.5, 0.5], base=4),
-                             1. - entropy([1.0], base=4),
-                             1. - entropy([1.0], base=4),
-                             1. - entropy([0.5, 0.5], base=4)])
+        expected = np.array([1. - scipy.stats.entropy([0.5, 0.5], base=4),
+                             1. - scipy.stats.entropy([1.0], base=4),
+                             1. - scipy.stats.entropy([1.0], base=4),
+                             1. - scipy.stats.entropy([0.5, 0.5], base=4)])
         npt.assert_array_equal(actual, expected)
 
     def test_shannon_entropy_protein(self):
         msa = TabularMSA([Protein('A'),
                           Protein('G')])
         actual = msa.conservation(metric='inverse_shannon_uncertainty')
-        expected = np.array([1. - entropy([0.5, 0.5], base=22)])
+        expected = np.array([1. - scipy.stats.entropy([0.5, 0.5], base=22)])
         npt.assert_array_equal(actual, expected)
 
         msa = TabularMSA([Protein('A'),
@@ -3125,25 +3125,25 @@ class TestConservation(unittest.TestCase):
                           Protein('C'),
                           Protein('G')])
         actual = msa.conservation(metric='inverse_shannon_uncertainty')
-        expected = np.array([1. - entropy([0.5, 0.25, 0.25],
+        expected = np.array([1. - scipy.stats.entropy([0.5, 0.25, 0.25],
                                                       base=22)])
         npt.assert_array_equal(actual, expected)
 
         msa = TabularMSA([Protein('AAC'),
                           Protein('GAC')])
         actual = msa.conservation(metric='inverse_shannon_uncertainty')
-        expected = np.array([1. - entropy([0.5, 0.5], base=22),
-                             1. - entropy([1.0], base=22),
-                             1. - entropy([1.0], base=22)])
+        expected = np.array([1. - scipy.stats.entropy([0.5, 0.5], base=22),
+                             1. - scipy.stats.entropy([1.0], base=22),
+                             1. - scipy.stats.entropy([1.0], base=22)])
         npt.assert_array_equal(actual, expected)
 
         msa = TabularMSA([Protein('AACT'),
                           Protein('GACA')])
         actual = msa.conservation(metric='inverse_shannon_uncertainty')
-        expected = np.array([1. - entropy([0.5, 0.5], base=22),
-                             1. - entropy([1.0], base=22),
-                             1. - entropy([1.0], base=22),
-                             1. - entropy([0.5, 0.5], base=22)])
+        expected = np.array([1. - scipy.stats.entropy([0.5, 0.5], base=22),
+                             1. - scipy.stats.entropy([1.0], base=22),
+                             1. - scipy.stats.entropy([1.0], base=22),
+                             1. - scipy.stats.entropy([0.5, 0.5], base=22)])
         npt.assert_array_equal(actual, expected)
 
     def test_degenerate_mode_nan(self):
@@ -3153,7 +3153,7 @@ class TestConservation(unittest.TestCase):
                                   degenerate_mode='nan')
         expected = np.array([np.nan,
                              np.nan,
-                             1. - entropy([1.0], base=4)])
+                             1. - scipy.stats.entropy([1.0], base=4)])
         npt.assert_array_equal(actual, expected)
 
     def test_degenerate_mode_error(self):
@@ -3228,7 +3228,7 @@ class TestConservation(unittest.TestCase):
                                   gap_mode='nan')
         expected = np.array([np.nan,
                              np.nan,
-                             1. - entropy([1.0], base=4),
+                             1. - scipy.stats.entropy([1.0], base=4),
                              np.nan])
         npt.assert_array_equal(actual, expected)
 
@@ -3237,16 +3237,16 @@ class TestConservation(unittest.TestCase):
                           DNA('-G')])
         actual = msa.conservation(metric='inverse_shannon_uncertainty',
                                   gap_mode='include')
-        expected = np.array([1. - entropy([0.5, 0.5], base=5),
-                             1. - entropy([0.5, 0.5], base=5)])
+        expected = np.array([1. - scipy.stats.entropy([0.5, 0.5], base=5),
+                             1. - scipy.stats.entropy([0.5, 0.5], base=5)])
         npt.assert_array_equal(actual, expected)
 
         msa = TabularMSA([DNA('AC'),
                           DNA('.G')])
         actual = msa.conservation(metric='inverse_shannon_uncertainty',
                                   gap_mode='include')
-        expected = np.array([1. - entropy([0.5, 0.5], base=5),
-                             1. - entropy([0.5, 0.5], base=5)])
+        expected = np.array([1. - scipy.stats.entropy([0.5, 0.5], base=5),
+                             1. - scipy.stats.entropy([0.5, 0.5], base=5)])
         npt.assert_array_equal(actual, expected)
 
     def test_gap_mode_include_gaps_treated_as_single_char(self):
@@ -3254,7 +3254,7 @@ class TestConservation(unittest.TestCase):
                           DNA('-')])
         actual = msa.conservation(metric='inverse_shannon_uncertainty',
                                   gap_mode='include')
-        expected = np.array([1. - entropy([1.0], base=5)])
+        expected = np.array([1. - scipy.stats.entropy([1.0], base=5)])
         npt.assert_array_equal(actual, expected)
 
     def test_gap_mode_ignore(self):
@@ -3262,16 +3262,16 @@ class TestConservation(unittest.TestCase):
                           DNA('-G')])
         actual = msa.conservation(metric='inverse_shannon_uncertainty',
                                   gap_mode='ignore')
-        expected = np.array([1. - entropy([1.0], base=4),
-                             1. - entropy([0.5, 0.5], base=4)])
+        expected = np.array([1. - scipy.stats.entropy([1.0], base=4),
+                             1. - scipy.stats.entropy([0.5, 0.5], base=4)])
         npt.assert_array_equal(actual, expected)
 
         msa = TabularMSA([DNA('AC'),
                           DNA('.G')])
         actual = msa.conservation(metric='inverse_shannon_uncertainty',
                                   gap_mode='ignore')
-        expected = np.array([1. - entropy([1.0], base=4),
-                             1. - entropy([0.5, 0.5], base=4)])
+        expected = np.array([1. - scipy.stats.entropy([1.0], base=4),
+                             1. - scipy.stats.entropy([0.5, 0.5], base=4)])
         npt.assert_array_equal(actual, expected)
 
     def test_gap_mode_error(self):
