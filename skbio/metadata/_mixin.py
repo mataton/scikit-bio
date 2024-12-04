@@ -9,7 +9,7 @@
 import abc
 import copy
 
-import pandas as pd
+from skbio.dependencies import pandas as pd
 
 from skbio.metadata import IntervalMetadata
 

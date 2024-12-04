@@ -7,7 +7,7 @@
 # ----------------------------------------------------------------------------
 
 import numpy as np
-import pandas as pd
+from skbio.dependencies import pandas as pd
 from scipy.linalg import svd
 
 from skbio.sequence import Sequence

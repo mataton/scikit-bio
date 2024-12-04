@@ -9,7 +9,7 @@
 from itertools import combinations
 
 import numpy as np
-import pandas as pd
+from skbio.dependencies import pandas as pd
 from scipy.spatial.distance import pdist
 from scipy.stats import spearmanr
 

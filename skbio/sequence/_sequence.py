@@ -12,7 +12,7 @@ import numbers
 from contextlib import contextmanager
 
 import numpy as np
-import pandas as pd
+from skbio.dependencies import pandas as pd
 
 import skbio.sequence.distance
 from skbio._base import SkbioObject

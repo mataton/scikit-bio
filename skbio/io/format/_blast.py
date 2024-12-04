@@ -9,7 +9,7 @@
 import functools
 import contextlib
 
-import pandas as pd
+from skbio.dependencies import pandas as pd
 
 _possible_columns = {
     "qseqid": str,

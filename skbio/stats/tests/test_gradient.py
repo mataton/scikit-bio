@@ -11,7 +11,7 @@ from operator import attrgetter
 from unittest import TestCase, main
 
 import numpy as np
-import pandas as pd
+from skbio.dependencies import pandas as pd
 import numpy.testing as npt
 import pandas.testing as pdt
 

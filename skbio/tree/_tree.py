@@ -13,7 +13,7 @@ from itertools import chain, combinations
 from collections import defaultdict, deque
 
 import numpy as np
-import pandas as pd
+from skbio.dependencies import pandas as pd
 import scipy.spatial.distance as spdist
 
 from skbio._base import SkbioObject

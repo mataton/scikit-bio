@@ -143,7 +143,7 @@ References
 from warnings import warn, catch_warnings, simplefilter
 
 import numpy as np
-import pandas as pd
+from skbio.dependencies import pandas as pd
 import scipy.stats
 from scipy.sparse import coo_matrix
 from scipy.stats import t, gmean

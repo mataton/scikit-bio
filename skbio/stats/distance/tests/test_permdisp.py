@@ -11,7 +11,7 @@ from unittest import TestCase, main
 
 import numpy as np
 import numpy.testing as npt
-import pandas as pd
+from skbio.dependencies import pandas as pd
 from pandas.testing import assert_series_equal
 from scipy.stats import f_oneway, ConstantInputWarning
 

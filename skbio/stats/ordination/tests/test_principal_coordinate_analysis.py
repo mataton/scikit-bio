@@ -8,7 +8,7 @@
 
 import numpy as np
 import numpy.testing as npt
-import pandas as pd
+from skbio.dependencies import pandas as pd
 from copy import deepcopy
 from warnings import catch_warnings
 from unittest import TestCase, main

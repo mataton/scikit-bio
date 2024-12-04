@@ -10,7 +10,7 @@ from itertools import combinations
 
 import warnings
 import numpy as np
-import pandas as pd
+from skbio.dependencies import pandas as pd
 import scipy.special
 from scipy.stats import kendalltau
 from scipy.stats import ConstantInputWarning

@@ -12,7 +12,7 @@ import copy
 import numpy as np
 import numpy.testing as npt
 from numpy.random import normal
-import pandas as pd
+from skbio.dependencies import pandas as pd
 import pandas.testing as pdt
 from scipy.sparse import coo_matrix
 from scipy.stats import f_oneway, ConstantInputWarning

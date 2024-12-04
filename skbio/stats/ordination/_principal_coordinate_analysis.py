@@ -10,7 +10,7 @@ from numbers import Integral
 from warnings import warn
 
 import numpy as np
-import pandas as pd
+from skbio.dependencies import pandas as pd
 from numpy import dot, hstack
 from numpy.linalg import qr, svd
 from scipy.linalg import eigh

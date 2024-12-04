@@ -11,7 +11,7 @@ from functools import partial
 from unittest import TestCase, main
 
 import numpy as np
-import pandas as pd
+from skbio.dependencies import pandas as pd
 from pandas.testing import assert_series_equal
 
 from skbio import DistanceMatrix

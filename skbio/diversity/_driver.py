@@ -11,7 +11,7 @@ from itertools import chain
 from warnings import warn
 
 import numpy as np
-import pandas as pd
+from skbio.dependencies import pandas as pd
 from scipy.spatial.distance import pdist
 
 import skbio

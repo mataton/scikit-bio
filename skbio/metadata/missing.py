@@ -7,7 +7,7 @@
 # The full license is in the file LICENSE, distributed with this software.
 # ----------------------------------------------------------------------------
 
-import pandas as pd
+from skbio.dependencies import pandas as pd
 import numpy as np
 
 from ._enan import make_nan_with_payload as _make_nan_with_payload

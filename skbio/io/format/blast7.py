@@ -256,7 +256,7 @@ References
 # The full license is in the file LICENSE.txt, distributed with this software.
 # ----------------------------------------------------------------------------
 
-import pandas as pd
+from skbio.dependencies import pandas as pd
 
 from skbio.io import create_format, BLAST7FormatError
 from skbio.io.format._blast import _parse_blast_data

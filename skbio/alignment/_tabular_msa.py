@@ -10,7 +10,7 @@ import collections
 import copy
 
 import numpy as np
-import pandas as pd
+from skbio.dependencies import pandas as pd
 import scipy.stats
 
 from skbio._base import SkbioObject

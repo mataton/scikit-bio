@@ -15,7 +15,7 @@ import types
 
 import numpy as np
 import numpy.testing as npt
-import pandas as pd
+from skbio.dependencies import pandas as pd
 import scipy.stats
 
 from skbio import Sequence, DNA, RNA, Protein, TabularMSA

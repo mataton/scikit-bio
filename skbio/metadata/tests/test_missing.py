@@ -8,7 +8,7 @@
 
 import unittest
 
-import pandas as pd
+from skbio.dependencies import pandas as pd
 import pandas.testing as pdt
 import numpy as np
 

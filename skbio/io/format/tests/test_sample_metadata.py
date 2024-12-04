@@ -7,7 +7,7 @@
 # ----------------------------------------------------------------------------
 
 from unittest import TestCase, main
-import pandas as pd
+from skbio.dependencies import pandas as pd
 import tempfile
 import os
 

@@ -10,7 +10,7 @@ import itertools
 from copy import deepcopy
 
 import numpy as np
-import pandas as pd
+from skbio.dependencies import pandas as pd
 from scipy.spatial.distance import squareform
 
 from skbio._base import SkbioObject

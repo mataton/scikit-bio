@@ -6,7 +6,7 @@
 # The full license is in the file LICENSE.txt, distributed with this software.
 # ----------------------------------------------------------------------------
 
-import pandas as pd
+from skbio.dependencies import pandas as pd
 
 import io
 import unittest

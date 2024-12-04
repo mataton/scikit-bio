@@ -11,7 +11,7 @@ from io import StringIO
 import os
 
 import numpy as np
-import pandas as pd
+from skbio.dependencies import pandas as pd
 
 from skbio import TreeNode
 from skbio.util import get_data_path

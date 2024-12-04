@@ -8,7 +8,7 @@
 
 import unittest
 
-import pandas as pd
+from skbio.dependencies import pandas as pd
 import numpy as np
 
 from skbio.util import get_data_path, assert_data_frame_almost_equal

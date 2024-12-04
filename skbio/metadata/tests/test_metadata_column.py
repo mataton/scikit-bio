@@ -2,7 +2,7 @@ import os.path
 import tempfile
 import unittest
 
-import pandas as pd
+from skbio.dependencies import pandas as pd
 import numpy as np
 
 from skbio.metadata._metadata import (MetadataColumn, CategoricalMetadataColumn,

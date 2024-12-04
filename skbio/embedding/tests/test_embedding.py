@@ -10,7 +10,7 @@ from unittest import TestCase, main
 
 import numpy as np
 import numpy.testing as npt
-import pandas as pd
+from skbio.dependencies import pandas as pd
 from scipy.spatial.distance import euclidean
 
 from skbio.sequence import DNA, Protein

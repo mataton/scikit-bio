@@ -8,7 +8,7 @@
 
 import numpy as np
 import numpy.testing as npt
-import pandas as pd
+from skbio.dependencies import pandas as pd
 from scipy.spatial.distance import pdist
 from unittest import TestCase, main
 

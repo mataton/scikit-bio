@@ -7,7 +7,7 @@
 # ----------------------------------------------------------------------------
 
 import numpy as np
-import pandas as pd
+from skbio.dependencies import pandas as pd
 
 from skbio.sequence import Protein
 from skbio.stats.ordination import OrdinationResults

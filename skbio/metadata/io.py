@@ -13,7 +13,7 @@ import os.path
 import re
 
 import numpy as np
-import pandas as pd
+from skbio.dependencies import pandas as pd
 
 from skbio.io._fileobject import SaneTextIOWrapper
 from skbio.util import find_duplicates

@@ -187,7 +187,7 @@ Load the ordination results from the file:
 # ----------------------------------------------------------------------------
 
 import numpy as np
-import pandas as pd
+from skbio.dependencies import pandas as pd
 
 from skbio.stats.ordination import OrdinationResults
 from skbio.io import create_format, OrdinationFormatError

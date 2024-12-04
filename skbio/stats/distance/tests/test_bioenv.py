@@ -9,7 +9,7 @@
 from unittest import TestCase, main
 
 import numpy as np
-import pandas as pd
+from skbio.dependencies import pandas as pd
 
 from skbio import DistanceMatrix
 from skbio.stats.distance import bioenv

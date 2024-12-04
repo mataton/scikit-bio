@@ -11,7 +11,7 @@ from collections import defaultdict
 
 import numpy as np
 import numpy.testing as npt
-import pandas as pd
+from skbio.dependencies import pandas as pd
 from scipy.stats import pearsonr
 from scipy.spatial.distance import euclidean
 

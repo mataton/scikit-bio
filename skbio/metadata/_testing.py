@@ -8,7 +8,7 @@
 
 import copy
 
-import pandas as pd
+from skbio.dependencies import pandas as pd
 import numpy as np
 import numpy.testing as npt
 

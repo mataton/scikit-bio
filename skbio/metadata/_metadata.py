@@ -13,7 +13,7 @@ import sqlite3
 import types
 import warnings
 
-import pandas as pd
+from skbio.dependencies import pandas as pd
 import numpy as np
 
 import skbio.metadata.missing as _missing
