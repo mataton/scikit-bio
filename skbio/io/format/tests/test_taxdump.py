@@ -10,7 +10,7 @@ import unittest
 from io import StringIO
 
 from skbio.dependencies import pandas as pd
-import numpy as np
+from skbio.dependencies import numpy as np
 
 from skbio.util import get_data_path, assert_data_frame_almost_equal
 from skbio.util._testing import _data_frame_to_default_int_type

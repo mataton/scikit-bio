@@ -8,7 +8,7 @@
 
 import unittest
 
-import numpy as np
+from skbio.dependencies import numpy as np
 
 from skbio import DNA, RNA, Protein, GeneticCode
 from skbio.sequence._nucleotide_mixin import NucleotideMixin

@@ -3,7 +3,7 @@ import unittest
 import warnings
 
 from skbio.dependencies import pandas as pd
-import numpy as np
+from skbio.dependencies import numpy as np
 
 from skbio.metadata._metadata import (SampleMetadata, CategoricalMetadataColumn,
                                       NumericMetadataColumn)

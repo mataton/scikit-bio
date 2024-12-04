@@ -8,7 +8,7 @@
 
 import functools
 
-import numpy as np
+from skbio.dependencies import numpy as np
 
 from skbio._base import SkbioObject
 from skbio.stats._misc import _pprint_strs

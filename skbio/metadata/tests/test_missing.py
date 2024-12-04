@@ -10,7 +10,7 @@ import unittest
 
 from skbio.dependencies import pandas as pd
 import pandas.testing as pdt
-import numpy as np
+from skbio.dependencies import numpy as np
 
 
 from skbio.metadata.missing import series_encode_missing, series_extract_missing

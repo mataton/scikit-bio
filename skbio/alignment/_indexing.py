@@ -9,7 +9,7 @@
 from abc import ABCMeta, abstractmethod
 import collections.abc
 
-import numpy as np
+from skbio.dependencies import numpy as np
 from skbio.dependencies import pandas as pd
 
 

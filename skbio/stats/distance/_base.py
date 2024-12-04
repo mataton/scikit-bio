@@ -9,7 +9,7 @@
 import itertools
 from copy import deepcopy
 
-import numpy as np
+from skbio.dependencies import numpy as np
 from skbio.dependencies import pandas as pd
 from scipy.spatial.distance import squareform
 

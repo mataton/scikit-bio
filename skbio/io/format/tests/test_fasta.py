@@ -12,7 +12,7 @@ import string
 from unittest import TestCase, main
 from functools import partial
 
-import numpy as np
+from skbio.dependencies import numpy as np
 
 from skbio import Sequence, DNA, RNA, Protein, TabularMSA
 from skbio.io import FASTAFormatError, QUALFormatError

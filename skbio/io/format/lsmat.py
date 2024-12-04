@@ -77,7 +77,7 @@ file.
 
 import csv
 
-import numpy as np
+from skbio.dependencies import numpy as np
 
 from skbio.stats.distance import DissimilarityMatrix, DistanceMatrix
 from skbio.io import create_format, LSMatFormatError

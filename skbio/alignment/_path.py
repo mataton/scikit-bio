@@ -8,7 +8,7 @@
 
 import collections
 
-import numpy as np
+from skbio.dependencies import numpy as np
 
 from skbio._base import SkbioObject
 from skbio.util._decorator import classonlymethod

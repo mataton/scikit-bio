@@ -8,7 +8,7 @@
 # ----------------------------------------------------------------------------
 
 from skbio.dependencies import pandas as pd
-import numpy as np
+from skbio.dependencies import numpy as np
 
 from ._enan import make_nan_with_payload as _make_nan_with_payload
 from ._enan import get_payload_from_nan as _get_payload_from_nan

@@ -9,7 +9,7 @@
 from io import StringIO
 from unittest import main, TestCase
 
-import numpy as np
+from skbio.dependencies import numpy as np
 
 from skbio import TreeNode
 from skbio.tree import DuplicateNodeError, MissingNodeError

@@ -8,7 +8,7 @@
 
 from functools import partial
 
-import numpy as np
+from skbio.dependencies import numpy as np
 
 from ._base import (
     _preprocess_input_sng,

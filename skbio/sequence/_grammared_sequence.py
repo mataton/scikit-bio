@@ -11,7 +11,7 @@ from abc import ABCMeta, abstractproperty
 from itertools import product
 import re
 
-import numpy as np
+from skbio.dependencies import numpy as np
 
 from skbio.util._decorator import classproperty, overrides
 from skbio.util._misc import MiniRegistry

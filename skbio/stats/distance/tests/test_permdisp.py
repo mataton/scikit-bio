@@ -9,7 +9,7 @@
 from functools import partial
 from unittest import TestCase, main
 
-import numpy as np
+from skbio.dependencies import numpy as np
 import numpy.testing as npt
 from skbio.dependencies import pandas as pd
 from pandas.testing import assert_series_equal

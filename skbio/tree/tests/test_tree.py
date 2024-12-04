@@ -9,7 +9,7 @@
 from unittest import TestCase, main
 from collections import defaultdict
 
-import numpy as np
+from skbio.dependencies import numpy as np
 import numpy.testing as npt
 from skbio.dependencies import pandas as pd
 from scipy.stats import pearsonr

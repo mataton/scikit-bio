@@ -142,7 +142,7 @@ References
 
 from warnings import warn, catch_warnings, simplefilter
 
-import numpy as np
+from skbio.dependencies import numpy as np
 from skbio.dependencies import pandas as pd
 import scipy.stats
 from scipy.sparse import coo_matrix

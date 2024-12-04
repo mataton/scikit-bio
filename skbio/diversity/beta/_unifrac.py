@@ -8,7 +8,7 @@
 
 import functools
 
-import numpy as np
+from skbio.dependencies import numpy as np
 
 from skbio.diversity._util import (
     _validate_counts_matrix,

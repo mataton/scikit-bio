@@ -89,7 +89,7 @@ Stats:
 60 ED
 """
 
-import numpy as np
+from skbio.dependencies import numpy as np
 from math import ceil
 import h5py
 from skbio.io import create_format
@@ -226,20 +226,27 @@ def _objects_to_embed(objs, fh, include_embedding_pointer=True):
                 h5grp.attrs["dim"] = emb.shape[1]
 
             # resizing if necessary
-            if i > 0: # we don't need to resize for the first object
+            if i > 0:  # we don't need to resize for the first object
                 if include_embedding_pointer:
                     # Checking 4 conditions for possible resize:
                     # if (new ID/embs + old ID/embs) > max_size
-                    if (len(arr) + idptr_fh[i - 1]) >= max_idsize or (
-                        emb.shape[0] + embptr_fh[i - 1]) >= max_embsize or (
-                        i >= len(idptr_fh) or (
-                        # check if adding obj exceeds id array size
-                        i >= embptr_fh.shape[0])):
+                    if (
+                        (len(arr) + idptr_fh[i - 1]) >= max_idsize
+                        or (emb.shape[0] + embptr_fh[i - 1]) >= max_embsize
+                        or (
+                            i >= len(idptr_fh)
+                            or (
+                                # check if adding obj exceeds id array size
+                                i >= embptr_fh.shape[0]
+                            )
+                        )
+                    ):
                         # check if adding obj exceeds embedding array size
-                            max_idsize = ceil((len(arr)+idptr_fh[i-1])*resize_by)
-                            max_embsize = ceil((emb.shape[0] + embptr_fh[i - 1]) *
-                                                                resize_by)
-                            resize = True
+                        max_idsize = ceil((len(arr) + idptr_fh[i - 1]) * resize_by)
+                        max_embsize = ceil(
+                            (emb.shape[0] + embptr_fh[i - 1]) * resize_by
+                        )
+                        resize = True
                 else:  # only check ID size conditions
                     if len(arr) + idptr_fh[i - 1] > max_idsize or i >= len(idptr_fh):
                         max_idsize = ceil((len(arr) + idptr_fh[i - 1] * resize_by))
@@ -265,7 +272,7 @@ def _objects_to_embed(objs, fh, include_embedding_pointer=True):
                 id_fh = h5grp["id"]
                 if resize:
                     id_fh.resize((max_idsize,))
-                id_fh[idptr_fh[i - 1]: idptr_fh[i]] = arr
+                id_fh[idptr_fh[i - 1] : idptr_fh[i]] = arr
             else:
                 id_fh = h5grp.create_dataset(
                     "id", data=arr, maxshape=(None,), dtype=np.uint8, compression="gzip"
@@ -295,9 +302,9 @@ def _objects_to_embed(objs, fh, include_embedding_pointer=True):
                     embed_fh.resize(max_embsize, axis=0)
 
                 if include_embedding_pointer:
-                    embed_fh[embptr_fh[i - 1]: embptr_fh[i]] = emb
+                    embed_fh[embptr_fh[i - 1] : embptr_fh[i]] = emb
                 else:
-                    embed_fh[idptr_fh[i - 1]: idptr_fh[i]] = emb
+                    embed_fh[idptr_fh[i - 1] : idptr_fh[i]] = emb
 
             else:
                 embed_fh = h5grp.create_dataset(

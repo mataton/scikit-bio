@@ -11,7 +11,7 @@ import collections
 import numbers
 from contextlib import contextmanager
 
-import numpy as np
+from skbio.dependencies import numpy as np
 from skbio.dependencies import pandas as pd
 
 import skbio.sequence.distance

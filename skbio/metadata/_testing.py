@@ -9,7 +9,7 @@
 import copy
 
 from skbio.dependencies import pandas as pd
-import numpy as np
+from skbio.dependencies import numpy as np
 import numpy.testing as npt
 
 from skbio.util._testing import assert_data_frame_almost_equal

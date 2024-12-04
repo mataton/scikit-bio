@@ -9,7 +9,7 @@
 import unittest
 
 from skbio.dependencies import pandas as pd
-import numpy as np
+from skbio.dependencies import numpy as np
 
 from skbio.util import get_data_path, assert_data_frame_almost_equal
 from skbio.io.format.blast6 import _blast6_to_data_frame

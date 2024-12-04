@@ -8,7 +8,7 @@
 
 import collections.abc
 
-import numpy as np
+from skbio.dependencies import numpy as np
 from skbio.dependencies import pandas as pd
 
 from skbio.tree import DuplicateNodeError, MissingNodeError

@@ -8,7 +8,7 @@
 
 from abc import ABCMeta, abstractproperty
 
-import numpy as np
+from skbio.dependencies import numpy as np
 
 from skbio.util._decorator import classproperty
 from ._grammared_sequence import _motifs as parent_motifs

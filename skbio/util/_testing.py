@@ -10,7 +10,7 @@ import inspect
 import os
 import sys
 
-import numpy as np
+from skbio.dependencies import numpy as np
 import numpy.testing as npt
 import pandas.testing as pdt
 from scipy.spatial.distance import pdist

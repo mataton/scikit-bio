@@ -10,7 +10,7 @@ from functools import partial
 from itertools import chain
 from warnings import warn
 
-import numpy as np
+from skbio.dependencies import numpy as np
 from skbio.dependencies import pandas as pd
 from scipy.spatial.distance import pdist
 

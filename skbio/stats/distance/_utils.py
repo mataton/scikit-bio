@@ -6,7 +6,7 @@
 # The full license is in the file LICENSE.txt, distributed with this software.
 # ----------------------------------------------------------------------------
 
-import numpy as np
+from skbio.dependencies import numpy as np
 
 from ._cutils import is_symmetric_and_hollow_cy
 from ._cutils import distmat_reorder_cy, distmat_reorder_condensed_cy

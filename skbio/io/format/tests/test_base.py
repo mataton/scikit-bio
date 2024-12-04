@@ -9,7 +9,7 @@
 import unittest
 
 import numpy.testing as npt
-import numpy as np
+from skbio.dependencies import numpy as np
 
 from skbio import Sequence, DNA, RNA
 from skbio.io.format._base import (_decode_qual_to_phred,

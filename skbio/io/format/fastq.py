@@ -285,7 +285,7 @@ References
 
 import re
 
-import numpy as np
+from skbio.dependencies import numpy as np
 
 from skbio.io import create_format, FASTQFormatError
 from skbio.io.format._base import (

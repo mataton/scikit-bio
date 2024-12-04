@@ -11,7 +11,7 @@ from heapq import heappush, heappop
 from collections import defaultdict
 from copy import copy
 
-import numpy as np
+from skbio.dependencies import numpy as np
 import scipy.sparse as sparse
 from skbio.util import get_rng
 

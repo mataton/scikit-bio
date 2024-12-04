@@ -9,7 +9,7 @@
 from warnings import warn
 from itertools import product
 
-import numpy as np
+from skbio.dependencies import numpy as np
 
 from skbio.alignment import TabularMSA
 from skbio.alignment._ssw_wrapper import StripedSmithWaterman

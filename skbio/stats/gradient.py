@@ -98,7 +98,7 @@ from copy import deepcopy
 from collections import defaultdict
 from numbers import Integral
 
-import numpy as np
+from skbio.dependencies import numpy as np
 from natsort import realsorted
 from scipy.stats import f_oneway
 

@@ -8,7 +8,7 @@
 
 from collections import defaultdict
 
-import numpy as np
+from skbio.dependencies import numpy as np
 
 from skbio.tree import TreeNode
 

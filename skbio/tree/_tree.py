@@ -12,7 +12,7 @@ from copy import copy, deepcopy
 from itertools import chain, combinations
 from collections import defaultdict, deque
 
-import numpy as np
+from skbio.dependencies import numpy as np
 from skbio.dependencies import pandas as pd
 import scipy.spatial.distance as spdist
 

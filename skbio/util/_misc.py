@@ -11,7 +11,7 @@ import inspect
 from types import FunctionType
 from numbers import Integral
 
-import numpy as np
+from skbio.dependencies import numpy as np
 
 
 def resolve_key(obj, key):

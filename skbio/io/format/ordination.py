@@ -186,7 +186,7 @@ Load the ordination results from the file:
 # The full license is in the file LICENSE.txt, distributed with this software.
 # ----------------------------------------------------------------------------
 
-import numpy as np
+from skbio.dependencies import numpy as np
 from skbio.dependencies import pandas as pd
 
 from skbio.stats.ordination import OrdinationResults

@@ -6,7 +6,7 @@
 # The full license is in the file LICENSE.txt, distributed with this software.
 # ----------------------------------------------------------------------------
 
-import numpy as np
+from skbio.dependencies import numpy as np
 
 from skbio.util._decorator import classproperty, classonlymethod
 from skbio._base import SkbioObject

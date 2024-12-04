@@ -14,7 +14,7 @@ import types
 import warnings
 
 from skbio.dependencies import pandas as pd
-import numpy as np
+from skbio.dependencies import numpy as np
 
 import skbio.metadata.missing as _missing
 from skbio.util import find_duplicates

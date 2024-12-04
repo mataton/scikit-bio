@@ -13,7 +13,7 @@ import functools
 import itertools
 import types
 
-import numpy as np
+from skbio.dependencies import numpy as np
 import numpy.testing as npt
 from skbio.dependencies import pandas as pd
 import scipy.stats

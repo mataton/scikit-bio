@@ -12,7 +12,7 @@ import tempfile
 import os
 import re
 import h5py
-import numpy as np
+from skbio.dependencies import numpy as np
 
 import skbio
 from skbio.io import write

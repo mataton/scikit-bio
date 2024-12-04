@@ -9,7 +9,7 @@
 from warnings import warn
 import functools
 
-import numpy as np
+from skbio.dependencies import numpy as np
 from scipy.special import gammaln
 from scipy.optimize import fmin_powell, minimize_scalar
 

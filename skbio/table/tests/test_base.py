@@ -8,7 +8,7 @@
 
 from unittest import TestCase, main
 from skbio.table import Table
-import numpy as np
+from skbio.dependencies import numpy as np
 
 
 class TableTests(TestCase):

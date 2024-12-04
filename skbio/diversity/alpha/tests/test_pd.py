@@ -10,7 +10,7 @@ from unittest import TestCase, main
 from io import StringIO
 import os
 
-import numpy as np
+from skbio.dependencies import numpy as np
 from skbio.dependencies import pandas as pd
 
 from skbio import TreeNode

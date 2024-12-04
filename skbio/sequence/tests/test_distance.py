@@ -9,7 +9,7 @@
 import itertools
 import unittest
 
-import numpy as np
+from skbio.dependencies import numpy as np
 import numpy.testing as npt
 
 from skbio import Sequence, DNA

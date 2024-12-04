@@ -8,7 +8,7 @@
 
 from unittest import TestCase, main
 
-import numpy as np
+from skbio.dependencies import numpy as np
 import numpy.testing as npt
 
 from skbio.diversity.alpha import chao1, chao1_ci

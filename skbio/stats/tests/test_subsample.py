@@ -9,7 +9,7 @@
 import unittest
 import warnings
 
-import numpy as np
+from skbio.dependencies import numpy as np
 import numpy.testing as npt
 
 from skbio.stats import subsample_counts, isubsample

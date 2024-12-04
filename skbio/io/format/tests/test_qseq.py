@@ -13,7 +13,7 @@ from skbio import read
 from skbio.util import get_data_path
 from skbio.io import QSeqFormatError
 from skbio.io.format.qseq import _qseq_to_generator, _qseq_sniffer
-import numpy as np
+from skbio.dependencies import numpy as np
 
 
 def _drop_kwargs(kwargs, *args):

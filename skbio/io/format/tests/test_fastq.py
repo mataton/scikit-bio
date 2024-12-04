@@ -22,7 +22,7 @@ from skbio.util import get_data_path
 from skbio.util import classproperty
 from skbio.util._decorator import overrides
 
-import numpy as np
+from skbio.dependencies import numpy as np
 
 # Note: the example FASTQ files with file extension .fastq are taken from the
 # following open-access publication's supplementary data:

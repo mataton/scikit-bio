@@ -6,7 +6,7 @@
 # The full license is in the file LICENSE.txt, distributed with this software.
 # ----------------------------------------------------------------------------
 
-import numpy as np
+from skbio.dependencies import numpy as np
 
 from skbio.util._decorator import classproperty, overrides
 from ._grammared_sequence import GrammaredSequence, _motifs as parent_motifs

@@ -8,7 +8,7 @@
 
 from functools import partial
 
-import numpy as np
+from skbio.dependencies import numpy as np
 from skbio.dependencies import pandas as pd
 from scipy.stats import f_oneway
 from scipy.spatial.distance import cdist

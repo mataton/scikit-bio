@@ -667,7 +667,7 @@ References
 import itertools
 import textwrap
 
-import numpy as np
+from skbio.dependencies import numpy as np
 
 from skbio.io import create_format, FASTAFormatError, QUALFormatError
 from skbio.io.registry import FileSentinel

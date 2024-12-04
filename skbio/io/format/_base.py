@@ -9,7 +9,7 @@
 import re
 import warnings
 
-import numpy as np
+from skbio.dependencies import numpy as np
 
 from skbio.util import cardinal_to_ordinal
 

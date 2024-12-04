@@ -9,7 +9,7 @@
 from itertools import combinations
 
 import warnings
-import numpy as np
+from skbio.dependencies import numpy as np
 from skbio.dependencies import pandas as pd
 import scipy.special
 from scipy.stats import kendalltau

@@ -12,7 +12,7 @@ import itertools
 import os.path
 import re
 
-import numpy as np
+from skbio.dependencies import numpy as np
 from skbio.dependencies import pandas as pd
 
 from skbio.io._fileobject import SaneTextIOWrapper

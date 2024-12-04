@@ -8,7 +8,7 @@
 
 from unittest import TestCase, main
 
-import numpy as np
+from skbio.dependencies import numpy as np
 from numpy.testing import assert_array_equal
 
 from skbio import SubstitutionMatrix

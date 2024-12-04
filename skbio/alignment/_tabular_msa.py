@@ -9,7 +9,7 @@
 import collections
 import copy
 
-import numpy as np
+from skbio.dependencies import numpy as np
 from skbio.dependencies import pandas as pd
 import scipy.stats
 

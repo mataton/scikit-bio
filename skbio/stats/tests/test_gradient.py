@@ -10,7 +10,7 @@ import io
 from operator import attrgetter
 from unittest import TestCase, main
 
-import numpy as np
+from skbio.dependencies import numpy as np
 from skbio.dependencies import pandas as pd
 import numpy.testing as npt
 import pandas.testing as pdt

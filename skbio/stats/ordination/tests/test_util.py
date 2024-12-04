@@ -9,7 +9,7 @@
 from unittest import TestCase, main
 import copy
 
-import numpy as np
+from skbio.dependencies import numpy as np
 import numpy.testing as npt
 
 from skbio.stats.ordination import corr, mean_and_std, e_matrix, f_matrix, \

@@ -6,7 +6,7 @@
 # The full license is in the file LICENSE.txt, distributed with this software.
 # ----------------------------------------------------------------------------
 
-import numpy as np
+from skbio.dependencies import numpy as np
 
 from skbio.diversity._driver import partial_beta_diversity
 from skbio.stats.distance import DistanceMatrix

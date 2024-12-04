@@ -8,7 +8,7 @@
 
 import unittest
 
-import numpy as np
+from skbio.dependencies import numpy as np
 import numpy.testing as npt
 
 from skbio.alignment._path import PairAlignPath, AlignPath, _run_length_encode

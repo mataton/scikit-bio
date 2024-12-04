@@ -9,7 +9,7 @@
 import io
 from unittest import TestCase, main
 
-import numpy as np
+from skbio.dependencies import numpy as np
 from skbio.dependencies import pandas as pd
 import numpy.testing as npt
 

@@ -10,7 +10,7 @@ import io
 import unittest
 import re
 
-import numpy as np
+from skbio.dependencies import numpy as np
 import numpy.testing as npt
 
 from skbio.util import cardinal_to_ordinal, safe_md5, find_duplicates, get_rng

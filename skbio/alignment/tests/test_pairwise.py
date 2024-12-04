@@ -9,7 +9,7 @@
 from unittest import TestCase, main
 import warnings
 
-import numpy as np
+from skbio.dependencies import numpy as np
 
 from skbio import Sequence, Protein, DNA, RNA, TabularMSA, SubstitutionMatrix
 from skbio.alignment import (

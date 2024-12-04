@@ -22,7 +22,7 @@ import subprocess
 from setuptools import find_packages, setup
 from setuptools.extension import Extension
 
-import numpy as np
+from skbio.dependencies import numpy as np
 from Cython.Build import cythonize
 
 

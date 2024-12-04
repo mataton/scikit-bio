@@ -11,7 +11,7 @@ import tempfile
 import shutil
 import os
 
-import numpy as np
+from skbio.dependencies import numpy as np
 import numpy.testing as npt
 import h5py
 
