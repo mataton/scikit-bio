@@ -18,9 +18,8 @@
 
 from unittest import TestCase, main
 
-from skbio import (local_pairwise_align_ssw, Sequence, DNA, RNA, Protein,
-                   SubstitutionMatrix, TabularMSA)
-from skbio.alignment import StripedSmithWaterman, AlignmentStructure
+from skbio.alignment import StripedSmithWaterman, AlignmentStructure, local_pairwise_align_ssw, TabularMSA
+from skbio.sequence import Sequence, DNA, RNA, Protein, SubstitutionMatrix
 
 
 class TestSSW(TestCase):

@@ -49,7 +49,7 @@ def upgma(dm, weighted=False):
     --------
     Define a distance matrix object for the taxa a, b, and c.
 
-    >>> from skbio import DistanceMatrix
+    >>> from skbio.stats.distance import DistanceMatrix
 
     >>> data = [[0, 1, 2],
     ...         [1, 0, 3],

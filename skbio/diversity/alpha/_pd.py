@@ -170,7 +170,7 @@ def faith_pd(counts, taxa=None, tree=None, validate=True, otu_ids=None):
 
     We also need a phylogenetic tree that relates the taxa to one another.
 
-    >>> from skbio import TreeNode
+    >>> from skbio.tree import TreeNode
     >>> tree = TreeNode.read(['(((((U1:0.5,U2:0.5):0.5,U3:1.0):1.0):0.0,'
     ...                       '(U4:0.75,(U5:0.5,((U6:0.33,U7:0.62):0.5'
     ...                       ',U8:0.5):0.5):0.5):1.25):0.0)root;'])

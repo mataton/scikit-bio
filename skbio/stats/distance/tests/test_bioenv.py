@@ -11,8 +11,7 @@ from unittest import TestCase, main
 from skbio.dependencies import numpy as np
 from skbio.dependencies import pandas as pd
 
-from skbio import DistanceMatrix
-from skbio.stats.distance import bioenv
+from skbio.stats.distance import bioenv, DistanceMatrix
 from skbio.stats.distance._bioenv import _scale
 from skbio.util import get_data_path, assert_data_frame_almost_equal
 from skbio.util._testing import _data_frame_to_default_int_type

@@ -61,7 +61,8 @@ Alignment data structure
 Load two DNA sequences that have been previously aligned into a ``TabularMSA``
 object, using sequence IDs as the MSA's index:
 
->>> from skbio import TabularMSA, DNA
+>>> from skbio.alignment import TabularMSA
+>>> from skbio.sequence import DNA
 >>> seqs = [DNA("ACC--G-GGTA..", metadata={'id': "seq1"}),
 ...         DNA("TCC--G-GGCA..", metadata={'id': "seq2"})]
 >>> msa = TabularMSA(seqs, minter='id')
@@ -156,7 +157,7 @@ Here we locally align a pair of protein sequences using gap open penalty
 of 11 and a gap extend penalty of 1 (in other words, it is much more
 costly to open a new gap than extend an existing one).
 
->>> from skbio import Protein
+>>> from skbio.sequence import Protein
 >>> from skbio.alignment import local_pairwise_align_protein
 >>> s1 = Protein("HEAGAWGHEE")
 >>> s2 = Protein("PAWHEAE")
@@ -182,7 +183,7 @@ AW-HE
 
 Similarly, we can perform global alignment of nucleotide sequences:
 
->>> from skbio import DNA
+>>> from skbio.sequence import DNA
 >>> from skbio.alignment import global_pairwise_align_nucleotide
 >>> s1 = DNA("GCGTGCCTAAGGTATGCAAG")
 >>> s2 = DNA("ACGTGCCTAGGTACGCAAG")

@@ -18,9 +18,8 @@ import numpy.testing as npt
 from skbio.dependencies import pandas as pd
 import scipy.stats
 
-from skbio import Sequence, DNA, RNA, Protein, TabularMSA
-from skbio.alignment import AlignPath
-from skbio.sequence import GrammaredSequence
+from skbio.alignment import AlignPath, TabularMSA
+from skbio.sequence import GrammaredSequence, Sequence, DNA, RNA, Protein
 from skbio.util import classproperty
 from skbio.util._decorator import overrides
 from skbio.util._testing import ReallyEqualMixin
@@ -3698,7 +3697,8 @@ class TestRepr(unittest.TestCase):
 # take care of this)
 class TabularMSAReprDoctests:
     r"""
-    >>> from skbio import DNA, TabularMSA
+    >>> from skbio.sequence import DNA
+    >>> from skbio.alignment import TabularMSA
 
     Empty (minimal) MSA:
 

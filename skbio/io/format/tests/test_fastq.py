@@ -12,12 +12,12 @@ import unittest
 import warnings
 from functools import partial
 
-from skbio import read, write, Sequence, DNA, RNA, Protein, TabularMSA
-from skbio.io import FASTQFormatError
+from skbio.alignment import TabularMSA
+from skbio.io import FASTQFormatError, read, write
 from skbio.io.format.fastq import (
     _fastq_sniffer, _fastq_to_generator, _fastq_to_tabular_msa,
     _generator_to_fastq, _tabular_msa_to_fastq)
-from skbio.sequence import GrammaredSequence
+from skbio.sequence import GrammaredSequence, Sequence, DNA, RNA, Protein
 from skbio.util import get_data_path
 from skbio.util import classproperty
 from skbio.util._decorator import overrides

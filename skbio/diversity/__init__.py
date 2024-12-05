@@ -235,7 +235,7 @@ Create a matrix containing 6 samples (rows) and 7 taxa (columns):
    phylogenetic diversity metric, we'll first create a tree and an ordered
    list of taxa.
 
-   >>> from skbio import TreeNode
+   >>> from skbio.tree import TreeNode
    >>> from io import StringIO
    >>> tree = TreeNode.read(StringIO(
    ...                      '(((((U1:0.5,U2:0.5):0.5,U3:1.0):1.0):0.0,'

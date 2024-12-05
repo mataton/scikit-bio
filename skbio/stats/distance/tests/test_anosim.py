@@ -14,8 +14,7 @@ from skbio.dependencies import numpy as np
 from skbio.dependencies import pandas as pd
 from pandas.testing import assert_series_equal
 
-from skbio import DistanceMatrix
-from skbio.stats.distance import anosim
+from skbio.stats.distance import anosim, DistanceMatrix
 
 
 class TestANOSIM(TestCase):

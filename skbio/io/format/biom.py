@@ -38,7 +38,7 @@ from ``biom`` implicitly gets the ``.write`` method from the IO registry. This
 >>> f = io.BytesIO()
 >>> skbio.table.example_table.write(f)  # doctest: +ELLIPSIS
 <_io.BytesIO object at ...>
->>> roundtrip = skbio.read(f, into=skbio.Table)
+>>> roundtrip = skbio.read(f, into=skbio.table.Table)
 >>> roundtrip
 2 x 3 <class 'biom.table.Table'> with 5 nonzero entries (83% dense)
 

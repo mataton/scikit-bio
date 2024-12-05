@@ -392,7 +392,7 @@ class DissimilarityMatrix(SkbioObject, PlottableMixin):
 
         Examples
         --------
-        >>> from skbio import DistanceMatrix
+        >>> from skbio.stats.distance import DistanceMatrix
         >>> dm = DistanceMatrix([[0, 1], [1, 0]], ids=['a', 'b'])
         >>> dm.rename({'a': 'x', 'b': 'y'})
         >>> print(dm.ids)
@@ -728,7 +728,7 @@ class DissimilarityMatrix(SkbioObject, PlottableMixin):
 
         Examples
         --------
-        >>> from skbio import DistanceMatrix
+        >>> from skbio.stats.distance import DistanceMatrix
         >>> dm = DistanceMatrix([[0, 1, 2],
         ...                      [1, 0, 3],
         ...                      [2, 3, 0]], ids=['a', 'b', 'c'])
@@ -1200,7 +1200,7 @@ class DistanceMatrix(DissimilarityMatrix):
 
         Examples
         --------
-        >>> from skbio import DistanceMatrix
+        >>> from skbio.stats.distance import DistanceMatrix
         >>> dm = DistanceMatrix([[0, 1, 2, 3],
         ...                      [1, 0, 4, 5],
         ...                      [2, 4, 0, 6],

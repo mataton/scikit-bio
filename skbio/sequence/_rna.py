@@ -7,6 +7,7 @@
 # ----------------------------------------------------------------------------
 
 import skbio
+import skbio.sequence
 from skbio.util._decorator import classproperty, overrides
 from ._nucleotide_mixin import NucleotideMixin, _motifs as _parent_motifs
 from ._grammared_sequence import GrammaredSequence
@@ -92,7 +93,7 @@ class RNA(GrammaredSequence, NucleotideMixin):
 
     Examples
     --------
-    >>> from skbio import RNA
+    >>> from skbio.sequence import RNA
     >>> RNA('ACCGAAU')
     RNA
     --------------------------
@@ -215,7 +216,7 @@ class RNA(GrammaredSequence, NucleotideMixin):
         --------
         Reverse transcribe RNA into DNA:
 
-        >>> from skbio import RNA
+        >>> from skbio.sequence import RNA
         >>> rna = RNA('UAACGUUA')
         >>> rna
         RNA
@@ -256,7 +257,7 @@ class RNA(GrammaredSequence, NucleotideMixin):
             interval_metadata = self.interval_metadata
 
         # turn off validation because `seq` is guaranteed to be valid
-        return skbio.DNA(
+        return skbio.sequence.DNA(
             seq,
             metadata=metadata,
             positional_metadata=positional_metadata,
@@ -298,7 +299,7 @@ class RNA(GrammaredSequence, NucleotideMixin):
         Translate RNA into protein using NCBI's standard genetic code (table ID
         1, the default genetic code in scikit-bio):
 
-        >>> from skbio import RNA
+        >>> from skbio.sequence import RNA
         >>> rna = RNA('AUGCCACUUUAA')
         >>> rna.translate()
         Protein
@@ -329,8 +330,8 @@ class RNA(GrammaredSequence, NucleotideMixin):
         0 MPT
 
         """
-        if not isinstance(genetic_code, skbio.GeneticCode):
-            genetic_code = skbio.GeneticCode.from_ncbi(genetic_code)
+        if not isinstance(genetic_code, skbio.sequence.GeneticCode):
+            genetic_code = skbio.sequence.GeneticCode.from_ncbi(genetic_code)
         return genetic_code.translate(self, *args, **kwargs)
 
     def translate_six_frames(self, genetic_code=1, *args, **kwargs):
@@ -386,7 +387,7 @@ class RNA(GrammaredSequence, NucleotideMixin):
         NCBI's standard genetic code (table ID 1, the default genetic code in
         scikit-bio):
 
-        >>> from skbio import RNA
+        >>> from skbio.sequence import RNA
         >>> rna = RNA('AUGCCACUUUAA')
         >>> for protein in rna.translate_six_frames():
         ...     protein
@@ -459,8 +460,8 @@ class RNA(GrammaredSequence, NucleotideMixin):
         <BLANKLINE>
 
         """
-        if not isinstance(genetic_code, skbio.GeneticCode):
-            genetic_code = skbio.GeneticCode.from_ncbi(genetic_code)
+        if not isinstance(genetic_code, skbio.sequence.GeneticCode):
+            genetic_code = skbio.sequence.GeneticCode.from_ncbi(genetic_code)
         return genetic_code.translate_six_frames(self, *args, **kwargs)
 
     @overrides(GrammaredSequence)

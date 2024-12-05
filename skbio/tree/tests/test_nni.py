@@ -9,7 +9,8 @@
 import io
 from unittest import TestCase, main
 
-from skbio import DistanceMatrix, TreeNode
+from skbio.stats.distance import DistanceMatrix
+from skbio.tree import TreeNode
 from skbio.tree._nni import (
     nni, _perform_swap,
     _swap_length, _balanced_swap_length,

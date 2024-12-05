@@ -13,9 +13,8 @@ import os
 from skbio.dependencies import numpy as np
 from skbio.dependencies import pandas as pd
 
-from skbio import TreeNode
 from skbio.util import get_data_path
-from skbio.tree import DuplicateNodeError, MissingNodeError
+from skbio.tree import DuplicateNodeError, MissingNodeError, TreeNode
 from skbio.diversity.alpha import faith_pd, phydiv
 
 

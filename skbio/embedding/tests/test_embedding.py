@@ -14,8 +14,9 @@ from skbio.dependencies import pandas as pd
 from scipy.spatial.distance import euclidean
 
 from skbio.sequence import DNA, Protein
-from skbio import DistanceMatrix, OrdinationResults
 from skbio.embedding._protein import ProteinVector
+from skbio.stats.distance import DistanceMatrix
+from skbio.stats.ordination import OrdinationResults
 
 from skbio.embedding._embedding import (
     Embedding,
@@ -94,7 +95,7 @@ class SequenceEmbeddingTests(TestCase):
         p_emb = SequenceEmbedding(emb, s.encode("ascii"))
         self.assertTupleEqual(p_emb.embedding.shape, (62, 10))
 
-        # sequence as skbio.Sequence
+        # sequence as skbio.sequence.Sequence
         p_emb = SequenceEmbedding(emb, Protein(s))
         self.assertTupleEqual(p_emb.embedding.shape, (62, 10))
 
@@ -133,7 +134,7 @@ class SequenceVectorTests(TestCase):
         obs = SequenceVector(vec, seq.encode("ascii"))
         npt.assert_array_equal(obs.vector, vec)
 
-        # sequence as skbio.Sequence
+        # sequence as skbio.sequence.Sequence
         obs = SequenceVector(vec, DNA(seq))
         npt.assert_array_equal(obs.vector, vec)
 

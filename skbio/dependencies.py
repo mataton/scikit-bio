@@ -58,7 +58,8 @@ class _LazyModule(ModuleType):
         # It's for decorators, not modules, but keeps "make doctest" happy)
         # NOTE:  Do we need this?
         if name == "__wrapped__":
-            pass
+            msg = f"{self._module_name!r} object has no attribute {name!r}"
+            raise AttributeError(msg)
 
         # Accessing the proxy module's attributes triggers import of the real thing.
         if self._module_available:

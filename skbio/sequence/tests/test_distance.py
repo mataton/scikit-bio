@@ -12,7 +12,7 @@ import unittest
 from skbio.dependencies import numpy as np
 import numpy.testing as npt
 
-from skbio import Sequence, DNA
+from skbio.sequence import Sequence, DNA
 from skbio.sequence.distance import hamming, kmer_distance
 
 

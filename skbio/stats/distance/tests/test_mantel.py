@@ -16,9 +16,8 @@ import scipy
 from scipy.spatial.distance import squareform
 from scipy.stats import pearsonr, spearmanr, ConstantInputWarning
 
-from skbio import DistanceMatrix
 from skbio.stats.distance import (DissimilarityMatrixError,
-                                  DistanceMatrixError, mantel, pwmantel)
+                                  DistanceMatrixError, mantel, pwmantel, DistanceMatrix)
 from skbio.stats.distance._mantel import _order_dms
 from skbio.stats.distance._mantel import _mantel_stats_pearson
 from skbio.stats.distance._mantel import _mantel_stats_spearman

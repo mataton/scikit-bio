@@ -11,17 +11,16 @@ import warnings
 
 from skbio.dependencies import numpy as np
 
-from skbio import Sequence, Protein, DNA, RNA, TabularMSA, SubstitutionMatrix
 from skbio.alignment import (
     global_pairwise_align_protein, local_pairwise_align_protein,
     global_pairwise_align_nucleotide, local_pairwise_align_nucleotide,
     make_identity_substitution_matrix, local_pairwise_align,
-    global_pairwise_align)
+    global_pairwise_align, TabularMSA)
 from skbio.alignment._pairwise import (
     _init_matrices_sw, _init_matrices_nw,
     _compute_score_and_traceback_matrices, _traceback, _first_largest,
     _compute_substitution_score)
-from skbio.sequence import GrammaredSequence
+from skbio.sequence import GrammaredSequence, Sequence, Protein, DNA, RNA, SubstitutionMatrix
 from skbio.util import classproperty
 from skbio.util._decorator import overrides
 

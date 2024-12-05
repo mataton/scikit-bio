@@ -18,13 +18,13 @@ from sys import platform
 
 from skbio.io import (FormatIdentificationWarning, UnrecognizedFormatError,
                       ArgumentOverrideWarning, io_registry, sniff,
-                      create_format)
+                      create_format, read, write)
 from skbio.io.registry import (IORegistry, FileSentinel, Format,
                                DuplicateRegistrationError,
                                InvalidRegistrationError)
 from skbio.util import get_data_path
 from skbio.util._exception import TestingUtilError
-from skbio import DNA, read, write
+from skbio.sequence import DNA
 
 
 class MockClass:

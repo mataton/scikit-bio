@@ -13,7 +13,6 @@ from skbio.dependencies import numpy as np
 from skbio.dependencies import pandas as pd
 import numpy.testing as npt
 
-from skbio import TreeNode
 from skbio.table import example_table
 from skbio.diversity._util import (_validate_counts_vector,
                                    _validate_counts_matrix,
@@ -23,7 +22,7 @@ from skbio.diversity._util import (_validate_counts_vector,
                                    _check_taxa_alias,
                                    _table_to_numpy,
                                    _validate_table)
-from skbio.tree import DuplicateNodeError, MissingNodeError
+from skbio.tree import DuplicateNodeError, MissingNodeError, TreeNode
 
 
 class ValidationTests(TestCase):

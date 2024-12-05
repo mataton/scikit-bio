@@ -15,9 +15,9 @@ from skbio.dependencies import pandas as pd
 from scipy.stats import pearsonr
 from scipy.spatial.distance import euclidean
 
-from skbio import DistanceMatrix, TreeNode
+from skbio.stats.distance import DistanceMatrix
 from skbio.tree import (DuplicateNodeError, NoLengthError,
-                        TreeError, MissingNodeError, NoParentError)
+                        TreeError, MissingNodeError, NoParentError, TreeNode)
 
 
 class TreeNodeSubclass(TreeNode):

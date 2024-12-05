@@ -14,7 +14,7 @@ from functools import partial
 
 from skbio.dependencies import numpy as np
 
-from skbio import Sequence, DNA, RNA, Protein, TabularMSA
+from skbio.alignment import TabularMSA
 from skbio.io import FASTAFormatError, QUALFormatError
 from skbio.io.format.fasta import (
     _fasta_sniffer, _fasta_to_generator, _fasta_to_sequence,
@@ -22,7 +22,7 @@ from skbio.io.format.fasta import (
     _fasta_to_tabular_msa, _generator_to_fasta,
     _sequence_to_fasta, _dna_to_fasta, _rna_to_fasta, _protein_to_fasta,
     _tabular_msa_to_fasta)
-from skbio.sequence import GrammaredSequence
+from skbio.sequence import GrammaredSequence, Sequence, DNA, RNA, Protein
 from skbio.util import get_data_path
 from skbio.util import classproperty
 from skbio.util._decorator import overrides

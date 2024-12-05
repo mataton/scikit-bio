@@ -10,9 +10,8 @@ import unittest
 
 from skbio.dependencies import numpy as np
 
-from skbio import DNA, RNA, Protein, GeneticCode
 from skbio.sequence._nucleotide_mixin import NucleotideMixin
-from skbio.sequence import GrammaredSequence
+from skbio.sequence import GrammaredSequence, DNA, RNA, Protein, GeneticCode
 from skbio.util import classproperty
 from skbio.metadata import IntervalMetadata
 

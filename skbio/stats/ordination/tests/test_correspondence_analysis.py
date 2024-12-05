@@ -12,8 +12,7 @@ from skbio.dependencies import pandas as pd
 from scipy.spatial.distance import pdist
 from unittest import TestCase, main
 
-from skbio import OrdinationResults
-from skbio.stats.ordination import ca
+from skbio.stats.ordination import ca, OrdinationResults
 from skbio.util import get_data_path, assert_ordination_results_equal
 
 

@@ -9,7 +9,7 @@
 from skbio.dependencies import numpy as np
 from scipy.stats import pearsonr
 
-from skbio import DistanceMatrix
+from skbio.stats.distance import DistanceMatrix
 from skbio.util import get_rng
 
 

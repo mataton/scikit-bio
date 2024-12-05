@@ -65,7 +65,7 @@ Exceptions
 Tutorial
 --------
 
->>> from skbio import TreeNode
+>>> from skbio.tree import TreeNode
 >>> from io import StringIO
 
 A new tree can be constructed from a Newick string. Newick is a common format

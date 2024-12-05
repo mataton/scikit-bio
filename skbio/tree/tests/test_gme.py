@@ -9,7 +9,8 @@
 import io
 from unittest import TestCase, main
 
-from skbio import DistanceMatrix, TreeNode
+from skbio.stats.distance import DistanceMatrix
+from skbio.tree import TreeNode
 from skbio.tree._gme import (
     _average_distance_k, _average_distance_k_upper,
     _lower_subtree_list, _upper_subtree_list,

@@ -17,7 +17,7 @@ import pandas.testing as pdt
 from scipy.sparse import coo_matrix
 from scipy.stats import f_oneway, ConstantInputWarning
 
-from skbio import TreeNode
+from skbio.tree import TreeNode
 from skbio.util import assert_data_frame_almost_equal
 from skbio.stats.distance import DistanceMatrixError
 from skbio.stats.composition import (

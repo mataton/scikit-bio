@@ -29,6 +29,7 @@ from skbio.diversity._util import (
     _table_to_numpy,
     _validate_table,
 )
+import skbio.table
 from skbio.util._warning import _warn_deprecated
 
 
@@ -173,7 +174,7 @@ def alpha_diversity(metric, counts, ids=None, validate=True, **kwargs):
     skbio.diversity.beta_diversity
 
     """
-    if isinstance(counts, skbio.Table):
+    if isinstance(counts, skbio.table.Table):
         counts, ids = _validate_table(counts, ids, kwargs)
 
     metric_map = _get_alpha_diversity_metric_map()
@@ -425,7 +426,7 @@ def beta_diversity(
     sklearn.metrics.pairwise_distances
 
     """
-    if isinstance(counts, skbio.Table):
+    if isinstance(counts, skbio.table.Table):
         counts, ids = _validate_table(counts, ids, kwargs)
 
     if isinstance(counts, pd.DataFrame) and ids is None:

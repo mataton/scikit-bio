@@ -32,6 +32,7 @@ from skbio.dependencies import numpy as np
 import scipy.spatial.distance
 
 import skbio
+import skbio.sequence
 
 
 def hamming(seq1, seq2):
@@ -75,7 +76,7 @@ def hamming(seq1, seq2):
 
     Examples
     --------
-    >>> from skbio import Sequence
+    >>> from skbio.sequence import Sequence
     >>> from skbio.sequence.distance import hamming
     >>> seq1 = Sequence('AGGGTA')
     >>> seq2 = Sequence('CGTTTA')
@@ -141,7 +142,7 @@ def kmer_distance(seq1, seq2, k, overlap=True):
 
     Examples
     --------
-    >>> from skbio import Sequence
+    >>> from skbio.sequence import Sequence
     >>> seq1 = Sequence('ATCGGCGAT')
     >>> seq2 = Sequence('GCAGATGTG')
     >>> kmer_distance(seq1, seq2, 3) # doctest: +ELLIPSIS
@@ -163,7 +164,7 @@ def kmer_distance(seq1, seq2, k, overlap=True):
 def _check_seqs(seq1, seq2):
     # Asserts both sequences are skbio.sequence objects
     for seq in seq1, seq2:
-        if not isinstance(seq, skbio.Sequence):
+        if not isinstance(seq, skbio.sequence.Sequence):
             raise TypeError(
                 "`seq1` and `seq2` must be Sequence instances, not %r"
                 % type(seq).__name__

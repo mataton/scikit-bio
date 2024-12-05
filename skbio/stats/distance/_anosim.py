@@ -93,7 +93,7 @@ def anosim(distance_matrix, grouping, column=None, permutations=999, seed=None):
     Load a 4x4 distance matrix and grouping vector denoting 2 groups of
     objects:
 
-    >>> from skbio import DistanceMatrix
+    >>> from skbio.stats.distance import DistanceMatrix
     >>> dm = DistanceMatrix([[0, 1, 1, 4],
     ...                      [1, 0, 3, 2],
     ...                      [1, 3, 0, 3],

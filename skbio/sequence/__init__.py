@@ -72,7 +72,7 @@ New sequences are created with optional metadata and positional metadata.
 Metadata is stored as a Python ``dict``, while positional metadata is stored as
 a pandas ``DataFrame``.
 
->>> from skbio import DNA, RNA
+>>> from skbio.sequence import DNA, RNA
 >>> d = DNA('ACCGGGTA', metadata={'id':"my-sequence", 'description':"GFP"},
 ...          positional_metadata={'quality':[22, 25, 22, 18, 23, 25, 25, 25]})
 >>> d

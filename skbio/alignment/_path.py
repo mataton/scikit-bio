@@ -68,8 +68,8 @@ class AlignPath(SkbioObject):
     Create an ``AlignPath`` object from a ``TabularMSA`` object with three DNA
     sequences and 20 positions.
 
-    >>> from skbio import DNA, TabularMSA
-    >>> from skbio.alignment import AlignPath
+    >>> from skbio.sequence import DNA
+    >>> from skbio.alignment import AlignPath, TabularMSA
     >>> seqs = [
     ...    DNA('CGGTCGTAACGCGTA---CA'),
     ...    DNA('CAG--GTAAG-CATACCTCA'),
@@ -178,8 +178,8 @@ class AlignPath(SkbioObject):
 
         Examples
         --------
-        >>> from skbio import DNA, TabularMSA
-        >>> from skbio.alignment import AlignPath
+        >>> from skbio.sequence import DNA
+        >>> from skbio.alignment import AlignPath, TabularMSA
         >>> seqs = [
         ...    DNA('CGTCGTGC'),
         ...    DNA('CA--GT-C'),
@@ -550,7 +550,7 @@ class PairAlignPath(AlignPath):
 
         Parameters
         ----------
-        seqs : list of skbio.Sequence or string
+        seqs : list of skbio.sequence.Sequence or string
             A pair of sequences to generate CIGAR string. If provided, will
             distinguish match (``=``) and mismatch (``X``). Otherwise, will uniformly
             note them as (mis)match (``M``). The first sequence in the list is the

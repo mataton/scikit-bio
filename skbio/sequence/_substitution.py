@@ -60,7 +60,7 @@ class SubstitutionMatrix(DissimilarityMatrix):
 
     Examples
     --------
-    >>> from skbio import SubstitutionMatrix
+    >>> from skbio.sequence import SubstitutionMatrix
     >>> mat = SubstitutionMatrix('ACGT', np.array([
     ...     [2, -1, -1, -1],
     ...     [-1, 2, -1, -1],
@@ -191,7 +191,7 @@ class SubstitutionMatrix(DissimilarityMatrix):
 
         Examples
         --------
-        >>> from skbio import SubstitutionMatrix
+        >>> from skbio.sequence import SubstitutionMatrix
         >>> d = {'a': {'a': 1, 'b': 0, 'c': 0},
         ...      'b': {'a': 0, 'b': 1, 'c': 0},
         ...      'c': {'a': 0, 'b': 0, 'c': 1}}
@@ -242,7 +242,7 @@ class SubstitutionMatrix(DissimilarityMatrix):
 
         Examples
         --------
-        >>> from skbio import SubstitutionMatrix
+        >>> from skbio.sequence import SubstitutionMatrix
         >>> mat = SubstitutionMatrix.identity('ACGT', 1, -2)
         >>> mat.alphabet
         ('A', 'C', 'G', 'T')
@@ -309,7 +309,7 @@ class SubstitutionMatrix(DissimilarityMatrix):
 
         Examples
         --------
-        >>> from skbio import SubstitutionMatrix
+        >>> from skbio.sequence import SubstitutionMatrix
         >>> mat = SubstitutionMatrix.by_name('BLOSUM62')
         >>> len(mat.alphabet)
         24

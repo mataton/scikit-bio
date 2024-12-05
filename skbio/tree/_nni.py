@@ -65,7 +65,7 @@ def nni(tree, dm, allow_edge_estimation=True, inplace=True, balanced=True):
     Define a new distance matrix object describing the distances between five
     taxa: human, monkey, pig, rat, and chicken.
 
-    >>> from skbio import DistanceMatrix
+    >>> from skbio.stats.distance import DistanceMatrix
     >>> from skbio.tree import nni
 
     >>> dm = DistanceMatrix([[0, 0.02,  0.18,  0.34,  0.55],

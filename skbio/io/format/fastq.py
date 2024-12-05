@@ -206,7 +206,8 @@ registry in practice:
 
 To load the sequences into a ``TabularMSA``, we run:
 
->>> from skbio import TabularMSA, DNA
+>>> from skbio.alignment import TabularMSA
+>>> from skbio.sequence import DNA
 >>> msa = TabularMSA.read(fh, constructor=DNA, variant='sanger')
 >>> msa
 TabularMSA[DNA]

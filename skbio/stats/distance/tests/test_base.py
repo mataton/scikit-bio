@@ -24,10 +24,10 @@ else:
     has_matplotlib = True
 
 import skbio.sequence.distance
-from skbio import DistanceMatrix, Sequence
+from skbio.sequence import Sequence
 from skbio.stats.distance import (
     DissimilarityMatrixError, DistanceMatrixError, MissingIDError,
-    DissimilarityMatrix, randdm)
+    DissimilarityMatrix, randdm, DistanceMatrix)
 from skbio.stats.distance._base import (_preprocess_input,
                                         _run_monte_carlo_stats)
 from skbio.stats.distance._utils import is_symmetric_and_hollow

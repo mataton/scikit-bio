@@ -134,7 +134,8 @@ Examples
 --------
 Let's create a ``TabularMSA`` with three DNA sequences:
 
->>> from skbio import TabularMSA, DNA
+>>> from skbio.alignment import TabularMSA
+>>> from skbio.sequence import DNA
 >>> seqs = [DNA('ACCGTTGTA-GTAGCT', metadata={'id':'seq1'}),
 ...         DNA('A--GTCGAA-GTACCT', metadata={'id':'sequence-2'}),
 ...         DNA('AGAGTTGAAGGTATCT', metadata={'id':'3'})]

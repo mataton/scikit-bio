@@ -49,7 +49,7 @@ def gme(dm, allow_edge_estimation=True):
     Define a new distance matrix object describing the distances between five
     taxa: human, monkey, pig, rat, and chicken.
 
-    >>> from skbio import DistanceMatrix
+    >>> from skbio.stats.distance import DistanceMatrix
     >>> from skbio.tree import gme
 
     >>> dm = DistanceMatrix([[0, 0.02,  0.18,  0.34,  0.55],

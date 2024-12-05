@@ -13,7 +13,6 @@ from skbio.dependencies import pandas as pd
 from skbio.dependencies import numpy as np
 import numpy.testing as npt
 
-from skbio import DistanceMatrix, TreeNode
 from skbio.table import Table, example_table
 from skbio.util._testing import assert_series_almost_equal
 from skbio.diversity import (alpha_diversity, beta_diversity,
@@ -22,9 +21,10 @@ from skbio.diversity import (alpha_diversity, beta_diversity,
                              get_beta_diversity_metrics)
 from skbio.diversity.alpha import faith_pd, phydiv, sobs
 from skbio.diversity.beta import unweighted_unifrac, weighted_unifrac
-from skbio.tree import DuplicateNodeError, MissingNodeError
+from skbio.tree import DuplicateNodeError, MissingNodeError, TreeNode
 from skbio.diversity._driver import (_qualitative_beta_metrics,
                                      _valid_beta_metrics)
+from skbio.stats.distance import DistanceMatrix
 
 
 class AlphaDiversityTests(TestCase):
