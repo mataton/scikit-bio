@@ -17,6 +17,8 @@ from ._utils import svd_rank
 def ca(X, scaling=1):
     r"""Compute correspondence analysis.
 
+    This is docs.
+
     Correspondence analysis is a multivariate statistical technique for ordination.
     In general, rows in the data table will correspond to samples and
     columns to features, but the method is symmetric. In order to
