@@ -56,7 +56,6 @@ class _LazyModule(ModuleType):
     def __getattr__(self, name: str) -> Any:
         # Have "hasattr('__wrapped__')" return False without triggering import.
         # It's for decorators, not modules, but keeps "make doctest" happy)
-        # NOTE:  Do we need this?
         if name == "__wrapped__":
             msg = f"{self._module_name!r} object has no attribute {name!r}"
             raise AttributeError(msg)

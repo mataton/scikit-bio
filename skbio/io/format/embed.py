@@ -69,11 +69,11 @@ Note that the embedding from implicitly gets the ``.write`` method from
 the IO registry. This ``ByteIO`` object can be a file path in a regular
 use case.
 
->>> import io, skbio
+>>> import io, skbio.io
 >>> f = io.BytesIO()
 >>> skbio.embedding.example_protein_embedding.write(f)  # doctest: +ELLIPSIS
 <_io.BytesIO object at ...>
->>> roundtrip = skbio.read(f, into=skbio.ProteinEmbedding)
+>>> roundtrip = skbio.io.read(f, into=skbio.embedding.ProteinEmbedding)
 >>> roundtrip
 ProteinEmbedding
 --------------------------------------------------------------------

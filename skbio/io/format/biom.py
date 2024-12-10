@@ -34,11 +34,11 @@ Here we will write an existing BIOM table, and re-read it. Note that the Table
 from ``biom`` implicitly gets the ``.write`` method from the IO registry. This
 ``ByteIO`` object can be a file path in a regular use case.
 
->>> import io, skbio
+>>> import io, skbio.io
 >>> f = io.BytesIO()
 >>> skbio.table.example_table.write(f)  # doctest: +ELLIPSIS
 <_io.BytesIO object at ...>
->>> roundtrip = skbio.read(f, into=skbio.table.Table)
+>>> roundtrip = skbio.io.read(f, into=skbio.table.Table)
 >>> roundtrip
 2 x 3 <class 'biom.table.Table'> with 5 nonzero entries (83% dense)
 
