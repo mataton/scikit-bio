@@ -10,6 +10,7 @@ from typing import ClassVar, Any
 
 _NUMPY_AVAILABLE = True
 _PANDAS_AVAILABLE = True
+_SCIPY_AVAILABLE = True
 
 
 class _LazyModule(ModuleType):
@@ -127,6 +128,7 @@ def _lazy_import(module_name: str) -> tuple[ModuleType, bool]:
 
 numpy, _NUMPY_AVAILABLE = _lazy_import("numpy")
 pandas, _PANDAS_AVAILABLE = _lazy_import("pandas")
+scipy, _SCIPY_AVAILABLE = _lazy_import("scipy")
 
 __all__ = [
     "pandas",

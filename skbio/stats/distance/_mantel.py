@@ -9,12 +9,7 @@
 from itertools import combinations
 
 import warnings
-from skbio.dependencies import numpy as np
-from skbio.dependencies import pandas as pd
-import scipy.special
-from scipy.stats import kendalltau
-from scipy.stats import ConstantInputWarning
-from scipy.stats import NearConstantInputWarning
+from skbio.dependencies import numpy as np, pandas as pd, scipy
 
 from skbio.stats.distance import DistanceMatrix
 from skbio.util import get_rng
@@ -273,7 +268,7 @@ def mantel(
     elif method == "spearman":
         special = True
     elif method == "kendalltau":
-        corr_func = kendalltau
+        corr_func = scipy.stats.kendalltau
     else:
         raise ValueError("Invalid correlation method '%s'." % method)
 
@@ -371,7 +366,7 @@ def _mantel_stats_pearson_flat(x, y_flat, permutations, seed=None):
 
     # If an input is constant, the correlation coefficient is not defined.
     if (x_flat == x_flat[0]).all() or (y_flat == y_flat[0]).all():
-        warnings.warn(ConstantInputWarning())
+        warnings.warn(scipy.stats.ConstantInputWarning())
         return np.nan, np.nan, []
 
     # inline pearsonr, condensed from scipy.stats.pearsonr
@@ -393,7 +388,7 @@ def _mantel_stats_pearson_flat(x, y_flat, permutations, seed=None):
         # If all the values in x (likewise y) are very close to the mean,
         # the loss of precision that occurs in the subtraction xm = x - xmean
         # might result in large errors in r.
-        warnings.warn(NearConstantInputWarning())
+        warnings.warn(scipy.stats.NearConstantInputWarning())
 
     orig_stat = np.dot(xm_normalized, ym_normalized)
 
@@ -494,7 +489,7 @@ def _mantel_stats_spearman(x, y, permutations, seed=None):
 
     # If an input is constant, the correlation coefficient is not defined.
     if (x_flat == x_flat[0]).all() or (y_flat == y_flat[0]).all():
-        warnings.warn(ConstantInputWarning())
+        warnings.warn(scipy.stats.ConstantInputWarning())
         return np.nan, np.nan, []
 
     y_rank = scipy.stats.rankdata(y_flat)

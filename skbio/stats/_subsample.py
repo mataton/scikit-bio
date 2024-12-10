@@ -11,8 +11,7 @@ from heapq import heappush, heappop
 from collections import defaultdict
 from copy import copy
 
-from skbio.dependencies import numpy as np
-import scipy.sparse as sparse
+from skbio.dependencies import numpy as np, scipy
 from skbio.util import get_rng
 
 from biom import subsample as biom_subsample
@@ -239,7 +238,7 @@ def subsample_counts(counts, n, replace=False, seed=None):
         raise ValueError("Only 1-D vectors are supported.")
 
     # csr_matrix will report ndim of 2 if vector
-    counts = sparse.csr_matrix(counts)
+    counts = scipy.sparse.csr_matrix(counts)
 
     counts_sum = counts.sum()
     if n > counts_sum and not replace:

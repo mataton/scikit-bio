@@ -13,10 +13,8 @@ import functools
 import itertools
 import types
 
-from skbio.dependencies import numpy as np
+from skbio.dependencies import numpy as np, pandas as pd, scipy
 import numpy.testing as npt
-from skbio.dependencies import pandas as pd
-import scipy.stats
 
 from skbio.alignment import AlignPath, TabularMSA
 from skbio.sequence import GrammaredSequence, Sequence, DNA, RNA, Protein

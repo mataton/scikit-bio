@@ -14,10 +14,8 @@ from types import GeneratorType
 from collections.abc import Hashable
 from unittest import TestCase, main
 
-from skbio.dependencies import numpy as np
+from skbio.dependencies import numpy as np, pandas as pd, scipy
 import numpy.testing as npt
-from skbio.dependencies import pandas as pd
-import scipy.spatial.distance
 
 import skbio.sequence.distance
 from skbio.sequence import Sequence, DNA, SubstitutionMatrix

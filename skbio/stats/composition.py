@@ -142,11 +142,7 @@ References
 
 from warnings import warn, catch_warnings, simplefilter
 
-from skbio.dependencies import numpy as np
-from skbio.dependencies import pandas as pd
-import scipy.stats
-from scipy.sparse import coo_matrix
-from scipy.stats import t, gmean
+from skbio.dependencies import numpy as np, pandas as pd, scipy
 from statsmodels.stats.weightstats import CompareMeans
 
 from skbio.stats.distance import DistanceMatrix
@@ -867,7 +863,7 @@ def centralize(mat):
 
     """
     mat = closure(mat)
-    cen = gmean(mat, axis=0)
+    cen = scipy.stats.gmean(mat, axis=0)
     return perturb_inv(mat, cen)
 
 
@@ -1204,7 +1200,7 @@ def tree_basis(tree):
         i += 1
         nodes.append(n.name)
 
-    basis = coo_matrix((value, (row, col)), shape=(D - 1, D))
+    basis = scipy.sparse.coo_matrix((value, (row, col)), shape=(D - 1, D))
 
     return basis, nodes
 

@@ -125,8 +125,7 @@ we need to be confident that we have not committed a type II error increases.
 import collections
 import copy
 
-from skbio.dependencies import numpy as np
-import scipy.stats
+from skbio.dependencies import numpy as np, scipy
 
 from skbio.util import get_rng
 

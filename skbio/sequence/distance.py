@@ -28,8 +28,7 @@ Functions
 # The full license is in the file LICENSE.txt, distributed with this software.
 # ----------------------------------------------------------------------------
 
-from skbio.dependencies import numpy as np
-import scipy.spatial.distance
+from skbio.dependencies import numpy as np, scipy
 
 import skbio
 import skbio.sequence

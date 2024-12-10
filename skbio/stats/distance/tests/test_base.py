@@ -10,11 +10,9 @@ import io
 import unittest
 from unittest import TestCase, main
 
-from skbio.dependencies import numpy as np
+from skbio.dependencies import numpy as np, pandas as pd, scipy
 import numpy.testing as npt
-from skbio.dependencies import pandas as pd
 import pandas.testing as pdt
-import scipy.spatial.distance
 
 try:
     import matplotlib as mpl

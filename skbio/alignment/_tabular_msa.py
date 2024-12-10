@@ -9,9 +9,7 @@
 import collections
 import copy
 
-from skbio.dependencies import numpy as np
-from skbio.dependencies import pandas as pd
-import scipy.stats
+from skbio.dependencies import numpy as np, pandas as pd, scipy
 
 from skbio._base import SkbioObject
 from skbio.metadata._mixin import MetadataMixin, PositionalMetadataMixin

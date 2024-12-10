@@ -8,13 +8,8 @@
 
 from unittest import TestCase, main
 
-from skbio.dependencies import numpy as np
+from skbio.dependencies import numpy as np, pandas as pd, scipy
 import numpy.testing as npt
-from skbio.dependencies import pandas as pd
-
-import scipy
-from scipy.spatial.distance import squareform
-from scipy.stats import pearsonr, spearmanr, ConstantInputWarning
 
 from skbio.stats.distance import (DissimilarityMatrixError,
                                   DistanceMatrixError, mantel, pwmantel, DistanceMatrix)
@@ -128,8 +123,8 @@ class InternalMantelTests(MantelTestData):
         y = DistanceMatrix.read(get_data_path('dm3.txt'))
         x_data = x._data
         y_data = y._data
-        x_flat = squareform(x_data, force='tovector', checks=False)
-        y_flat = squareform(y_data, force='tovector', checks=False)
+        x_flat = scipy.spatial.distance.squareform(x_data, force='tovector', checks=False)
+        y_flat = scipy.spatial.distance.squareform(y_data, force='tovector', checks=False)
 
         xmean = x_flat.mean()
         ymean = y_flat.mean()
@@ -190,9 +185,9 @@ class InternalMantelTests(MantelTestData):
         x_flat = x.condensed_form()
         y_flat = y.condensed_form()
 
-        orig_stat = pearsonr(x_flat, y_flat)[0]
+        orig_stat = scipy.stats.pearsonr(x_flat, y_flat)[0]
 
-        perm_gen = (pearsonr(x.permute(condensed=True, seed=rng), y_flat)[0]
+        perm_gen = (scipy.stats.pearsonr(x.permute(condensed=True, seed=rng), y_flat)[0]
                     for _ in range(num_perms))
         permuted_stats = np.fromiter(perm_gen, float,
                                      count=num_perms)
@@ -221,9 +216,9 @@ class InternalMantelTests(MantelTestData):
         x_flat = x.condensed_form()
         y_flat = y.condensed_form()
 
-        orig_stat = spearmanr(x_flat, y_flat)[0]
+        orig_stat = scipy.stats.spearmanr(x_flat, y_flat)[0]
 
-        perm_gen = (spearmanr(x.permute(condensed=True, seed=rng), y_flat)[0]
+        perm_gen = (scipy.stats.spearmanr(x.permute(condensed=True, seed=rng), y_flat)[0]
                     for _ in range(num_perms))
         permuted_stats = np.fromiter(perm_gen, float,
                                      count=num_perms)
@@ -413,7 +408,7 @@ class MantelTests(MantelTestData):
                 (self.no_variation, self.miny),
                 (self.no_variation, self.no_variation),
             ):
-                with self.assertWarns(ConstantInputWarning):
+                with self.assertWarns(scipy.stats.ConstantInputWarning):
                     obs = mantel(x, y, method='pearson', alternative=alt)
                 npt.assert_equal(obs, exp)
 
@@ -425,7 +420,7 @@ class MantelTests(MantelTestData):
                 (self.no_variation, self.miny),
                 (self.no_variation, self.no_variation),
             ):
-                with self.assertWarns(ConstantInputWarning):
+                with self.assertWarns(scipy.stats.ConstantInputWarning):
                     obs = mantel(x, y, method='spearman', alternative=alt)
                 npt.assert_equal(obs, exp)
 

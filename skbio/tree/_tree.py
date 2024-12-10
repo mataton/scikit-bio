@@ -12,9 +12,7 @@ from copy import copy, deepcopy
 from itertools import chain, combinations
 from collections import defaultdict, deque
 
-from skbio.dependencies import numpy as np
-from skbio.dependencies import pandas as pd
-import scipy.spatial.distance as spdist
+from skbio.dependencies import numpy as np, pandas as pd, scipy
 
 from skbio._base import SkbioObject
 from skbio.stats.distance import DistanceMatrix
@@ -4433,7 +4431,7 @@ class TreeNode(SkbioObject):
             L1 = [sets1.get(x, 0.0) for x in union]
             L2 = [sets2.get(x, 0.0) for x in union]
             if isinstance(metric, str):
-                result = getattr(spdist, metric)(L1, L2)
+                result = getattr(scipy.spatial.distance, metric)(L1, L2)
             else:
                 result = metric(L1, L2)
 
@@ -5062,9 +5060,9 @@ class TreeNode(SkbioObject):
         half = False
         if isinstance(metric, str):
             if metric == "unitcorr":
-                metric, half = spdist.correlation, True
+                metric, half = scipy.spatial.distance.correlation, True
             else:
-                metric = getattr(spdist, metric)
+                metric = getattr(scipy.spatial.distance, metric)
         result = metric(dm1, dm2)
         if half:
             result *= 0.5
