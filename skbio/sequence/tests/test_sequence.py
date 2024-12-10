@@ -527,7 +527,8 @@ class TestSequence(TestSequenceBase, ReallyEqualMixin):
         self.assertEqual(Sequence('zzz').observed_chars, {'z'})
         self.assertEqual(Sequence('xYzxxZz').observed_chars,
                          {'x', 'Y', 'z', 'Z'})
-        self.assertEqual(Sequence('\t   ').observed_chars, {' ', '\t'})
+        self.assertEqual(Sequence('\t   ').observed_chars,
+                         {' ', '\t'})
 
         im = IntervalMetadata(6)
         im.add([(0, 2)], metadata={'gene': 'sagB'})

@@ -5,6 +5,7 @@
 ### Features
 
 * Implemented linear mixed effects with Dirichlet-multinomial distribution ([#2113](https://github.com/scikit-bio/scikit-bio/pull/2113)).
+* Added `height` and `depth` methods under `TreeNode` to calculate the height and depth of a given node.
 * Added `TreeNode.compare_wrfd` to calculate the weighted Robinson-Foulds distance or its variants between two trees ([#2144](https://github.com/scikit-bio/scikit-bio/pull/2144)).
 * Wrapped UPGMA and WPGMA from SciPy's linkage method ([#2094](https://github.com/scikit-bio/scikit-bio/pull/2094)).
 * Added `TreeNode` methods: `bipart`, `biparts` and `compare_biparts` to encode and compare bipartitions in a tree ([#2144](https://github.com/scikit-bio/scikit-bio/pull/2144)).
@@ -35,6 +36,7 @@
 * Added parameter `exclude_attrs` to `TreeNode.unrooted_copy` ([#2103](https://github.com/scikit-bio/scikit-bio/pull/2103)).
 * Added support for legacy random generator to `get_rng`, such that outputs of scikit-bio functions become reproducible with code that starts with `np.random.seed` or uses `RandomState` ([#2130](https://github.com/scikit-bio/scikit-bio/pull/2130)).
 * Allowed `shuffle` and `compare_cophenet` (renamed from `compare_tip_distances`) of `TreeNode` to accept a random seed or random generator to generate the shuffling function, which ensures output reproducibility ([#2118](https://github.com/scikit-bio/scikit-bio/pull/2118)).
+* Replaced `accumulate_to_ancestor` with `depth` under `TreeNode`. The latter has expanded functionality which covers the default behavior of the former.
 * Added beta diversity metric `jensenshannon`, which calculates Jensen-Shannon distance. Thank @quliping for suggesting this in [#2125](https://github.com/scikit-bio/scikit-bio/pull/2125).
 * Added parameter `include_self` to `TreeNode.ancestors` to optionally include the initial node in the path (default: False) ([#2135](https://github.com/scikit-bio/scikit-bio/pull/2135)).
 * Added parameter `seed` to functions `pcoa`, `anosim`, `permanova`, `permdisp`, `randdm`, `lladser_pe`, `lladser_ci`, `isubsample`, `subsample_power`, `subsample_paired_power`, `paired_subsamples` and `hommola_cospeciation` to accept a random seed or random generator to ensure output reproducibility ([#2120](https://github.com/scikit-bio/scikit-bio/pull/2120) and [#2129](https://github.com/scikit-bio/scikit-bio/pull/2129)).
@@ -54,6 +56,7 @@
 * Fixed a bug in `TreeNode.unrooted_move` which does not respect specified branch attributes ([#2103](https://github.com/scikit-bio/scikit-bio/pull/2103)).
 * Fixed a bug in `skbio.diversity.get_beta_diversity_metrics` which does not display metrics other than UniFrac ([#2126](https://github.com/scikit-bio/scikit-bio/pull/2126)).
 * Raises an error when beta diversity metric `mahalanobis` is called but sample number is smaller than or equal to feature number in the data. Thank @quliping for noting this in [#2125](https://github.com/scikit-bio/scikit-bio/pull/2125).
+* Fixed a bug in `io.format.fasta` that improperly handled sequences containing spaces. ([#2156](https://github.com/scikit-bio/scikit-bio/pull/2156))
 
 ### Miscellaneous
 
