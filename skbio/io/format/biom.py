@@ -34,7 +34,8 @@ Here we will write an existing BIOM table, and re-read it. Note that the Table
 from ``biom`` implicitly gets the ``.write`` method from the IO registry. This
 ``ByteIO`` object can be a file path in a regular use case.
 
->>> import io, skbio.io
+>>> import io
+>>> import skbio
 >>> f = io.BytesIO()
 >>> skbio.table.example_table.write(f)  # doctest: +ELLIPSIS
 <_io.BytesIO object at ...>
@@ -58,7 +59,7 @@ References
 
 import h5py
 
-import skbio
+# import skbio
 from skbio.io import create_format
 from skbio.table import Table
 

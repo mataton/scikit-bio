@@ -30,7 +30,7 @@ Functions
 
 from skbio.dependencies import numpy as np, scipy
 
-import skbio
+# import skbio
 import skbio.sequence
 
 

@@ -14,8 +14,7 @@ import re
 import h5py
 from skbio.dependencies import numpy as np
 
-import skbio
-from skbio.io import write
+import skbio.io
 from skbio.sequence import Protein
 from skbio.util import get_data_path
 from skbio.embedding._protein import ProteinEmbedding
@@ -50,7 +49,7 @@ class TestWriteError(TestCase):
         embed_list = (emb for emb in embed_list)
         file_path = os.path.join(self.tempdir.name, 'test_pdb_hits.h5')
 
-        write(embed_list, 'embed', into=get_data_path(file_path))
+        skbio.io.write(embed_list, 'embed', into=get_data_path(file_path))
         self.assertTrue(os.path.exists(file_path))
 
 

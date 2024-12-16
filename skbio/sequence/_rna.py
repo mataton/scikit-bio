@@ -6,7 +6,7 @@
 # The full license is in the file LICENSE.txt, distributed with this software.
 # ----------------------------------------------------------------------------
 
-import skbio
+# import skbio
 import skbio.sequence
 from skbio.util._decorator import classproperty, overrides
 from ._nucleotide_mixin import NucleotideMixin, _motifs as _parent_motifs

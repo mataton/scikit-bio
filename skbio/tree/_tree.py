@@ -3936,7 +3936,7 @@ class TreeNode(SkbioObject):
 
         Examples
         --------
-        >>> from skbio import TreeNode
+        >>> from skbio.tree import TreeNode
         >>> tree = TreeNode.read(["((a:1,b:2)c:3,(d:4,e:5)f:6)root;"])
         >>> dist, tip = tree.find('c').height()
         >>> dist

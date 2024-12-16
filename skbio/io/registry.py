@@ -174,7 +174,7 @@ from functools import wraps
 from importlib import import_module
 from re import sub
 
-import skbio
+import skbio.io
 from ._exception import DuplicateRegistrationError, InvalidRegistrationError
 from . import (
     UnrecognizedFormatError,

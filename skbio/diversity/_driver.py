@@ -14,7 +14,7 @@ from skbio.dependencies import numpy as np
 from skbio.dependencies import pandas as pd
 from scipy.spatial.distance import pdist
 
-import skbio
+# import skbio
 from skbio.diversity.alpha._pd import _faith_pd, _phydiv, _setup_pd
 from skbio.diversity.beta._unifrac import (
     _setup_multiple_unweighted_unifrac,
