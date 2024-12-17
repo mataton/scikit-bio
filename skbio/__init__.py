@@ -9,20 +9,21 @@
 # ruff: noqa: D104
 
 # Add skbio.io to sys.modules to prevent cycles in our imports
-import skbio.io  # noqa
+# import skbio.io  # noqa
 
 # imports included for convenience
-from skbio.sequence import Sequence, DNA, RNA, Protein, GeneticCode, SubstitutionMatrix
-from skbio.stats.distance import DistanceMatrix
-from skbio.alignment import local_pairwise_align_ssw, TabularMSA
-from skbio.tree import TreeNode, nj
-from skbio.embedding import ProteinEmbedding
-from skbio.io import read, write
-from skbio.stats.ordination import OrdinationResults
-from skbio.table import Table
-from skbio.metadata import SampleMetadata
-import skbio.diversity  # noqa
-import skbio.stats.evolve  # noqa
+# from skbio.sequence import (Sequence, DNA, RNA, Protein, GeneticCode,
+#                             SubstitutionMatrix)
+# from skbio.stats.distance import DistanceMatrix
+# from skbio.alignment import local_pairwise_align_ssw, TabularMSA
+# from skbio.tree import TreeNode, nj
+# from skbio.embedding import ProteinEmbedding
+# from skbio.io import read, write
+# from skbio.stats.ordination import OrdinationResults
+# from skbio.table import Table
+# from skbio.metadata import SampleMetadata
+# import skbio.diversity  # noqa
+# import skbio.stats.evolve  # noqa
 
 __all__ = [
     "Sequence",
