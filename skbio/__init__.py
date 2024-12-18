@@ -7,7 +7,7 @@
 # ----------------------------------------------------------------------------
 
 # ruff: noqa: D104
-
+import importlib
 # Add skbio.io to sys.modules to prevent cycles in our imports
 # import skbio.io  # noqa
 
@@ -24,6 +24,27 @@
 # from skbio.metadata import SampleMetadata
 # import skbio.diversity  # noqa
 # import skbio.stats.evolve  # noqa
+subpackages = {
+    "alignment": ("local_pairwise_align_ssw", "TabularMSA"),
+    "diversity": (),
+    "embedding": ("ProteinEmbedding",),
+    "feature_table": (),
+    "io": ("read", "write"),
+    "metadata": ("SampleMetadata",),
+    "sequence": (
+        "Sequence",
+        "DNA",
+        "RNA",
+        "Protein",
+        "GeneticCode",
+        "SubstitutionMatrix",
+    ),
+    "stats": (),
+    "stats.ordination": ("OrdinationResults",),
+    "stats.distance": ("DistanceMatrix",),
+    "table": ("Table",),
+    "tree": ("TreeNode", "nj"),
+}
 
 __all__ = [
     "Sequence",
@@ -43,6 +64,28 @@ __all__ = [
     "Table",
     "SampleMetadata",
 ]
+
+
+def __getattr__(name):
+    print(name)
+    # attr is subpackage of scikit-bio
+    if name in subpackages:
+        return importlib.import_module(f"skbio.{name}")
+    # attr is not within scikit-bio
+    elif name in globals():
+        try:
+            return globals()[name]
+        except KeyError:
+            raise AttributeError(f"Module 'skbio' has no attribute {name}.")
+    # attr is object within subpackage of scikit-bio
+    else:
+        for k, v in subpackages.items():
+            if name in v:
+                mod = importlib.import_module(f"skbio.{k}")
+                return getattr(mod, name)
+
+    # attr may be something outside of scikit-bio
+
 
 __credits__ = "https://github.com/scikit-bio/scikit-bio/graphs/contributors"
 __version__ = "0.6.3-dev"
