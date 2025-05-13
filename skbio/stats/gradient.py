@@ -421,6 +421,7 @@ class GradientANOVA:
             # present in the metadata map
             trajectory_categories = metadata_map.keys()
         else:
+            # this is a test
             # Check that trajectory_categories are in metadata_map
             for category in trajectory_categories:
                 if category not in metadata_map:
