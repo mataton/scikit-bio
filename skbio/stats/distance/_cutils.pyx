@@ -389,6 +389,64 @@ def permanova_f_stat_sW_cy(TReal[:, ::1] distance_matrix,
 
     return s_W
 
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def permanova_f_stat_sW_condensed_cy(TReal[::1] distance_matrix_condensed,
+                                     Py_ssize_t[::1] group_sizes,
+                                     Py_ssize_t[::1] grouping):
+    """Compute PERMANOVA pseudo-F partial statistic for condensed distance matrix."""
+    cdef Py_ssize_t condensed_len = distance_matrix_condensed.shape[0]
+    cdef Py_ssize_t in3 = grouping.shape[0]
+    
+    # Calculate matrix size from condensed length
+    # condensed_len = n * (n-1) / 2, solve for n
+    cdef Py_ssize_t in_n = <Py_ssize_t>((1 + <Py_ssize_t>(0.5 + (1 + 8 * condensed_len)**0.5)) // 2)
+    
+    assert condensed_len == (in_n * (in_n - 1)) // 2
+    assert in_n == in3
+
+    cdef double s_W = 0.0
+
+    cdef Py_ssize_t group_idx
+    cdef double local_s_W
+    cdef double val
+    cdef Py_ssize_t idx
+
+    cdef Py_ssize_t row, col, rowi, coli
+    cdef Py_ssize_t in_n_2 = in_n//2
+
+    for rowi in prange(in_n_2, nogil=True):
+        # since columns get shorter, combine first and last
+        row=rowi
+        local_s_W = 0.0
+        group_idx = grouping[row]
+        for coli in range(in_n-row-1):
+            col = coli+row+1
+            if grouping[col] == group_idx:
+                # Calculate condensed index for (row, col) where row < col
+                # idx = n*row - row*(row+1)/2 + col - row - 1
+                idx = col*(col-1)//2 + row
+                val = distance_matrix_condensed[idx]
+                local_s_W = local_s_W + val * val
+        s_W += local_s_W/group_sizes[group_idx]
+
+        row = in_n-rowi-2
+        if row!=rowi: # don't double count
+            local_s_W = 0.0
+            group_idx = grouping[row]
+            for coli in range(in_n-row-1):
+                col = coli+row+1
+                if grouping[col] == group_idx:
+                    # Calculate condensed index for (row, col) where row < col
+                    idx = col*(col-1)//2 + row
+                    val = distance_matrix_condensed[idx]
+                    local_s_W = local_s_W + val * val
+            s_W += local_s_W/group_sizes[group_idx]
+
+    return s_W
+
+
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def geomedian_axis_one(floating[:, :] X, floating eps=1e-7,
