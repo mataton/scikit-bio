@@ -188,6 +188,97 @@ class PERMANOVATests(TestCase):
         with self.assertRaises(TypeError):
             permanova(self.dm_ties.data, self.grouping_equal, seed=42)
 
+    def test_permanova_condensed_vs_full_small(self):
+        """Test that condensed and full forms give identical results for small matrix."""
+        dm = DistanceMatrix([[0, 1, 1, 4],
+                            [1, 0, 3, 2],
+                            [1, 3, 0, 3],
+                            [4, 2, 3, 0]],
+                            ['s1', 's2', 's3', 's4'])
+        grouping = ['Group1', 'Group1', 'Group2', 'Group2']
+        
+        # Full form
+        result_full = permanova(dm, grouping, permutations=99, seed=42)
+        
+        # Condensed form
+        dm_cond = DistanceMatrix(dm, condensed=True)
+        result_cond = permanova(dm_cond, grouping, permutations=99, seed=42)
+        
+        # Should be identical
+        assert result_full['test statistic'] == result_cond['test statistic']
+        assert result_full['p-value'] == result_cond['p-value']
+
+
+    def test_permanova_condensed_vs_full_medium(self):
+        """Test with a medium-sized matrix."""
+        np.random.seed(123)
+        n = 10
+        data = np.random.rand(n, n)
+        data = (data + data.T) / 2
+        np.fill_diagonal(data, 0)
+        
+        dm = DistanceMatrix(data)
+        grouping = ['A'] * 5 + ['B'] * 5
+        
+        # Full form
+        result_full = permanova(dm, grouping, permutations=99, seed=42)
+        
+        # Condensed form
+        dm_cond = DistanceMatrix(dm, condensed=True)
+        result_cond = permanova(dm_cond, grouping, permutations=99, seed=42)
+        
+        print(f"Full: stat={result_full['test statistic']}, p={result_full['p-value']}")
+        print(f"Cond: stat={result_cond['test statistic']}, p={result_cond['p-value']}")
+
+        # Should be identical
+        assert result_full['test statistic'] == result_cond['test statistic']
+        assert result_full['p-value'] == result_cond['p-value']
+
+
+    def test_permanova_condensed_vs_full_three_groups(self):
+        """Test with three groups."""
+        dm = DistanceMatrix([[0, 1, 2, 3, 4, 5],
+                            [1, 0, 1, 2, 3, 4],
+                            [2, 1, 0, 1, 2, 3],
+                            [3, 2, 1, 0, 1, 2],
+                            [4, 3, 2, 1, 0, 1],
+                            [5, 4, 3, 2, 1, 0]])
+        grouping = ['A', 'A', 'B', 'B', 'C', 'C']
+        
+        # Full form
+        result_full = permanova(dm, grouping, permutations=99, seed=42)
+        
+        # Condensed form
+        dm_cond = DistanceMatrix(dm, condensed=True)
+        result_cond = permanova(dm_cond, grouping, permutations=99, seed=42)
+
+        print(f"Full: stat={result_full['test statistic']}, p={result_full['p-value']}")
+        print(f"Cond: stat={result_cond['test statistic']}, p={result_cond['p-value']}")
+        
+        # Should be identical
+        assert result_full['test statistic'] == result_cond['test statistic']
+        assert result_full['p-value'] == result_cond['p-value']
+
+
+    def test_permanova_condensed_zero_permutations(self):
+        """Test with zero permutations (just test statistic)."""
+        dm = DistanceMatrix([[0, 1, 1, 4],
+                            [1, 0, 3, 2],
+                            [1, 3, 0, 3],
+                            [4, 2, 3, 0]])
+        grouping = ['X', 'X', 'Y', 'Y']
+        
+        # Full form
+        result_full = permanova(dm, grouping, permutations=0)
+        
+        # Condensed form
+        dm_cond = DistanceMatrix(dm, condensed=True)
+        result_cond = permanova(dm_cond, grouping, permutations=0)
+        
+        # Test statistic should match, p-value will be NaN for both
+        assert result_full['test statistic'] == result_cond['test statistic']
+        assert np.isnan(result_full['p-value'])
+        assert np.isnan(result_cond['p-value'])
 
 if __name__ == '__main__':
-    main()
+    main(buffer=False)

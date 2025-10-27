@@ -394,16 +394,13 @@ def permanova_f_stat_sW_cy(TReal[:, ::1] distance_matrix,
 @cython.wraparound(False)
 def permanova_f_stat_sW_condensed_cy(TReal[::1] distance_matrix_condensed,
                                      Py_ssize_t[::1] group_sizes,
-                                     Py_ssize_t[::1] grouping):
+                                     Py_ssize_t[::1] grouping,
+                                     Py_ssize_t mat_n):
     """Compute PERMANOVA pseudo-F partial statistic for condensed distance matrix."""
-    cdef Py_ssize_t condensed_len = distance_matrix_condensed.shape[0]
     cdef Py_ssize_t in3 = grouping.shape[0]
-    
-    # Calculate matrix size from condensed length
-    # condensed_len = n * (n-1) / 2, solve for n
-    cdef Py_ssize_t in_n = <Py_ssize_t>((1 + <Py_ssize_t>(0.5 + (1 + 8 * condensed_len)**0.5)) // 2)
-    
-    assert condensed_len == (in_n * (in_n - 1)) // 2
+
+    cdef Py_ssize_t in_n = mat_n
+
     assert in_n == in3
 
     cdef double s_W = 0.0
@@ -416,7 +413,7 @@ def permanova_f_stat_sW_condensed_cy(TReal[::1] distance_matrix_condensed,
     cdef Py_ssize_t row, col, rowi, coli
     cdef Py_ssize_t in_n_2 = in_n//2
 
-    for rowi in prange(in_n_2, nogil=True):
+    for rowi in range(in_n_2):
         # since columns get shorter, combine first and last
         row=rowi
         local_s_W = 0.0

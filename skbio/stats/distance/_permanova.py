@@ -173,27 +173,27 @@ def permanova(
         distmat.ids, sample_size, grouping, column
     )
 
-    if _skbb_permanova_available(
-        distmat, grouping, permutations, seed
-    ):  # pragma: no cover
-        # unlikely to throw here, but just in case
-        try:
-            stat, p_value = _skbb_permanova(distmat, grouping, permutations, seed)
-            return _build_results(
-                "PERMANOVA",
-                "pseudo-F",
-                sample_size,
-                num_groups,
-                stat,
-                p_value,
-                permutations,
-            )
-        except Exception as e:
-            warn(
-                "Attempted to use binaries.permanova but failed, "
-                "using regular logic instead.",
-                RuntimeWarning,
-            )
+    # if _skbb_permanova_available(
+    #     distmat, grouping, permutations, seed
+    # ):  # pragma: no cover
+    #     # unlikely to throw here, but just in case
+    #     try:
+    #         stat, p_value = _skbb_permanova(distmat, grouping, permutations, seed)
+    #         return _build_results(
+    #             "PERMANOVA",
+    #             "pseudo-F",
+    #             sample_size,
+    #             num_groups,
+    #             stat,
+    #             p_value,
+    #             permutations,
+    #         )
+    #     except Exception as e:
+    #         warn(
+    #             "Attempted to use binaries.permanova but failed, "
+    #             "using regular logic instead.",
+    #             RuntimeWarning,
+    #         )
     # if we got here, we could not use skbb
     # Calculate number of objects in each group.
     group_sizes = np.bincount(grouping)
@@ -221,7 +221,7 @@ def _compute_f_stat(
     """Compute PERMANOVA pseudo-F statistic."""
     if distance_matrix._flags["CONDENSED"]:
         s_W = permanova_f_stat_sW_condensed_cy(
-            distance_matrix.data, group_sizes, grouping
+            distance_matrix.data, group_sizes, grouping, distance_matrix.shape[0]
         )
     else:
         # Calculate s_W for each group, accounting for different group sizes.
