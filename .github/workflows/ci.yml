@@ -72,7 +72,7 @@ jobs:
         run: |
           python -m ensurepip
           pip install -r ci/requirements.doc.txt
-          pip install --force-reinstall .
+          pip install .
           conda list
       - name: Make documentation
         run: make doc
