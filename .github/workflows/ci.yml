@@ -66,7 +66,7 @@ jobs:
         with:
           auto-update-conda: true
           # Pin to 3.13 for now because no Sphinx is compatible with Python 3.14
-          python-version: "3.13"
+          python-version: ${{ env.latest_python }}
           environment-file: ci/conda_host_env.yml
       - name: Install dependencies
         run: |
