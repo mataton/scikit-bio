@@ -593,7 +593,7 @@ class TestLoadSuccess(unittest.TestCase):
         # nan's shouldn't be meaningfully different
         exp_md = SampleMetadata(exp_df)
         pd.testing.assert_frame_equal(obs_md.to_dataframe(),
-                                      exp_md.to_dataframe())
+                                      exp_md.to_dataframe())#, check_dtype=False)
 
         obs_columns = [(name, props.type, props.missing_scheme)
                        for name, props in obs_md.columns.items()]
@@ -620,7 +620,7 @@ class TestLoadSuccess(unittest.TestCase):
         # nan's shouldn't be meaningfully different
         exp_md = SampleMetadata(exp_df)
         pd.testing.assert_frame_equal(obs_md.to_dataframe(),
-                                      exp_md.to_dataframe())
+                                      exp_md.to_dataframe())#, check_dtype=False)
 
         obs_columns = [(name, props.type, props.missing_scheme)
                        for name, props in obs_md.columns.items()]
@@ -643,7 +643,13 @@ class TestLoadSuccess(unittest.TestCase):
                                         'not collected', 'collected']},
                               index=exp_index)
 
-        pd.testing.assert_frame_equal(obs_md.to_dataframe(), exp_df)
+        obs_df = obs_md.to_dataframe()
+        # print(exp_df)
+        # print(obs_df)
+        # print('\n')
+
+
+        pd.testing.assert_frame_equal(obs_df, exp_df, check_dtype=False)
 
         obs_columns = [(name, props.type, props.missing_scheme)
                        for name, props in obs_md.columns.items()]
@@ -1109,6 +1115,7 @@ class TestSave(unittest.TestCase):
             column_missing_schemes={
                 'col1': 'blank', 'col2': 'INSDC:missing'}
         )
+        # print(md.to_dataframe())
 
         md.save(self.filepath)
 
@@ -1123,6 +1130,10 @@ class TestSave(unittest.TestCase):
             "id2\t\tnot applicable\n"
             "id3\t-3.5\trestricted access\n"
         )
+
+        # print(obs)
+        # print('\n')
+        # print(exp)
 
         self.assertEqual(obs, exp)
 

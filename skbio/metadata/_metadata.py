@@ -471,17 +471,55 @@ class SampleMetadata(_MetadataBase, SkbioObject):
 
         return norm_df, columns
 
+    # def _metadata_column_factory(self, series, missing_scheme):
+    #     series = _missing.series_encode_missing(series, missing_scheme)
+    #     # Collapse dtypes except for all NaN columns so that we can preserve
+    #     # empty categorical columns. Empty numeric columns will already have
+    #     # the expected dtype and values
+    #     # Skip infer_objects for schemes that encode NaN payloads, as
+    #     # pandas 3.0's infer_objects() normalizes NaN bit patterns
+    #     if missing_scheme not in _missing._MISSING_ENUMS:
+    #         if not series.isna().all():
+    #             series = series.infer_objects()
+    #     dtype = series.dtype
+    #     if NumericMetadataColumn._is_supported_dtype(dtype):
+    #         column = NumericMetadataColumn(series, missing_scheme)
+    #     elif CategoricalMetadataColumn._is_supported_dtype(dtype):
+    #         column = CategoricalMetadataColumn(series, missing_scheme)
+    #     else:
+    #         raise TypeError(
+    #             "Metadata column %r has an unsupported pandas dtype of %s. "
+    #             "Supported dtypes: float, int, object, str, string"
+    #             % (series.name, dtype)
+    #         )
+
+    #     return column
     def _metadata_column_factory(self, series, missing_scheme):
         series = _missing.series_encode_missing(series, missing_scheme)
-        # Collapse dtypes except for all NaN columns so that we can preserve
-        # empty categorical columns. Empty numeric columns will already have
-        # the expected dtype and values
+
+        saved_nans = {}
         if not series.isna().all():
+            if missing_scheme in _missing._MISSING_ENUMS:
+                # Save encoded NaN values before infer_objects destroys them
+                nan_mask = series.isna()
+                saved_nans = {idx: series.at[idx] for idx in series.index[nan_mask]}
+
             series = series.infer_objects()
+
+        # Determine column type based on inferred dtype
         dtype = series.dtype
         if NumericMetadataColumn._is_supported_dtype(dtype):
+            # Restore encoded NaN payloads for numeric columns
+            if saved_nans:
+                for idx, val in saved_nans.items():
+                    series.at[idx] = val
             column = NumericMetadataColumn(series, missing_scheme)
         elif CategoricalMetadataColumn._is_supported_dtype(dtype):
+            # Restore encoded NaN payloads for categorical columns
+            if saved_nans:
+                series = series.astype(object)
+                for idx, val in saved_nans.items():
+                    series.at[idx] = val
             column = CategoricalMetadataColumn(series, missing_scheme)
         else:
             raise TypeError(
@@ -1006,11 +1044,22 @@ class MetadataColumn(_MetadataBase, metaclass=ABCMeta):
 
         series = _missing.series_encode_missing(series, missing_scheme)
         # if the series has values with a consistent dtype, make the series
-        # that dtype. Don't change the dtype if there is a column of all NaN
-        if not series.isna().all():
+        # that dtype. Don't change the dtype if there is a column of all NaN.
+        # Skip infer_objects for schemes that encode payloads in NaN bits,
+        # as pandas 3.0+ normalizes NaNs and destroys the payloads.
+        uses_encoded_nans = missing_scheme in _missing._NAMESPACE_LOOKUP
+        if not series.isna().all() and not uses_encoded_nans:
             series = series.infer_objects()
+            # from skbio.metadata._enan import get_payload_from_nan
+            # for idx in series.index:
+            #     if pd.isna(series[idx]):
+            #         code, ns = get_payload_from_nan(series[idx])
+            #         print(f"DEBUG after infer_objects: idx={idx}, code={code},
+            # namespace={ns}")
 
         if not self._is_supported_dtype(series.dtype):
+            # print(series)
+            # print(series.dtype)
             raise TypeError(
                 "%s %r does not support a pandas.Series object with dtype %s. "
                 "Supported dtypes: object, str, string"
@@ -1018,7 +1067,19 @@ class MetadataColumn(_MetadataBase, metaclass=ABCMeta):
             )
 
         self._missing_scheme = missing_scheme
+        from skbio.metadata._enan import get_payload_from_nan
+
+        # for idx in series.index:
+        #     if pd.isna(series[idx]):
+        #         code, ns = get_payload_from_nan(series[idx])
+        #         print(f"DEBUG before _normalize_: idx={idx}, code={code},
+        # namespace={ns}")
         self._series = self._normalize_(series)
+        # for idx in self._series.index:
+        #     if pd.isna(self._series[idx]):
+        #         code, ns = get_payload_from_nan(self._series[idx])
+        #         print(f"DEBUG after _normalize_: idx={idx}, code={code},
+        # namespace={ns}")
 
         self._validate_index([self._series.name], axis="column")
 
@@ -1106,10 +1167,35 @@ class MetadataColumn(_MetadataBase, metaclass=ABCMeta):
         to_dataframe
 
         """
+        # series = self._series.copy()
+        # if encode_missing:
+        #     missing = self.get_missing()
+        #     print(f"DEBUG: series dtype={series.dtype}, missing={missing.to_dict()}")
+        #     print(f"DEBUG: series.index={list(series.index)},
+        # missing.index={list(missing.index)}")
+        #     if not missing.empty:
+        #         series = series.astype(object)
+        #         series[missing.index] = missing
+        #         print(f"DEBUG: after assignment, series={series.to_dict()}")
+        # # print('\n\n')
+
+        # return series
         series = self._series.copy()
         if encode_missing:
+            from skbio.metadata._enan import _float_to_int
+            import numpy as np
+
+            # Debug: check if payload is intact before get_missing
+            for idx in series.index:
+                val = series.at[idx]
+                if isinstance(val, float) and np.isnan(val):
+                    print(f"DEBUG to_series: series[{idx}] int={_float_to_int(val)}")
+
             missing = self.get_missing()
+            print(f"DEBUG: missing={missing.to_dict()}")
+
             if not missing.empty:
+                series = series.astype(object)
                 series[missing.index] = missing
 
         return series
@@ -1273,6 +1359,81 @@ class CategoricalMetadataColumn(MetadataColumn):
 
     type = "categorical"
 
+    # def __init__(self, series, missing_scheme=DEFAULT_MISSING):
+    #     from skbio.metadata._enan import _float_to_int
+    #     import numpy as np
+
+    #     if not isinstance(series, pd.Series):
+    #         raise TypeError(f"{self.__class__.__name__} constructor requires a "
+    #                         f"pandas.Series object, not {type(series)}.")
+
+    #     _MetadataBase.__init__(self, series.index)
+
+    #     series = _missing.series_encode_missing(series, missing_scheme)
+
+    #     # DEBUG: check payload after encoding
+    #     print(f"\n=== AFTER series_encode_missing ===")
+    #     for idx in series.index:
+    #         val = series.at[idx]
+    #         if isinstance(val, float) and np.isnan(val):
+    #             print(f"series[{idx}]: int={_float_to_int(val)}")
+
+    #     if not series.isna().all():
+    #         series = series.infer_objects()
+
+    #     # DEBUG: check payload after infer_objects
+    #     print(f"\n=== AFTER infer_objects ===")
+    #     for idx in series.index:
+    #         val = series.at[idx]
+    #         if isinstance(val, float) and np.isnan(val):
+    #             print(f"series[{idx}]: int={_float_to_int(val)}")
+
+    #     if not self._is_supported_dtype(series.dtype):
+    #         raise TypeError(
+    #             "%s %r does not support a pandas.Series object with dtype %s"
+    #             % (self.__class__.__name__, series.name, series.dtype)
+    #         )
+
+    #     self._missing_scheme = missing_scheme
+    #     self._series = self._normalize_(series)
+
+    #     self._validate_index([self._series.name], axis="column")
+    def __init__(self, series, missing_scheme=DEFAULT_MISSING):
+        if not isinstance(series, pd.Series):
+            raise TypeError(
+                f"{self.__class__.__name__} constructor requires a "
+                f"pandas.Series object, not {type(series)}."
+            )
+
+        _MetadataBase.__init__(self, series.index)
+
+        series = _missing.series_encode_missing(series, missing_scheme)
+
+        saved_nans = {}
+        if not series.isna().all():
+            if missing_scheme in _missing._MISSING_ENUMS:
+                nan_mask = series.isna()
+                saved_nans = {idx: series.at[idx] for idx in series.index[nan_mask]}
+
+            series = series.infer_objects()
+
+            # Restore encoded NaN payloads
+            if saved_nans:
+                series = series.astype(object)
+                for idx, val in saved_nans.items():
+                    series.at[idx] = val
+
+        if not self._is_supported_dtype(series.dtype):
+            raise TypeError(
+                "%s %r does not support a pandas.Series object with dtype %s"
+                % (self.__class__.__name__, series.name, series.dtype)
+            )
+
+        self._missing_scheme = missing_scheme
+        self._series = self._normalize_(series)
+
+        self._validate_index([self._series.name], axis="column")
+
     @classmethod
     def _is_supported_dtype(cls, dtype):
         # Older pandas returned 'object' for strings
@@ -1302,7 +1463,6 @@ class CategoricalMetadataColumn(MetadataColumn):
                     return value
             elif pd.isna(value):  # permits np.nan, Python float nan, None
                 if isinstance(value, float) and np.isnan(value):
-                    # if type(value) is float and np.isnan(value):
                     return value
                 return np.nan
             else:
@@ -1312,8 +1472,10 @@ class CategoricalMetadataColumn(MetadataColumn):
                     % (cls.__name__, value, type(value), series.name)
                 )
 
-        norm_series = series.apply(normalize)
-        norm_series = norm_series.astype(object)
+        # Use direct iteration instead of .apply() to preserve encoded NaN payloads
+        norm_series = series.astype(object).copy()
+        for idx in norm_series.index:
+            norm_series[idx] = normalize(norm_series[idx])
         norm_series.index = norm_series.index.str.strip()
         norm_series.name = norm_series.name.strip()
         return norm_series
@@ -1330,16 +1492,118 @@ class NumericMetadataColumn(MetadataColumn):
 
     type = "numeric"
 
+    # def __init__(self, series, missing_scheme=DEFAULT_MISSING):
+    #     if not isinstance(series, pd.Series):
+    #         raise TypeError(f"{self.__class__.__name__} constructor requires a "
+    #                         f"pandas.Series object, not {type(series)}.")
+
+    #     _MetadataBase.__init__(self, series.index)
+
+    #     series = _missing.series_encode_missing(series, missing_scheme)
+
+    #     saved_nans = {}
+    #     if not series.isna().all():
+    #         if missing_scheme in _missing._MISSING_ENUMS:
+    #             nan_mask = series.isna()
+    #             saved_nans = {idx: series.at[idx] for idx in series.index[nan_mask]}
+
+    #         series = series.infer_objects()
+
+    #         # Restore encoded NaN payloads
+    #         if saved_nans:
+    #             for idx, val in saved_nans.items():
+    #                 series.at[idx] = val
+
+    #     if not self._is_supported_dtype(series.dtype):
+    #         raise TypeError(
+    #             "%s %r does not support a pandas.Series object with dtype %s"
+    #             % (self.__class__.__name__, series.name, series.dtype)
+    #         )
+
+    #     self._missing_scheme = missing_scheme
+    #     self._series = self._normalize_(series)
+
+    #     self._validate_index([self._series.name], axis="column")
+    def __init__(self, series, missing_scheme=DEFAULT_MISSING):
+        from skbio.metadata._enan import _float_to_int
+
+        if not isinstance(series, pd.Series):
+            raise TypeError(
+                f"{self.__class__.__name__} constructor requires a "
+                f"pandas.Series object, not {type(series)}."
+            )
+
+        _MetadataBase.__init__(self, series.index)
+
+        series = _missing.series_encode_missing(series, missing_scheme)
+
+        # Debug: after encoding
+        print(f"\n=== NumericMetadataColumn.__init__ DEBUG ===")
+        for idx in series.index:
+            val = series.at[idx]
+            if isinstance(val, float) and np.isnan(val):
+                print(f"after encode: series[{idx}] int={_float_to_int(val)}")
+
+        saved_nans = {}
+        if not series.isna().all():
+            if missing_scheme in _missing._MISSING_ENUMS:
+                nan_mask = series.isna()
+                saved_nans = {idx: series.at[idx] for idx in series.index[nan_mask]}
+            # print(
+            #  f"saved_nans: { {k: _float_to_int(v) for k, v in saved_nans.items()} }"
+            # )
+
+            series = series.infer_objects()
+
+            # Debug: after infer_objects
+            for idx in series.index:
+                val = series.at[idx]
+                if isinstance(val, float) and np.isnan(val):
+                    print(
+                        f"after infer_objects: series[{idx}] int={_float_to_int(val)}"
+                    )
+
+            # Restore encoded NaN payloads
+            if saved_nans:
+                for idx, val in saved_nans.items():
+                    series.at[idx] = val
+
+            # Debug: after restore
+            for idx in series.index:
+                val = series.at[idx]
+                if isinstance(val, float) and np.isnan(val):
+                    print(f"after restore: series[{idx}] int={_float_to_int(val)}")
+
+        # ... rest of __init__
+
+        self._series = self._normalize_(series)
+
+        # Debug: after _normalize_
+        for idx in self._series.index:
+            val = self._series.at[idx]
+            if isinstance(val, float) and np.isnan(val):
+                print(f"after _normalize_: series[{idx}] int={_float_to_int(val)}")
+
     @classmethod
     def _is_supported_dtype(cls, dtype):
         return dtype == "float" or dtype == "int" or dtype == "int64"
 
     @classmethod
     def _normalize_(cls, series):
+        # Save encoded NaN values before astype destroys their payloads
+        nan_mask = series.isna()
+        saved_nans = {idx: series.at[idx] for idx in series.index[nan_mask]}
+
         series = series.astype(float, errors="raise").copy()
+
         if np.isinf(series).any():
             raise ValueError(
                 "%s does not support positive or negative infinity as a "
                 "floating point value in column %r." % (cls.__name__, series.name)
             )
+
+        # Restore encoded NaN payloads
+        for idx, val in saved_nans.items():
+            series.at[idx] = val
+
         return series

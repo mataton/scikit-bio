@@ -15,7 +15,9 @@ def _float_to_int(number: float) -> int:
     #  on the same hardware when we go to int, the endian-ness doesn't matter
     #  either)
     bytes_ = struct.pack("=d", number)
+    print(f"bytes_: {bytes_}")
     (integer,) = struct.unpack("=Q", bytes_)
+    print(f"integer: {integer}")
     return integer
 
 
@@ -77,11 +79,18 @@ def make_nan_with_payload(payload: int, namespace: int = 255):
 
 
 def get_payload_from_nan(nan: float):
+    # print(nan)
     nan_int = _float_to_int(nan)
+    # print(f"nan after _float_to_int: {nan_int}")
+    # print(f"DEFAULT NAN INT: {_DEFAULT_NAN_INT}")
     namespaced_payload = nan_int ^ _DEFAULT_NAN_INT
+    # print(f"namespaced_payload: {namespaced_payload}")
     if namespaced_payload == 0:
         return (None, None)
     namespace = namespaced_payload >> 12
+    # print(f"namespace: {namespace}")
     payload = namespaced_payload - (namespace << 12)
-
+    # print(f"payload: {payload}")
+    res = (payload - _R_OFFSET, namespace)
+    # print(f"res: {res}")
     return (payload - _R_OFFSET, namespace)
