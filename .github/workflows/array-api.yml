@@ -11,17 +11,14 @@ env:
 jobs:
   test:
     name: Array API (${{ matrix.backend }})
-    runs-on: ${{ matrix.runs-on }}
+    runs-on: gpu-t4-4-core
     strategy:
       fail-fast: false
       matrix:
         include:
           - backend: torch
-            runs-on: ubuntu-latest
           - backend: jax
-            runs-on: ubuntu-latest
           - backend: cupy
-            runs-on: ubuntu-latest-gpu   # TODO: replace with your GPU runner label
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
