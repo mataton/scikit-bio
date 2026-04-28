@@ -26,8 +26,10 @@ jobs:
           python-version: ${{ env.latest_python }}
       - name: Install scikit-bio + backend
         run: |
-          pip install -e .
+          python -m ensurepip
+          pip install --no-deps .
           pip install ${{ matrix.backend }}
+          pip install -r ci/requirements.txt -r ci/requirements.test.txt
       - name: Run tests
         env:
           SKBIO_ARRAY_BACKEND: torch # ${{ matrix.backend }}
