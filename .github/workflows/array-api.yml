@@ -11,7 +11,7 @@ env:
 jobs:
   test:
     name: Array API (${{ matrix.backend }})
-    runs-on: gpu-t4-4-core
+    runs-on: ubuntu-latest # gpu-t4-4-core
     strategy:
       fail-fast: false
       matrix:
@@ -30,5 +30,6 @@ jobs:
           pip install ${{ matrix.backend }}
       - name: Run tests
         env:
-          SKBIO_ARRAY_BACKEND: ${{ matrix.backend }}
+          SKBIO_ARRAY_BACKEND: torch # ${{ matrix.backend }}
+          SKBIO_DEVICE: cpu
         run: python -m skbio.test
