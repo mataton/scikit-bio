@@ -24,6 +24,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ env.latest_python }}
+      - name: Check CUDA
+        run: nvidia-smi
       - name: Install scikit-bio + backend
         run: |
           python -m ensurepip
