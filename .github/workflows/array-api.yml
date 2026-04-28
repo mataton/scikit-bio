@@ -25,7 +25,7 @@ jobs:
         with:
           python-version: ${{ env.latest_python }}
       - name: Check CUDA
-        run: nvidia-smi
+        run: nvcc --version
       - name: Install scikit-bio + backend
         run: |
           python -m ensurepip
