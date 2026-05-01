@@ -479,6 +479,16 @@ def pytestrunner():
 # -------------------------------------------------------------------------------------
 
 
+_DEVICE_ALIASES = {"gpu": "cuda", "cuda": "cuda"}
+
+
+def _normalize_device(device):
+    """Canonicalize device name so that ``'gpu'`` and ``'cuda'`` are equivalent."""
+    if device is None:
+        return None
+    return _DEVICE_ALIASES.get(device.lower(), device.lower())
+
+
 def _read_env():
     """Read backend/device environment variables."""
     backend = os.environ.get("SKBIO_ARRAY_BACKEND", "").strip()
@@ -531,19 +541,21 @@ _BACKENDS = _get_array_backends()
 def _should_run(backend_name, device):
     """Check whether a backend/device combo should execute."""
     env_backend, env_device = _read_env()
+    norm_env = _normalize_device(env_device)
+    norm_dev = _normalize_device(device)
 
     if not env_backend:
         return backend_name == "numpy" and device == "cpu"
 
     if env_backend == "all":
-        if env_device and env_device != device:
+        if norm_env and norm_env != norm_dev:
             return False
         return True
 
     if env_backend != backend_name:
         return False
 
-    if env_device and env_device != device:
+    if norm_env and norm_env != norm_dev:
         return False
 
     return True
@@ -686,7 +698,4 @@ class ArrayAPITestMixin:
             )
 
     def _normalize_device(self, name):
-        name = str(name).lower()
-        if "cuda" in name or name == "gpu":
-            return "gpu"
-        return name
+        return _normalize_device(str(name))
