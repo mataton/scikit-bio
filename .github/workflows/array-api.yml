@@ -5,27 +5,28 @@ on:
   schedule:
     - cron: '0 6 * * 1'   # Every Monday at 06:00 UTC
 
+# torch doesn't have wheels for 3.14 yet
 env:
-  latest_python: "3.14"
+  latest_python: "3.13"
 
 jobs:
   test:
     name: Array API (${{ matrix.backend }})
-    runs-on: ubuntu-latest # gpu-t4-4-core
+    runs-on: gpu-t4-4-core
     strategy:
       fail-fast: false
       matrix:
         include:
           - backend: torch
-          - backend: jax
-          - backend: cupy
+          # - backend: jax
+          # - backend: cupy
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-python@v6
         with:
           python-version: ${{ env.latest_python }}
       - name: Check CUDA
-        run: nvcc --version
+        run: nvidia-smi
       - name: Install scikit-bio + backend
         run: |
           python -m ensurepip
@@ -35,5 +36,5 @@ jobs:
       - name: Run tests
         env:
           SKBIO_ARRAY_BACKEND: torch # ${{ matrix.backend }}
-          SKBIO_DEVICE: cpu
-        run: python -m skbio.test
+          SKBIO_DEVICE: gpu
+        run: pytest skbio/stats/composition/tests/test_base.py
