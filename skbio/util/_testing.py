@@ -461,12 +461,16 @@ def pytestrunner():
 # -------------------------------------------------------------------------------------
 # Array API test infrastructure
 #
-# Write one test method, run it against every supported array backend.
-# Uses unittest.subTest() for per-backend reporting — no pytest needed.
+# Write one test method, run it against every supported array backend
+# (numpy, jax, torch, cupy). Uses ``unittest.subTest()`` for per-backend
+# reporting — no pytest required.
 #
 # Env vars:
 #   SKBIO_ARRAY_BACKEND  — "numpy" (default), "jax", "torch", "cupy", or "all"
-#   SKBIO_DEVICE             — "cpu" (default), "cuda", "gpu"
+#   SKBIO_DEVICE         — "cpu" (default), "cuda", "gpu"
+#
+# Note: ``"gpu"`` (JAX's native string) and ``"cuda"`` (Torch/CuPy's native
+# string) refer to the same hardware and compare equal after normalization.
 #
 # Usage:
 #     class TestClosure(TestCase, ArrayAPITestMixin):
@@ -479,14 +483,33 @@ def pytestrunner():
 # -------------------------------------------------------------------------------------
 
 
-_DEVICE_ALIASES = {"gpu": "cuda", "cuda": "cuda"}
+# Comparison-only canonical form: collapse equivalent device specifiers from
+# different backends to a single key. Do NOT pass the canonical form back to a
+# backend as a device argument — JAX wants "gpu", Torch/CuPy want "cuda".
+_DEVICE_ALIASES = {"gpu": "cuda"}
 
 
 def _normalize_device(device):
-    """Canonicalize device name so that ``'gpu'`` and ``'cuda'`` are equivalent."""
+    """Canonicalize a device specifier for equality comparison.
+
+    - ``None`` stays ``None``.
+    - Case-insensitive (``"CUDA"`` → ``"cuda"``).
+    - Strips a default device index (``"cuda:0"`` → ``"cuda"``); non-zero
+      indices are preserved (``"cuda:1"`` → ``"cuda:1"``).
+    - JAX's ``"gpu"`` and Torch/CuPy's ``"cuda"`` collapse to ``"cuda"``.
+    - Accepts ``torch.device`` or any object with a sensible ``str()``.
+
+    The returned string is for *comparison only*. It is not safe to pass back
+    to a backend as a device argument.
+    """
     if device is None:
         return None
-    return _DEVICE_ALIASES.get(device.lower(), device.lower())
+    s = str(device).lower()
+    if ":" in s:
+        kind, idx = s.split(":", 1)
+        if idx == "0":
+            s = kind
+    return _DEVICE_ALIASES.get(s, s)
 
 
 def _read_env():
@@ -497,7 +520,13 @@ def _read_env():
 
 
 def _get_array_backends():
-    """Return dict of {name: (namespace, [devices])} for installed backends."""
+    """Return dict of {name: (namespace, [devices])} for installed backends.
+
+    The device strings stored here are each backend's *native* form — JAX uses
+    ``"gpu"``, Torch and CuPy use ``"cuda"`` — because they get passed back to
+    the backend (e.g. via ``_move_to_device``). Use ``_normalize_device`` only
+    when comparing device specifiers across backends.
+    """
     _backends = {"numpy": (np, ["cpu"])}
 
     try:
@@ -628,11 +657,6 @@ def array_backends(*backend_names, cpu_only=False):
 
                     ran_any = True
                     with self.subTest(backend=name, device=device):
-                        # Comment this print statement out when finished
-                        # print(
-                        #     f"\n  → Running {test_func.__name__} [{name}, {device}]",
-                        #     flush=True,
-                        # )
                         test_func(self, xp, device)
             if not ran_any:
                 if env_device:
@@ -657,16 +681,8 @@ class ArrayAPITestMixin:
 
     """
 
-    # def make_array(self, xp, device, data, dtype=None):
-    #     """Create an array on the appropriate backend and device."""
-    #     if dtype is not None:
-    #         arr = xp.asarray(data, dtype=dtype)
-    #     else:
-    #         arr = xp.asarray(data)
-    #     return _move_to_device(arr, xp, device)
-
     def make_array(self, xp, device, data, dtype=None):
-        """Create an array on the appropriate backend and device."""
+        """Create an array on the given backend and device."""
         if dtype is None:
             dtype = xp.float64
         arr = xp.asarray(data, dtype=dtype)
@@ -674,9 +690,7 @@ class ArrayAPITestMixin:
 
     def assert_close(self, actual, expected, rtol=1e-7, atol=1e-7):
         """Assert two arrays are numerically close (converts to numpy)."""
-        npt.assert_allclose(
-            _to_numpy(actual), _to_numpy(expected), rtol=rtol, atol=atol
-        )
+        xp_assert_close(actual, expected, rtol=rtol, atol=atol)
 
     def assert_type_preserved(self, result, xp, device):
         """Assert result is from the correct backend and on the right device."""
@@ -692,10 +706,7 @@ class ArrayAPITestMixin:
 
         if device not in ("cpu", None) and hasattr(result, "device"):
             self.assertEqual(
-                self._normalize_device(result.device),
-                self._normalize_device(device),
+                _normalize_device(result.device),
+                _normalize_device(device),
                 f"Device not preserved: result on {result.device}, expected {device}",
             )
-
-    def _normalize_device(self, name):
-        return _normalize_device(str(name))

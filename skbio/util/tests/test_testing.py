@@ -790,10 +790,11 @@ class TestArrayAPITestMixin(unittest.TestCase, ArrayAPITestMixin):
             self.assert_close(a, b)
 
     def test_normalize_device(self):
-        self.assertEqual(self._normalize_device('cuda:0'), 'gpu')
-        self.assertEqual(self._normalize_device('gpu'), 'gpu')
-        self.assertEqual(self._normalize_device('CUDA'), 'gpu')
-        self.assertEqual(self._normalize_device('cpu'), 'cpu')
+        self.assertEqual(_normalize_device('cuda:0'), 'cuda')
+        self.assertEqual(_normalize_device('gpu'), 'cuda')
+        self.assertEqual(_normalize_device('CUDA'), 'cuda')
+        self.assertEqual(_normalize_device('cpu'), 'cpu')
+        self.assertIsNone(_normalize_device(None))
 
 
 if __name__ == '__main__':
