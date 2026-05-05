@@ -470,7 +470,7 @@ def pytestrunner():
 #   SKBIO_DEVICE         — "cpu" (default), "cuda", "gpu"
 #
 # Note: ``"gpu"`` (JAX's native string) and ``"cuda"`` (Torch/CuPy's native
-# string) refer to the same hardware and compare equal after normalization.
+# string) refer to the same hardware and are treated as equivalent.
 #
 # Usage:
 #     class TestClosure(TestCase, ArrayAPITestMixin):
@@ -483,33 +483,86 @@ def pytestrunner():
 # -------------------------------------------------------------------------------------
 
 
-# Comparison-only canonical form: collapse equivalent device specifiers from
-# different backends to a single key. Do NOT pass the canonical form back to a
-# backend as a device argument — JAX wants "gpu", Torch/CuPy want "cuda".
-_DEVICE_ALIASES = {"gpu": "cuda"}
+# Two device-name spellings that refer to the same hardware. Used only to
+# decide whether a requested ``SKBIO_DEVICE`` matches a backend's advertised
+# device — never to inspect a real array (see ``_on_device`` for that).
+_GPU_ALIASES = frozenset({"cuda", "gpu"})
 
 
-def _normalize_device(device):
-    """Canonicalize a device specifier for equality comparison.
+def _device_specs_match(a, b):
+    """True if two device-spec strings refer to the same hardware.
 
-    - ``None`` stays ``None``.
-    - Case-insensitive (``"CUDA"`` → ``"cuda"``).
-    - Strips a default device index (``"cuda:0"`` → ``"cuda"``); non-zero
-      indices are preserved (``"cuda:1"`` → ``"cuda:1"``).
-    - JAX's ``"gpu"`` and Torch/CuPy's ``"cuda"`` collapse to ``"cuda"``.
-    - Accepts ``torch.device`` or any object with a sensible ``str()``.
-
-    The returned string is for *comparison only*. It is not safe to pass back
-    to a backend as a device argument.
+    Both inputs are expected to be the per-backend strings stored in
+    ``_BACKENDS`` or read from ``SKBIO_DEVICE`` — short labels like ``"cpu"``,
+    ``"cuda"``, or ``"gpu"``. This is *not* for inspecting a real array's
+    device; use ``_on_device`` for that.
     """
-    if device is None:
-        return None
-    s = str(device).lower()
-    if ":" in s:
-        kind, idx = s.split(":", 1)
-        if idx == "0":
-            s = kind
-    return _DEVICE_ALIASES.get(s, s)
+    if a is None or b is None:
+        return a == b
+    a, b = a.lower(), b.lower()
+    if a == b:
+        return True
+    return a in _GPU_ALIASES and b in _GPU_ALIASES
+
+
+def _on_device(arr, xp, device):
+    """Return whether ``arr`` lives on ``device`` according to its backend.
+
+    Asks each backend a structured question rather than parsing the
+    ``__repr__`` of a device object, so it doesn't break when a backend
+    changes how it prints devices.
+
+    Parameters
+    ----------
+    arr : array
+        An array produced by ``xp``.
+    xp : module
+        The array namespace that produced ``arr`` (e.g. ``numpy``,
+        ``jax.numpy``, ``torch``, ``cupy``).
+    device : str or None
+        The expected device: ``"cpu"``, ``"cuda"``, ``"gpu"``, or ``None``
+        (treated as ``"cpu"``).
+
+    Returns
+    -------
+    bool
+
+    Raises
+    ------
+    NotImplementedError
+        If ``xp`` is not a recognized backend.
+    """
+    backend = _get_backend_name(xp)
+    want_gpu = device is not None and device.lower() in _GPU_ALIASES
+    want_cpu = device is None or device.lower() == "cpu"
+
+    if backend == "numpy":
+        # NumPy is CPU-only; "cuda"/"gpu" never matches.
+        return want_cpu
+
+    if backend == "cupy":
+        # CuPy arrays are always on CUDA.
+        return want_gpu
+
+    if backend == "torch":
+        # arr.device.type is "cpu" or "cuda" (or "mps", etc.)
+        kind = arr.device.type
+        if want_cpu:
+            return kind == "cpu"
+        if want_gpu:
+            return kind == "cuda"
+        return False
+
+    if backend == "jax":
+        # JAX device objects expose .platform: "cpu", "gpu", or "tpu".
+        platform = arr.device.platform
+        if want_cpu:
+            return platform == "cpu"
+        if want_gpu:
+            return platform == "gpu"
+        return False
+
+    raise NotImplementedError(f"_on_device: unknown backend {backend!r}")
 
 
 def _read_env():
@@ -524,8 +577,7 @@ def _get_array_backends():
 
     The device strings stored here are each backend's *native* form — JAX uses
     ``"gpu"``, Torch and CuPy use ``"cuda"`` — because they get passed back to
-    the backend (e.g. via ``_move_to_device``). Use ``_normalize_device`` only
-    when comparing device specifiers across backends.
+    the backend (e.g. via ``_move_to_device``).
     """
     _backends = {"numpy": (np, ["cpu"])}
 
@@ -570,21 +622,19 @@ _BACKENDS = _get_array_backends()
 def _should_run(backend_name, device):
     """Check whether a backend/device combo should execute."""
     env_backend, env_device = _read_env()
-    norm_env = _normalize_device(env_device)
-    norm_dev = _normalize_device(device)
 
     if not env_backend:
         return backend_name == "numpy" and device == "cpu"
 
     if env_backend == "all":
-        if norm_env and norm_env != norm_dev:
+        if env_device and not _device_specs_match(env_device, device):
             return False
         return True
 
     if env_backend != backend_name:
         return False
 
-    if norm_env and norm_env != norm_dev:
+    if env_device and not _device_specs_match(env_device, device):
         return False
 
     return True
@@ -704,9 +754,13 @@ class ArrayAPITestMixin:
             f"Backend not preserved: result is {result_name}, expected {expected_name}",
         )
 
-        if device not in ("cpu", None) and hasattr(result, "device"):
-            self.assertEqual(
-                _normalize_device(result.device),
-                _normalize_device(device),
-                f"Device not preserved: result on {result.device}, expected {device}",
-            )
+        # Skip the device check on CPU: not every backend exposes a useful
+        # device attribute for CPU arrays, and CPU/CPU is the trivial case.
+        if device in (None, "cpu"):
+            return
+
+        self.assertTrue(
+            _on_device(result, xp, device),
+            f"Device not preserved: result on "
+            f"{getattr(result, 'device', '<unknown>')}, expected {device}",
+        )
