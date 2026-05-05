@@ -43,7 +43,7 @@ jobs:
               pip install -U "jax[cuda12]"
               ;;
             cupy)
-              pip install cupy-cuda12x
+              pip install cupy-cuda12x[ctk]
               ;;
           esac
           pip install -r ci/requirements.txt -r ci/requirements.test.txt
