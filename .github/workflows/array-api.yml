@@ -82,4 +82,4 @@ jobs:
           SKBIO_ARRAY_BACKEND: ${{ matrix.backend }}
           SKBIO_DEVICE: ${{ matrix.device }}
         # This only runs tests which are decorated with the @array_backends decorator
-        run: pytest -m array_api skbio/
+        run: cd ci && pytest -m array_api --pyargs skbio
