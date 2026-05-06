@@ -34,7 +34,7 @@ jobs:
       - name: Install scikit-bio + backend
         run: |
           python -m ensurepip
-          pip install .
+          pip install -v .
           case "${{ matrix.backend }}" in
             torch)
               pip install torch --index-url https://download.pytorch.org/whl/cu128
@@ -71,6 +71,11 @@ jobs:
               assert n > 0, "cupy sees no GPU"
               print("cupy:", cupy.__version__, "devices:", n)
           PY
+
+      - name: Check for compiled extensions
+        run: |
+          find . -name "_intersection*" -type f -not -path "*/\.*"
+          python -c "import skbio.metadata._intersection; print('OK:', skbio.metadata._intersection.__file__)"
 
       - name: Run tests
         env:
