@@ -1,6 +1,8 @@
 name: Array API Compatibility
 
 on:
+  pull_request:
+    types: [labeled, synchronize]
   workflow_dispatch:
   schedule:
     - cron: '0 6 * * 1'   # Every Monday at 06:00 UTC
@@ -10,6 +12,9 @@ env:
 
 jobs:
   test:
+    if: |
+      github.event_name != 'pull_request' ||
+      contains(github.event.pull_request.labels.*.name, 'gpu-ci')
     name: Array API (${{ matrix.backend }})
     runs-on: gpu-t4-4-core
     strategy:
@@ -71,11 +76,6 @@ jobs:
               assert n > 0, "cupy sees no GPU"
               print("cupy:", cupy.__version__, "devices:", n)
           PY
-
-      # - name: Check for compiled extensions
-      #   run: |
-      #     find . -name "_intersection*" -type f -not -path "*/\.*"
-      #     python -c "import skbio.metadata._intersection; print('OK:', skbio.metadata._intersection.__file__)"
 
       - name: Run tests
         env:
