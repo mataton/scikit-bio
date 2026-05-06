@@ -34,6 +34,7 @@ from skbio.util._testing import (
     xp_assert_equal,
     array_backends,
     ArrayAPITestMixin,
+    _device_specs_match
 )
 
 
@@ -789,12 +790,27 @@ class TestArrayAPITestMixin(unittest.TestCase, ArrayAPITestMixin):
         with self.assertRaises(AssertionError):
             self.assert_close(a, b)
 
-    def test_normalize_device(self):
-        self.assertEqual(_normalize_device('cuda:0'), 'cuda')
-        self.assertEqual(_normalize_device('gpu'), 'cuda')
-        self.assertEqual(_normalize_device('CUDA'), 'cuda')
-        self.assertEqual(_normalize_device('cpu'), 'cpu')
-        self.assertIsNone(_normalize_device(None))
+    def test_device_specs_match(self):
+        # Same string matches itself.
+        self.assertTrue(_device_specs_match('cuda', 'cuda'))
+        self.assertTrue(_device_specs_match('cpu', 'cpu'))
+
+        # GPU aliases match each other.
+        self.assertTrue(_device_specs_match('gpu', 'cuda'))
+        self.assertTrue(_device_specs_match('cuda', 'gpu'))
+
+        # Case-insensitive.
+        self.assertTrue(_device_specs_match('CUDA', 'cuda'))
+        self.assertTrue(_device_specs_match('GPU', 'CUDA'))
+
+        # Different hardware doesn't match.
+        self.assertFalse(_device_specs_match('cpu', 'cuda'))
+        self.assertFalse(_device_specs_match('cpu', 'gpu'))
+
+        # None handling: matches only None.
+        self.assertTrue(_device_specs_match(None, None))
+        self.assertFalse(_device_specs_match(None, 'cpu'))
+        self.assertFalse(_device_specs_match('cuda', None))
 
 
 if __name__ == '__main__':
