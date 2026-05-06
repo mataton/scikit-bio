@@ -716,6 +716,15 @@ def array_backends(*backend_names, cpu_only=False):
                     )
                 raise unittest.SkipTest(f"No matching backends for {backend_names}")
 
+        # Tag with a pytest marker so we can filter for CI with
+        # `pytest -m array_api`. Falls back silently if pytest not installed.
+        try:
+            import pytest
+
+            wrapper = pytest.mark.array_api(wrapper)
+        except ImportError:
+            pass
+
         return wrapper
 
     return decorator

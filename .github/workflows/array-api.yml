@@ -76,4 +76,5 @@ jobs:
         env:
           SKBIO_ARRAY_BACKEND: ${{ matrix.backend }}
           SKBIO_DEVICE: ${{ matrix.device }}
-        run: pytest skbio/stats/composition/tests/test_base.py
+        # This only runs tests which are decorated with the @array_backends decorator
+        run: pytest -m array_api skbio/
