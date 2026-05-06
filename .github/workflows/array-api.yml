@@ -34,7 +34,7 @@ jobs:
       - name: Install scikit-bio + backend
         run: |
           python -m ensurepip
-          pip install --no-deps .
+          pip install .
           case "${{ matrix.backend }}" in
             torch)
               pip install torch --index-url https://download.pytorch.org/whl/cu128
